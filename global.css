@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --app-primary: #d4b300;
+    --app-dark: #000000;
+    --app-white: #fff;
+    --app-primary-muted: #aa8f00;
+    --app-ghost: #f3f3f4;
+  }
+  .screen-title {
+    @apply text-app-dark font-sans text-2xl font-bold mb-1;
+  }
+  .screen-desc {
+    @apply text-gray-400 font-sans text-base;
+  }
+  .field {
+    @apply rounded-3xl border-2 border-red-500 bg-app-dark h-5;
+  }
+}

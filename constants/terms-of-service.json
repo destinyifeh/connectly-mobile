@@ -1,0 +1,80 @@
+{
+  "content": {
+    "title": "Welcome to Connectly!",
+    "intro": "These Terms and Conditions (\"Terms\", \"Terms and Conditions\") govern your use of our website, mobile application, and other services (collectively, the \"Service\") provided by Connectly. Please read these Terms carefully before using our Service. By accessing or using the Service, you agree to be bound by these Terms. If you disagree with any part of the Terms, you may not access the Service.",
+    "sections": [
+      {
+        "title": "1. Acceptance of Terms",
+        "content": "By using the Service, you agree to comply with and be bound by these Terms and all applicable laws and regulations. If you do not agree with any of these Terms, please do not use the Service."
+      },
+      {
+        "title": "2. Changes to Terms",
+        "content": "We may update or modify these Terms at any time. When changes are made, we will update the \"Last Updated\" date at the top of this page. It is your responsibility to review these Terms periodically to stay informed about any updates or changes."
+      },
+      {
+        "title": "3. Use of the Service",
+        "content": "You may use the Service only for lawful purposes and in accordance with these Terms. You agree not to:",
+        "points": [
+          "Use the Service in any way that violates any local, state, or national law.",
+          "Engage in conduct that restricts or inhibits anyone's use or enjoyment of the Service.",
+          "Attempt to gain unauthorized access to the Service or any part of it, including servers or databases connected to the Service."
+        ]
+      },
+      {
+        "title": "4. Account Registration",
+        "content": "To access certain features of the Service, you may need to create an account. When doing so, you agree to provide accurate, current, and complete information. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. If you suspect any unauthorized use of your account, notify us immediately."
+      },
+      {
+        "title": "5. Privacy Policy",
+        "content": "Your use of the Service is also governed by our  [link to Privacy Policy]. By using the Service, you consent to our collection and use of your information as described in the Privacy Policy."
+      },
+      {
+        "title": "6. Content Ownership",
+        "content": "All content provided on the Service, including text, graphics, logos, images, audio clips, and software, is the property of Connectly or its licensors and is protected by copyright, trademark, and other intellectual property laws. You may not use, copy, modify, distribute, or transmit any content without prior written permission from the owner."
+      },
+      {
+        "title": "7. User-Generated Content",
+        "content": "You may be able to submit content to the Service, such as reviews, comments, or feedback (\"User Content\"). By submitting User Content, you grant Connectly a non-exclusive, royalty-free, worldwide license to use, display, and distribute your content in connection with the Service. You represent and warrant that you own or control the rights to any User Content you submit and that it does not violate any third-party rights."
+      },
+      {
+        "title": "8. Prohibited Activities",
+        "content": "You agree not to engage in the following prohibited activities:",
+        "points": [
+          "Posting content that is defamatory, offensive, harmful, or otherwise inappropriate.",
+          "Using the Service to transmit malware, viruses, or other harmful code.",
+          "Impersonating any person or entity, or falsely claiming an affiliation with a person or entity.",
+          "Engaging in fraudulent activities, including but not limited to identity theft."
+        ]
+      },
+      {
+        "title": "9. Termination",
+        "content": "We may suspend or terminate your access to the Service at any time, without notice, for any reason, including if we believe you have violated these Terms. Upon termination, your right to use the Service will immediately cease, and you must stop using the Service."
+      },
+      {
+        "title": "10. Disclaimers",
+        "content": "The Service is provided on an \"as-is\" and \"as-available\" basis. Connectly makes no representations or warranties of any kind, express or implied, regarding the accuracy, reliability, or availability of the Service. We do not warrant that the Service will be free of errors, bugs, or interruptions. Your use of the Service is at your own risk."
+      },
+      {
+        "title": "11. Limitation of Liability",
+        "content": "To the maximum extent permitted by law, Connectly shall not be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of the Service, including but not limited to loss of data, loss of profits, or damage to your device."
+      },
+      {
+        "title": "12. Indemnification",
+        "content": "You agree to indemnify and hold harmless Connectly, its affiliates, officers, employees, and agents from any claims, damages, or liabilities arising from your use of the Service, your User Content, or any violation of these Terms."
+      },
+      {
+        "title": "13. Governing Law",
+        "content": "These Terms shall be governed by and construed in accordance with the laws of [Jurisdiction], without regard to its conflict of law principles. Any disputes arising from these Terms will be resolved in the courts of [Jurisdiction]."
+      },
+      {
+        "title": "14. Severability",
+        "content": "If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions will continue in full force and effect."
+      },
+      {
+        "title": "15. Entire Agreement",
+        "content": "These Terms constitute the entire agreement between you and Connectly regarding your use of the Service and supersede all prior or contemporaneous agreements, communications, and proposals, whether oral or written, between you and Connectly."
+      }
+    ],
+    "closing": "Thank you for choosing Connectly!"
+  }
+}

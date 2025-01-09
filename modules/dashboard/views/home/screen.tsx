@@ -237,11 +237,13 @@ export const DashboardHomeScreen = () => {
       <View className="flex-1">
         <View className="flex-row justify-between items-center">
           {image ? (
-            <TouchableOpacity className="bg-app-ghost rounded-[25] w-[45] h-[45] justify-center items-center">
+            <TouchableOpacity
+              onPress={() => router.push('/dashboard/profile')}
+              className="bg-app-ghost rounded-[25] w-[45] h-[45] justify-center items-center">
               <FontAwesome6 name="user-large" size={25} color="black" />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/dashboard/profile')}>
               <Image
                 source={require('../../../../assets/images/couple_bg.jpg')}
                 style={{width: 45, height: 45, borderRadius: 25}}

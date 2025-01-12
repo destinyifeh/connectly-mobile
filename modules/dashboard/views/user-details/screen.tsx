@@ -1,5 +1,6 @@
 import {AppContainer} from '@/components/AppContainer';
 import {currentDeviceWidth} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
 import {Entypo, Feather, Ionicons, Octicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useRouter} from 'expo-router';
@@ -18,7 +19,7 @@ import Animated, {SlideInRight, SlideOutRight} from 'react-native-reanimated';
 export const UserDetailsScreen = () => {
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const {themeColor} = useGlobalStore(state => state);
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -59,10 +60,12 @@ export const UserDetailsScreen = () => {
           style={{width: currentDeviceWidth * 0.9}}>
           <View className="flex-row items-center gap-2">
             <TouchableOpacity onPress={() => router.back()}>
-              <Feather name="arrow-left" size={16} color="black" />
+              <Feather name="arrow-left" size={16} color={themeColor.text} />
             </TouchableOpacity>
             <View className="flex-row gap-2 items-center">
-              <Text className="text-black font-sans font-bold text-lg">
+              <Text
+                className="text-black font-sans font-bold text-lg"
+                style={{color: themeColor.text}}>
                 Anita, 25
               </Text>
 
@@ -107,7 +110,11 @@ export const UserDetailsScreen = () => {
 
         <View>
           <View className="mt-5">
-            <Text className="screen-title text-lg">Hobbies</Text>
+            <Text
+              className="screen-title text-lg"
+              style={{color: themeColor.text}}>
+              Hobbies
+            </Text>
 
             <View className="p-2 flex-row gap-2 flex-wrap">
               <View className="bg-app-default min-w-[20] px-5 h-[40] justify-center rounded-[25]">
@@ -125,7 +132,11 @@ export const UserDetailsScreen = () => {
             </View>
 
             <View className="mt-5">
-              <Text className="screen-title text-lg">Photos</Text>
+              <Text
+                className="screen-title text-lg"
+                style={{color: themeColor.text}}>
+                Photos
+              </Text>
 
               <ScrollView
                 className="mt-3"

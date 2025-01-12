@@ -1,3 +1,4 @@
+import {useGlobalStore} from '@/stores/global-store';
 import React from 'react';
 import {Modal, Text, TouchableOpacity, View} from 'react-native';
 
@@ -34,6 +35,7 @@ export const AppAlert = ({
   const [isPressedOne, setIsPressedOne] = React.useState(false);
   const [isPressedTwo, setIsPressedTwo] = React.useState(false);
   const [isPressedThree, setIsPressedThree] = React.useState(false);
+  const {themeColor, setThemeColor} = useGlobalStore(state => state);
   return (
     <Modal
       animationType="slide"
@@ -53,7 +55,7 @@ export const AppAlert = ({
           accessible={true}
           style={{
             width: 300,
-            backgroundColor: '#fff',
+            backgroundColor: themeColor.background,
             borderRadius: 12,
           }}>
           <View style={{padding: 20}}>
@@ -66,7 +68,7 @@ export const AppAlert = ({
                 style={{
                   textAlign: 'center',
                   fontWeight: '500',
-                  color: 'black',
+                  color: themeColor.text,
                   fontSize: 17,
                 }}>
                 {title}
@@ -80,7 +82,7 @@ export const AppAlert = ({
                 accessibilityHint="Alert Message"
                 style={{
                   textAlign: 'center',
-                  color: 'black',
+                  color: themeColor.text,
                 }}>
                 {message}
               </Text>

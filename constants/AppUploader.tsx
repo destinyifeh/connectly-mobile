@@ -1,4 +1,5 @@
 import {AppBottomSheet} from '@/components/BottomSheet';
+import {useGlobalStore} from '@/stores/global-store';
 import * as ImagePicker from 'expo-image-picker';
 import {FC} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
@@ -29,6 +30,7 @@ export const AppUploader: FC<AppUploaderProps> = ({
   handleFileObject,
   ...rest
 }) => {
+  const {themeColor} = useGlobalStore(state => state);
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -103,18 +105,24 @@ export const AppUploader: FC<AppUploaderProps> = ({
     <AppBottomSheet
       ref={actionSheetRef}
       closeOnDragDown
-      containerStyle={{height: 160, backgroundColor: 'white'}}>
+      containerStyle={{height: 160, backgroundColor: themeColor.background}}>
       <View className="w-[90%] self-center my-5">
         <TouchableOpacity
           className="border-gray-300 border h-[40.7] rounded-3xl items-center justify-center px-3 w-full"
           onPress={takePhoto}>
-          <Text className="font-sans font-bold text-base">Take photo</Text>
+          <Text
+            className="font-sans font-bold text-base"
+            style={{color: themeColor.text}}>
+            Take photo
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           className="border-gray-300 border h-[40.7] rounded-3xl items-center justify-center px-3 w-full mt-5"
           onPress={pickImage}>
-          <Text className="font-sans font-bold text-base">
+          <Text
+            className="font-sans font-bold text-base"
+            style={{color: themeColor.text}}>
             Add from library
           </Text>
         </TouchableOpacity>

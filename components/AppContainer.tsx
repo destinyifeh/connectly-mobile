@@ -1,4 +1,6 @@
+import {THEME_ISDARK} from '@/constants/Colors';
 import {appContainerStyle, COLOUR_Dark_WHITE} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
 import {Ionicons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 
@@ -36,11 +38,19 @@ export const AppContainer: FC<AppContainerProps> = ({
   title,
 }) => {
   const router = useRouter();
+  const {themeColor} = useGlobalStore(state => state);
+
+  console.log(themeColor, 'themooo');
   return (
     <SafeAreaView
-      style={{flex: 1, backgroundColor: appBackgroundColor ?? '#fff'}}>
+      style={{
+        flex: 1,
+        backgroundColor: appBackgroundColor ?? themeColor.background,
+      }}>
       <StatusBar
-        barStyle={barColor}
+        barStyle={
+          themeColor.type == THEME_ISDARK ? themeColor.barColor : barColor
+        }
         translucent={barTranslucent}
         backgroundColor={barBackground}
       />
@@ -55,7 +65,11 @@ export const AppContainer: FC<AppContainerProps> = ({
               </TouchableOpacity>
             )}
             {showScreenTitle && (
-              <Text className="screen-title text-xl">{title}</Text>
+              <Text
+                className="screen-title text-xl"
+                style={{color: themeColor.text}}>
+                {title}
+              </Text>
             )}
           </View>
           {children}

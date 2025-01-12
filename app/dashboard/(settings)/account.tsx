@@ -1,6 +1,8 @@
 import {AppAlert} from '@/components/AppAlert';
 import {AppContainer} from '@/components/AppContainer';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {Octicons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
@@ -11,6 +13,8 @@ export const AccountSettingsScreen = () => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const {getUser} = useUserStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const onLogoutProceed = () => {
     setIsLogoutModalVisible(false);
   };
@@ -24,6 +28,11 @@ export const AccountSettingsScreen = () => {
   };
 
   const onDeleteCancel = () => {
+    const respo = {
+      dee: 'dee',
+      bee: 'brrr',
+    };
+    getUser(respo);
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -39,38 +48,50 @@ export const AccountSettingsScreen = () => {
         showsVerticalScrollIndicator={false}>
         <TouchableOpacity
           onPress={() => router.push('/dashboard/change-password')}
-          className="bg-app-light border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
-          <Text className="text-black font-sans text-base">
+          className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
+          <Text
+            className="text-black font-sans text-base"
+            style={{color: themeColor.text}}>
             Change Password
           </Text>
           <Octicons name="chevron-right" size={16} color="gray" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => router.push('/dashboard/change-email')}
-          className="bg-app-light border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
-          <Text className="text-black font-sans text-base">
+          className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
+          <Text
+            className="text-black font-sans text-base"
+            style={{color: themeColor.text}}>
             Change Email Address
           </Text>
           <Octicons name="chevron-right" size={16} color="gray" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => router.push('/dashboard/change-phone')}
-          className="bg-app-light border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
-          <Text className="text-black font-sans text-base">
+          className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
+          <Text
+            className="text-black font-sans text-base"
+            style={{color: themeColor.text}}>
             Change phone number
           </Text>
           <Octicons name="chevron-right" size={16} color="gray" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setIsLogoutModalVisible(true)}
-          className="bg-app-light border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
-          <Text className="text-black font-sans text-base">Logout</Text>
+          className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
+          <Text
+            className="text-black font-sans text-base"
+            style={{color: themeColor.text}}>
+            Logout
+          </Text>
           <Octicons name="chevron-right" size={16} color="gray" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setIsDeleteModalVisible(true)}
-          className="bg-app-light border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
-          <Text className="text-red-500 font-sans text-base">
+          className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
+          <Text
+            className="text-red-500 font-sans text-base"
+            style={{color: themeColor.text}}>
             Delete Account
           </Text>
           <Octicons name="chevron-right" size={16} color="gray" />

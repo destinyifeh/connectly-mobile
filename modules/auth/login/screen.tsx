@@ -1,11 +1,12 @@
 import {AppContainer} from '@/components/AppContainer';
+import {useGlobalStore} from '@/stores/global-store';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {LoginForm} from './form';
 export const LoginScreen = () => {
   const [form, setForm] = useState({email: ''});
-
+  const {themeColor} = useGlobalStore(state => state);
   const router = useRouter();
 
   return (
@@ -14,7 +15,9 @@ export const LoginScreen = () => {
         contentContainerStyle={{paddingBottom: 10}}
         showsVerticalScrollIndicator={false}>
         <View className="mb-3">
-          <Text className="screen-title">Login</Text>
+          <Text className="screen-title" style={{color: themeColor.text}}>
+            Login
+          </Text>
           <Text className="screen-desc">
             Log in and Discover Effortless Connections to Your Perfect Match.
           </Text>
@@ -36,7 +39,9 @@ export const LoginScreen = () => {
               resizeMode="contain"
               className="w-[25]"
             />
-            <Text className="text-app-dark font-sans text-lg font-bold">
+            <Text
+              className="text-app-dark font-sans text-lg font-bold"
+              style={{color: themeColor.text}}>
               Login with Google
             </Text>
           </TouchableOpacity>

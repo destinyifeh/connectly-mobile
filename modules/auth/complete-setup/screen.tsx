@@ -1,11 +1,12 @@
 import {AppContainer} from '@/components/AppContainer';
+import {useGlobalStore} from '@/stores/global-store';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {CompleteSetupForm} from './form';
 export const CompleteSetupScreen = () => {
   const [form, setForm] = useState({email: ''});
-
+  const {themeColor} = useGlobalStore(state => state);
   const router = useRouter();
 
   return (
@@ -14,7 +15,9 @@ export const CompleteSetupScreen = () => {
         contentContainerStyle={{paddingBottom: 10, flexGrow: 1}}
         showsVerticalScrollIndicator={false}>
         <View className="mb-3">
-          <Text className="screen-title">Setup Account</Text>
+          <Text className="screen-title" style={{color: themeColor.text}}>
+            Setup Account
+          </Text>
           <Text className="screen-desc">
             Let's complete your setup process.
           </Text>

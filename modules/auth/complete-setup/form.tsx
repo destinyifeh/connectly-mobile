@@ -1,4 +1,6 @@
 import {AppButton} from '@/components/Button';
+import {THEME_ISDARK} from '@/constants/Colors';
+import {useGlobalStore} from '@/stores/global-store';
 import {AntDesign} from '@expo/vector-icons';
 import {zodResolver} from '@hookform/resolvers/zod';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
@@ -41,6 +43,7 @@ export const CompleteSetupForm = () => {
   const [date, setDate] = useState(new Date());
   const dropDownRef = useRef<dropDownProps>(null);
   const router = useRouter();
+  const {themeColor} = useGlobalStore(state => state);
   const {
     control,
     handleSubmit,
@@ -82,7 +85,9 @@ export const CompleteSetupForm = () => {
   return (
     <View className="flex-1">
       <View>
-        <Text className="font-sans text-app-dark font-bold mb-1 text-base">
+        <Text
+          className="font-sans text-app-dark font-bold mb-1 text-base"
+          style={{color: themeColor.text}}>
           Gender
         </Text>
         <Controller
@@ -92,8 +97,8 @@ export const CompleteSetupForm = () => {
             <Dropdown
               style={[styles.dropdown, isFocus && {borderColor: '#d4b300'}]}
               placeholderStyle={{color: 'gray'}}
-              selectedTextStyle={{color: 'black'}}
-              inputSearchStyle={{color: 'black'}}
+              selectedTextStyle={{color: themeColor.text}}
+              inputSearchStyle={{color: themeColor.text}}
               data={genderOptions}
               accessibilityLabel="gender"
               search
@@ -123,7 +128,9 @@ export const CompleteSetupForm = () => {
       </View>
 
       <View className="mt-1">
-        <Text className="font-sans text-app-dark font-bold mb-1 text-base">
+        <Text
+          className="font-sans text-app-dark font-bold mb-1 text-base"
+          style={{color: themeColor.text}}>
           Hobby
         </Text>
         <Controller
@@ -135,9 +142,14 @@ export const CompleteSetupForm = () => {
                 styles.dropdown,
                 isFocusSelect && {borderColor: '#d4b300'},
               ]}
-              placeholderStyle={{color: selected.length ? 'black' : 'gray'}}
-              selectedTextStyle={{color: 'black'}}
-              inputSearchStyle={{color: 'black'}}
+              placeholderStyle={{
+                color:
+                  selected.length && themeColor.type === THEME_ISDARK
+                    ? themeColor.text
+                    : 'gray',
+              }}
+              selectedTextStyle={{color: themeColor.text}}
+              inputSearchStyle={{color: themeColor.text}}
               data={hobbies}
               search
               labelField="label"
@@ -164,7 +176,9 @@ export const CompleteSetupForm = () => {
         )}
       </View>
       <View className="mt-1">
-        <Text className="font-sans text-app-dark font-bold mb-1 text-base">
+        <Text
+          className="font-sans text-app-dark font-bold mb-1 text-base"
+          style={{color: themeColor.text}}>
           Birth Date
         </Text>
         <TouchableOpacity
@@ -175,6 +189,9 @@ export const CompleteSetupForm = () => {
             isFocusDateField ? 'border-app-default' : 'border-gray-300'
           } border h-[40.7] rounded-3xl flex-row items-center justify-between px-3 w-full`}>
           <Text
+            style={{
+              color: themeColor.text,
+            }}
             className={`${
               isFormattedDate ? 'text-black' : ' text-gray-500'
             } font-sans text-[14px]`}>

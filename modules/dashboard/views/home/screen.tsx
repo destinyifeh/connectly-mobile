@@ -1,6 +1,7 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppBottomSheet} from '@/components/BottomSheet';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
 import {
   FontAwesome,
   FontAwesome6,
@@ -118,7 +119,7 @@ export const DashboardHomeScreen = () => {
   const [minAge, setMinAge] = useState<number>(18);
   const [maxAge, setMaxAge] = useState<number>(50);
   const [isLoadingFilter, setIsLoadingFilter] = useState<boolean>(false);
-
+  const {themeColor} = useGlobalStore(state => state);
   console.log(isFocused, 'idffoooo');
   useEffect(() => {
     setIsSelected('foryou');
@@ -251,7 +252,11 @@ export const DashboardHomeScreen = () => {
               />
             </TouchableOpacity>
           )}
-          <Text className="screen-title text-3xl">Connectly</Text>
+          <Text
+            className="screen-title text-3xl"
+            style={{color: themeColor.text}}>
+            Connectly
+          </Text>
 
           <TouchableOpacity
             onPress={() => router.push('/dashboard/user-notification')}
@@ -344,7 +349,10 @@ export const DashboardHomeScreen = () => {
         ref={actionSheetRef}
         closeOnDragDown={false}
         closeOnTouchBackdrop={false}
-        containerStyle={{height: deviceHight * 0.4, backgroundColor: 'white'}}>
+        containerStyle={{
+          height: deviceHight * 0.4,
+          backgroundColor: themeColor.background,
+        }}>
         <HomeFilter
           closeFilter={closeFilter}
           minAge={minAge}

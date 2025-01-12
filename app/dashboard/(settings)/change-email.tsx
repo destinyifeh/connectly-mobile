@@ -1,6 +1,7 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {useGlobalStore} from '@/stores/global-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
@@ -17,7 +18,8 @@ export const ChangeEmailScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const router = useRouter();
-
+  const {themeColor} = useGlobalStore(state => state);
+  console.log(themeColor, 'state theme');
   const {
     control,
     handleSubmit,

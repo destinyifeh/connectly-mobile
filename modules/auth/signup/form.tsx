@@ -22,8 +22,8 @@ const signupSchema = z
       })
       .regex(/[!@#$%^&*(),.?":{}|<>]/, {
         message: 'Password must contain at least one special character',
-      })
-      .regex(/[0-9]/, {message: 'Password must contain at least one number'}),
+      }),
+    // .regex(/[0-9]/, {message: 'Password must contain at least one number'}),
     email: z.string().trim().email({message: 'Invalid email address'}),
     confirmPassword: z.string().trim(),
   })

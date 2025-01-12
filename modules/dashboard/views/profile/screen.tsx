@@ -1,6 +1,7 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppUploader} from '@/constants/AppUploader';
 import {currentDeviceWidth} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useRouter} from 'expo-router';
@@ -23,7 +24,7 @@ export const ProfileScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string>('');
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const [imageType, setImageType] = useState<string>('');
-
+  const {themeColor} = useGlobalStore(state => state);
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -122,7 +123,11 @@ export const ProfileScreen = () => {
 
         <View>
           <View className="mt-5">
-            <Text className="screen-title text-lg">Hobbies</Text>
+            <Text
+              className="screen-title text-lg"
+              style={{color: themeColor.text}}>
+              Hobbies
+            </Text>
 
             <View className="p-2 flex-row gap-2 flex-wrap">
               <View className="bg-app-default min-w-[20] px-5 h-[40] justify-center rounded-[25]">
@@ -140,7 +145,11 @@ export const ProfileScreen = () => {
             </View>
 
             <View className="mt-5">
-              <Text className="screen-title text-lg">Photos</Text>
+              <Text
+                className="screen-title text-lg"
+                style={{color: themeColor.text}}>
+                Photos
+              </Text>
 
               <ScrollView
                 className="mt-3"

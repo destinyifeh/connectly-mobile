@@ -1,5 +1,6 @@
 import {AppContainer} from '@/components/AppContainer';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useState} from 'react';
 import {ScrollView, Text, TouchableOpacity} from 'react-native';
@@ -9,7 +10,7 @@ export const NotificationSettingsScreen = () => {
     useState<boolean>(false);
   const [enablePushNotification, setEnablePushNotification] =
     useState<boolean>(false);
-
+  const {themeColor} = useGlobalStore(state => state);
   return (
     <AppContainer showBackButton showScreenTitle title="Notification settings">
       <ScrollView
@@ -18,8 +19,10 @@ export const NotificationSettingsScreen = () => {
         showsVerticalScrollIndicator={false}>
         <TouchableOpacity
           onPress={() => setEnablePushNotification(!enablePushNotification)}
-          className="bg-app-light border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
-          <Text className="text-black font-sans text-base">
+          className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
+          <Text
+            className="text-black font-sans text-base"
+            style={{color: themeColor.text}}>
             Push Notification
           </Text>
           {!enablePushNotification ? (
@@ -38,8 +41,10 @@ export const NotificationSettingsScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setEnableEmailNotification(!enableEmailNotification)}
-          className="bg-app-light border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
-          <Text className="text-black font-sans text-base">
+          className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
+          <Text
+            className="text-black font-sans text-base"
+            style={{color: themeColor.text}}>
             Email Notification
           </Text>
           {!enableEmailNotification ? (

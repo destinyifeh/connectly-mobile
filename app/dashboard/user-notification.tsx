@@ -1,9 +1,11 @@
 import {AppContainer} from '@/components/AppContainer';
+import {useGlobalStore} from '@/stores/global-store';
 import {useRouter} from 'expo-router';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 
 export default function NotificationScreen() {
   const router = useRouter();
+  const {themeColor} = useGlobalStore(state => state);
   return (
     <AppContainer showBackButton showScreenTitle title="Notifications">
       <View className="w-screen self-center border-b border-gray-200 h-[60] justify-center">
@@ -17,10 +19,16 @@ export default function NotificationScreen() {
               resizeMode="cover"
             />
             <View className="flex-row items-center gap-1">
-              <Text className="text-black font-sans font-bold text-lg">
+              <Text
+                className="text-black font-sans font-bold text-lg"
+                style={{color: themeColor.text}}>
                 Anita, 28
               </Text>
-              <Text className="text-gray font-sans">visited your profile</Text>
+              <Text
+                className="text-gray font-sans"
+                style={{color: themeColor.text}}>
+                visited your profile
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -35,10 +43,16 @@ export default function NotificationScreen() {
               resizeMode="cover"
             />
             <View className="flex-row items-center gap-1">
-              <Text className="text-black font-sans font-bold text-lg">
+              <Text
+                className="text-black font-sans font-bold text-lg"
+                style={{color: themeColor.text}}>
                 Anita, 28
               </Text>
-              <Text className="text-gray font-sans">is interested in you</Text>
+              <Text
+                className="text-gray font-sans"
+                style={{color: themeColor.text}}>
+                is interested in you
+              </Text>
             </View>
           </TouchableOpacity>
         </View>

@@ -1,3 +1,4 @@
+import {useGlobalStore} from '@/stores/global-store';
 import {MaterialCommunityIcons, Octicons} from '@expo/vector-icons';
 import React, {forwardRef, useState} from 'react';
 import {
@@ -55,7 +56,7 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
     const [isFocused, setIsFocused] = useState<boolean>(false);
 
     const borderColor = isFocused ? 'border-app-default' : 'border-gray-300';
-
+    const {themeColor} = useGlobalStore(state => state);
     const onBlurTrigger = () => {
       setIsFocused(false);
       if (clearErrors) clearErrors();
@@ -68,7 +69,9 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
     return (
       <View className="my-1">
         {label && (
-          <Text className="font-sans text-app-dark font-bold mb-1 text-base">
+          <Text
+            className="font-sans text-app-dark font-bold mb-1 text-base"
+            style={{color: themeColor.text}}>
             {label}
           </Text>
         )}
@@ -94,6 +97,7 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
             ref={ref}
             multiline={rest.multiline}
             numberOfLines={rest.numberOfLines}
+            style={{color: themeColor.text}}
           />
           {isPassword && (
             <TouchableOpacity onPress={onPasswordVisible}>

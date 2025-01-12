@@ -5,6 +5,7 @@ import {Platform} from 'react-native';
 import {HapticTab} from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
 import {
   AntDesign,
   FontAwesome6,
@@ -13,6 +14,8 @@ import {
 } from '@expo/vector-icons';
 
 export default function TabLayout() {
+  const {themeColor} = useGlobalStore(state => state);
+
   const renderHomeIcon = (color: string) => {
     return <MaterialIcons name="home-filled" size={20} color={color} />;
   };
@@ -47,7 +50,7 @@ export default function TabLayout() {
             position: 'absolute',
           },
           android: {
-            // backgroundColor: 'black',
+            backgroundColor: themeColor.background,
             //borderRadius: 25,
             //  width: '80%',
             // alignSelf: 'center',

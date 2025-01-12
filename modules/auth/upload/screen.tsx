@@ -2,6 +2,7 @@ import {AppContainer} from '@/components/AppContainer';
 import {AppButton} from '@/components/Button';
 import {FontAwesome6} from '@expo/vector-icons';
 
+import {useGlobalStore} from '@/stores/global-store';
 import {useRouter} from 'expo-router';
 import {useRef, useState} from 'react';
 import {
@@ -18,7 +19,7 @@ export const UploadProfilePhotoScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string>('');
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const router = useRouter();
-
+  const {themeColor} = useGlobalStore(state => state);
   const onUpload = () => {
     actionSheetRef.current?.show();
   };
@@ -44,7 +45,10 @@ export const UploadProfilePhotoScreen = () => {
         contentContainerStyle={{paddingBottom: 10, flexGrow: 1}}
         showsVerticalScrollIndicator={false}>
         <View className="mb-3">
-          <Text className="screen-title">Upload Profile Photo</Text>
+          <Text className="screen-title" style={{color: themeColor.text}}>
+            {' '}
+            Upload Profile Photo
+          </Text>
           <Text className="screen-desc">
             Upload a profile photo to make your account stand out and showcase
             your identity.

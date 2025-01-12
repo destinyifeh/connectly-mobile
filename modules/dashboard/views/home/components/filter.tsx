@@ -1,5 +1,6 @@
 import {AppButton} from '@/components/Button';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {useGlobalStore} from '@/stores/global-store';
 import {FontAwesome} from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import {FC, useEffect} from 'react';
@@ -33,6 +34,7 @@ export const HomeFilter: FC<FilterProps> = ({
   isFilterGender,
   setIsFilterGender,
 }) => {
+  const {themeColor} = useGlobalStore(state => state);
   useEffect(() => {
     setIsFilterGender('men');
   }, []);
@@ -51,7 +53,9 @@ export const HomeFilter: FC<FilterProps> = ({
       contentContainerStyle={{paddingBottom: 10}}
       showsVerticalScrollIndicator={false}>
       <View className="flex-row justify-between items-center p-1">
-        <Text className="screen-title">Filters</Text>
+        <Text className="screen-title" style={{color: themeColor.text}}>
+          Filters
+        </Text>
         <TouchableOpacity
           onPress={closeFilter}
           className="bg-app-ghost rounded-[25] w-[45] h-[45] justify-center items-center self-end">
@@ -85,8 +89,14 @@ export const HomeFilter: FC<FilterProps> = ({
 
       <View className="mt-3">
         <View className="flex-row items-center justify-between px-5">
-          <Text className="text-lg text-gray font-sans">Age range</Text>
-          <Text className="text-xl text-gray font-sans font-bold">
+          <Text
+            className="text-lg text-gray font-sans"
+            style={{color: themeColor.text}}>
+            Age range
+          </Text>
+          <Text
+            className="text-xl text-gray font-sans font-bold"
+            style={{color: themeColor.text}}>
             {minAge}-{maxAge}
           </Text>
         </View>

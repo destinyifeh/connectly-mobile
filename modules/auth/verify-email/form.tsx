@@ -1,4 +1,5 @@
 import {AppButton} from '@/components/Button';
+import {useGlobalStore} from '@/stores/global-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useRef, useState} from 'react';
@@ -29,6 +30,7 @@ export const VerifyEmailForm = () => {
   const [isResending, setIsResending] = useState<boolean>(false);
   const otpRef = useRef<OTPRefProp>(null);
   const router = useRouter();
+  const {themeColor} = useGlobalStore(state => state);
   const {
     control,
     handleSubmit,
@@ -96,6 +98,7 @@ export const VerifyEmailForm = () => {
             theme={{
               pinCodeContainerStyle: styles.otpBox,
               containerStyle: styles.otpContainer,
+              pinCodeTextStyle: {color: themeColor.text},
             }}
             textInputProps={{
               accessibilityLabel: 'One-Time Password',

@@ -1,11 +1,11 @@
 import {AppContainer} from '@/components/AppContainer';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {useRouter} from 'expo-router';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 
 export default function NotificationScreen() {
   const router = useRouter();
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   return (
     <AppContainer showBackButton showScreenTitle title="Notifications">
       <View className="w-screen self-center border-b border-gray-200 h-[60] justify-center">

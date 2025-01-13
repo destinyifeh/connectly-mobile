@@ -18,7 +18,7 @@ const initiaState: State = {
   themeColor: AppLightTheme,
 };
 
-export const useGlobalStore = create<State & Actions>((set, get) => ({
+export const globalStore = create<State & Actions>((set, get) => ({
   ...initiaState,
 
   reset: () => {

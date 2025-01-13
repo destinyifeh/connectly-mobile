@@ -1,6 +1,6 @@
 import {AppContainer} from '@/components/AppContainer';
 import {currentDeviceWidth} from '@/constants/Styles';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {Entypo, Feather, Ionicons, Octicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useRouter} from 'expo-router';
@@ -19,7 +19,7 @@ import Animated, {SlideInRight, SlideOutRight} from 'react-native-reanimated';
 export const UserDetailsScreen = () => {
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   useFocusEffect(
     useCallback(() => {
       return () => {

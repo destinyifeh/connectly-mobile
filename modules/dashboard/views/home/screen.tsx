@@ -1,7 +1,7 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppBottomSheet} from '@/components/BottomSheet';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {
   FontAwesome,
   FontAwesome6,
@@ -119,7 +119,7 @@ export const DashboardHomeScreen = () => {
   const [minAge, setMinAge] = useState<number>(18);
   const [maxAge, setMaxAge] = useState<number>(50);
   const [isLoadingFilter, setIsLoadingFilter] = useState<boolean>(false);
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   console.log(isFocused, 'idffoooo');
   useEffect(() => {
     setIsSelected('foryou');

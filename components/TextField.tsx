@@ -1,4 +1,4 @@
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {MaterialCommunityIcons, Octicons} from '@expo/vector-icons';
 import React, {forwardRef, useState} from 'react';
 import {
@@ -56,7 +56,7 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
     const [isFocused, setIsFocused] = useState<boolean>(false);
 
     const borderColor = isFocused ? 'border-app-default' : 'border-gray-300';
-    const {themeColor} = useGlobalStore(state => state);
+    const {themeColor} = globalStore(state => state);
     const onBlurTrigger = () => {
       setIsFocused(false);
       if (clearErrors) clearErrors();

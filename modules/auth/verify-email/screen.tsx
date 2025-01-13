@@ -1,12 +1,12 @@
 import {AppContainer} from '@/components/AppContainer';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {VerifyEmailForm} from './form';
 export const VerifyEmailScreen = () => {
   const [form, setForm] = useState({email: ''});
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   const router = useRouter();
 
   return (

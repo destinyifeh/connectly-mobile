@@ -1,5 +1,5 @@
 import {AppButton} from '@/components/Button';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useRef, useState} from 'react';
@@ -30,7 +30,7 @@ export const VerifyEmailForm = () => {
   const [isResending, setIsResending] = useState<boolean>(false);
   const otpRef = useRef<OTPRefProp>(null);
   const router = useRouter();
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   const {
     control,
     handleSubmit,

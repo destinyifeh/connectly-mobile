@@ -1,7 +1,7 @@
 import {AppAlert} from '@/components/AppAlert';
 import {AppContainer} from '@/components/AppContainer';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Octicons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
@@ -14,7 +14,7 @@ export const AccountSettingsScreen = () => {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const {getUser} = useUserStore(state => state);
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   const onLogoutProceed = () => {
     setIsLogoutModalVisible(false);
   };

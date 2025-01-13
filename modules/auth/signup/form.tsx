@@ -190,7 +190,7 @@ export const SignupForm = () => {
         <Text className="screen-desc">
           By signing up, you agree to Connectly's
         </Text>
-        <View className="flex-row items-center">
+        <View className="flex-row items-center flex-wrap">
           <TouchableOpacity>
             <Text className="screen-desc font-bold">
               Terms and conditions,{' '}

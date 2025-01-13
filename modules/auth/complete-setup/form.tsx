@@ -1,6 +1,6 @@
 import {AppButton} from '@/components/Button';
 import {THEME_ISDARK} from '@/constants/Colors';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {AntDesign} from '@expo/vector-icons';
 import {zodResolver} from '@hookform/resolvers/zod';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
@@ -43,7 +43,7 @@ export const CompleteSetupForm = () => {
   const [date, setDate] = useState(new Date());
   const dropDownRef = useRef<dropDownProps>(null);
   const router = useRouter();
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   const {
     control,
     handleSubmit,
@@ -75,8 +75,8 @@ export const CompleteSetupForm = () => {
     }, 2000);
   };
 
-  const selectedmessage = `${selected.length} ${
-    selected.length === 1 ? 'hobby' : 'hobbies'
+  const selectedmessage = `${selected?.length} ${
+    selected?.length === 1 ? 'hobby' : 'hobbies'
   } selected`;
 
   const today = new Date();
@@ -144,7 +144,7 @@ export const CompleteSetupForm = () => {
               ]}
               placeholderStyle={{
                 color:
-                  selected.length && themeColor.type === THEME_ISDARK
+                  selected?.length && themeColor.type === THEME_ISDARK
                     ? themeColor.text
                     : 'gray',
               }}

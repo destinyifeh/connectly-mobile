@@ -1,11 +1,11 @@
 import {AppContainer} from '@/components/AppContainer';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {ResetPasswordForm} from './form';
 export const ResetPasswordScreen = () => {
   const [form, setForm] = useState({email: ''});
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   return (
     <AppContainer showBackButton barColor="dark-content">
       <ScrollView

@@ -3,14 +3,14 @@ import {AppDarkTheme, AppLightTheme, THEME_ISLIGHT} from '@/constants/Colors';
 import {APP_THEME_PREFERENCE} from '@/constants/config';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {saveDeviceData} from '@/stores/device-store';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {MaterialCommunityIcons, Octicons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
 export const SettingsScreen = () => {
   const router = useRouter();
-  const {themeColor, setThemeColor} = useGlobalStore(state => state);
+  const {themeColor, setThemeColor} = globalStore(state => state);
   console.log(themeColor, 'themecccc');
 
   const onSetTheme = async () => {

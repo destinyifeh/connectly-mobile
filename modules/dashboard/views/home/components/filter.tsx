@@ -1,6 +1,6 @@
 import {AppButton} from '@/components/Button';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {FontAwesome} from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import {FC, useEffect} from 'react';
@@ -34,7 +34,7 @@ export const HomeFilter: FC<FilterProps> = ({
   isFilterGender,
   setIsFilterGender,
 }) => {
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   useEffect(() => {
     setIsFilterGender('men');
   }, []);

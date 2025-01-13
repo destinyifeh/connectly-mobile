@@ -1,7 +1,7 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppUploader} from '@/constants/AppUploader';
 import {currentDeviceWidth} from '@/constants/Styles';
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useRouter} from 'expo-router';
@@ -24,7 +24,7 @@ export const ProfileScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string>('');
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const [imageType, setImageType] = useState<string>('');
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   useFocusEffect(
     useCallback(() => {
       return () => {

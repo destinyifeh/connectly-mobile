@@ -2,7 +2,7 @@ import {AppContainer} from '@/components/AppContainer';
 import {AppButton} from '@/components/Button';
 import {FontAwesome6} from '@expo/vector-icons';
 
-import {useGlobalStore} from '@/stores/global-store';
+import {globalStore} from '@/stores/global-store';
 import {useRouter} from 'expo-router';
 import {useRef, useState} from 'react';
 import {
@@ -19,7 +19,7 @@ export const UploadProfilePhotoScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string>('');
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const router = useRouter();
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor} = globalStore(state => state);
   const onUpload = () => {
     actionSheetRef.current?.show();
   };

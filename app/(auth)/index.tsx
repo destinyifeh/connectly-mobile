@@ -2,6 +2,7 @@ import {AppContainer} from '@/components/AppContainer';
 import {appContainerStyle} from '@/constants/Styles';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useRouter} from 'expo-router';
+import {useEffect} from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -9,9 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 const landingBg = require('../../assets/images/couple_bg.jpg');
 export default function LandingScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  useEffect(() => {}, []);
   return (
     <AppContainer
       barColor="light-content"
@@ -19,11 +23,11 @@ export default function LandingScreen() {
       barBackground="transparent"
       showBackButton={true}
       allowContentContainer={false}>
-      <ImageBackground source={landingBg} className="flex-1">
+      <ImageBackground source={landingBg} className="flex-1" resizeMode="cover">
         <LinearGradient
           colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)']}
           style={{flex: 1}}>
-          <View style={[appContainerStyle.appContent, {marginTop: 15}]}>
+          <SafeAreaView style={[appContainerStyle.appContent, {marginTop: 15}]}>
             <Text className="text-app-light text-center text-2xl font-bold font-sans">
               Connectly
             </Text>
@@ -54,7 +58,7 @@ export default function LandingScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </SafeAreaView>
         </LinearGradient>
       </ImageBackground>
     </AppContainer>

@@ -6,7 +6,6 @@ import {useRouter} from 'expo-router';
 
 import React, {FC} from 'react';
 import {
-  SafeAreaView,
   StatusBar,
   StatusBarStyle,
   StyleSheet,
@@ -14,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 type AppContainerProps = {
   children: React.ReactNode;
   barColor?: StatusBarStyle;
@@ -39,10 +39,10 @@ export const AppContainer: FC<AppContainerProps> = ({
 }) => {
   const router = useRouter();
   const {themeColor} = globalStore(state => state);
-
+  const insets = useSafeAreaInsets();
   console.log(themeColor, 'themooo');
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: appBackgroundColor ?? themeColor.background,
@@ -55,7 +55,7 @@ export const AppContainer: FC<AppContainerProps> = ({
         backgroundColor={barBackground}
       />
       {allowContentContainer ? (
-        <View style={appContainerStyle.appContent}>
+        <SafeAreaView style={appContainerStyle.appContent}>
           <View className="flex-row gap-8">
             {showBackButton && (
               <TouchableOpacity
@@ -73,11 +73,11 @@ export const AppContainer: FC<AppContainerProps> = ({
             )}
           </View>
           {children}
-        </View>
+        </SafeAreaView>
       ) : (
         <>{children}</>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

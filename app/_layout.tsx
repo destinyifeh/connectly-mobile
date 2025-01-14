@@ -5,6 +5,7 @@ import {useEffect} from 'react';
 import 'react-native-reanimated';
 import '../global.css';
 
+import AppWrapper from '@/helpers/App-wrapper';
 import {monitorThemeAppearance} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
 
@@ -33,7 +34,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <AppWrapper>
       <Stack>
         <Stack.Screen name="(auth)" options={{headerShown: false}} />
         <Stack.Screen name="dashboard" options={{headerShown: false}} />
@@ -44,6 +45,6 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       {/* <StatusBar style="auto" /> */}
-    </>
+    </AppWrapper>
   );
 }

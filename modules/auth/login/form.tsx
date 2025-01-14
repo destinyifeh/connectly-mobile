@@ -4,7 +4,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {Text, TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {z} from 'zod';
 type formData = {
   email: string;
@@ -55,7 +55,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <>
+    <View>
       <Controller
         control={control}
         name="email"
@@ -102,6 +102,6 @@ export const LoginForm = () => {
         onPress={handleSubmit(onSubmitLoginData)}
         disabled={isLoading || !isValid}
       />
-    </>
+    </View>
   );
 };

@@ -1,5 +1,5 @@
 import {globalStore} from '@/stores/global-store';
-import {Dimensions, Platform, StatusBar, StyleSheet} from 'react-native';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
 const themeColor = globalStore.getState().themeColor;
 
 export const currentDeviceWidth = Dimensions.get('window').width;
@@ -23,7 +23,7 @@ export const appContainerStyle = StyleSheet.create({
     flex: 1,
     ...Platform.select({
       android: {
-        paddingTop: StatusBar.currentHeight,
+        //  paddingTop: StatusBar.currentHeight,
       },
     }),
   },

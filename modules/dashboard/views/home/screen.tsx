@@ -265,7 +265,7 @@ export const DashboardHomeScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="flex-row items-center gap-3 px-2 mt-3 self-center">
+        <View className="flex-row items-center gap-3 px-2 mt-5 self-center">
           <TouchableOpacity
             onPress={openFilter}
             className={`${

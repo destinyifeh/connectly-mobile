@@ -17,6 +17,7 @@ export const AccountSettingsScreen = () => {
   const {themeColor} = globalStore(state => state);
   const onLogoutProceed = () => {
     setIsLogoutModalVisible(false);
+    router.push('/');
   };
 
   const onLogoutCancel = () => {

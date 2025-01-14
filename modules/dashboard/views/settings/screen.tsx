@@ -5,9 +5,9 @@ import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {saveDeviceData} from '@/stores/device-store';
 import {globalStore} from '@/stores/global-store';
 import {MaterialCommunityIcons, Octicons} from '@expo/vector-icons';
+import * as NavigationBar from 'expo-navigation-bar';
 import {useRouter} from 'expo-router';
 import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
-
 export const SettingsScreen = () => {
   const router = useRouter();
   const {themeColor, setThemeColor} = globalStore(state => state);
@@ -16,9 +16,11 @@ export const SettingsScreen = () => {
   const onSetTheme = async () => {
     if (themeColor.type === THEME_ISLIGHT) {
       setThemeColor(AppDarkTheme);
+      NavigationBar.setBackgroundColorAsync(AppDarkTheme.background);
       await saveDeviceData(APP_THEME_PREFERENCE, AppDarkTheme);
     } else {
       setThemeColor(AppLightTheme);
+      NavigationBar.setBackgroundColorAsync(AppLightTheme.background);
       await saveDeviceData(APP_THEME_PREFERENCE, AppLightTheme);
     }
   };

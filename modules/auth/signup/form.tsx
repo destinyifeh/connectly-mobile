@@ -99,7 +99,7 @@ export const SignupForm = () => {
   // };
 
   return (
-    <>
+    <View>
       <Controller
         name="username"
         control={control}
@@ -191,14 +191,14 @@ export const SignupForm = () => {
           By signing up, you agree to Connectly's
         </Text>
         <View className="flex-row items-center flex-wrap">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/terms-of-service')}>
             <Text className="screen-desc font-bold">
               Terms and conditions,{' '}
             </Text>
           </TouchableOpacity>
           <Text className="screen-desc"> Guidelines, and our </Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/privacy-policy')}>
             <Text className="screen-desc font-bold">Privacy Policy</Text>
           </TouchableOpacity>
         </View>
@@ -214,6 +214,6 @@ export const SignupForm = () => {
           <Text className="text-app-default font-bold font-sans">Login</Text>
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   );
 };

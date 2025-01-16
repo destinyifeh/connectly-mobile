@@ -40,7 +40,7 @@ export const AppContainer: FC<AppContainerProps> = ({
   const router = useRouter();
   const {themeColor} = globalStore(state => state);
   const insets = useSafeAreaInsets();
-  console.log(themeColor, 'themooo');
+
   return (
     <View
       style={{

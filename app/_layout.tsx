@@ -6,7 +6,7 @@ import 'react-native-reanimated';
 import '../global.css';
 
 import AppWrapper from '@/helpers/App-wrapper';
-import {monitorThemeAppearance} from '@/helpers/utils';
+import {serivesConfigurations} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -23,9 +23,9 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    monitorThemeAppearance();
     if (loaded) {
       SplashScreen.hideAsync();
+      serivesConfigurations();
     }
   }, [loaded]);
 

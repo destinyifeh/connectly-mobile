@@ -29,11 +29,6 @@ export const AccountSettingsScreen = () => {
   };
 
   const onDeleteCancel = () => {
-    const respo = {
-      dee: 'dee',
-      bee: 'brrr',
-    };
-    getUser(respo);
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);

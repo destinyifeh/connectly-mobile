@@ -1,11 +1,12 @@
 import {AppContainer} from '@/components/AppContainer';
+import {users} from '@/constants/AppData';
 import {currentDeviceWidth} from '@/constants/Styles';
 import {globalStore} from '@/stores/global-store';
 import {Entypo, Feather, Ionicons, Octicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
-import {useFocusEffect, useRouter} from 'expo-router';
+import {useFocusEffect, useLocalSearchParams, useRouter} from 'expo-router';
 import * as SMS from 'expo-sms';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -20,6 +21,8 @@ export const UserDetailsScreen = () => {
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const {themeColor} = globalStore(state => state);
+  const {userId} = useLocalSearchParams();
+
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -28,6 +31,9 @@ export const UserDetailsScreen = () => {
     }, []),
   );
 
+  useEffect(() => {
+    console.log(userId, 'userssoooo');
+  }, []);
   const handleSms = async () => {
     // Check if SMS is available on the device
     const isAvailable = await SMS.isAvailableAsync();
@@ -52,6 +58,8 @@ export const UserDetailsScreen = () => {
   const handleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
+
+  const user = users.find;
   return (
     <AppContainer>
       <View className="border-b-2 border-b-[#f3f3f4] w-screen self-center py-[0.5]">

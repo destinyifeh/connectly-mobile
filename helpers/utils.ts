@@ -7,8 +7,11 @@ import {
 import {APP_THEME_PREFERENCE} from '@/constants/config';
 import {getDeviceData, saveDeviceData} from '@/stores/device-store';
 import {globalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
+import * as Location from 'expo-location';
 import * as NavigationBar from 'expo-navigation-bar';
-import {Appearance} from 'react-native';
+import * as Speech from 'expo-speech';
+import {Alert, Appearance, BackHandler, Linking, Platform} from 'react-native';
 const applyUserTheme = async () => {
   const storedTheme = await getDeviceData(APP_THEME_PREFERENCE);
   if (storedTheme?.type === THEME_ISDARK) {
@@ -35,3 +38,79 @@ export const monitorThemeAppearance = async () => {
   applyUserTheme();
   return () => subscription.remove();
 };
+
+//ios
+
+// const handleButtonPress = async () => {
+//   await Linking.openURL('app-switcher:');
+// };
+
+const backAction = () => {
+  BackHandler.exitApp();
+  return true;
+};
+
+const handleButtonPress = () => {
+  BackHandler.addEventListener('hardwareBackPress', backAction);
+  BackHandler.exitApp();
+};
+
+const trigggerLocationService = () => {
+  if (Platform.OS === 'ios') {
+    Linking.openURL('app-settings:');
+  } else {
+    Linking.openSettings();
+  }
+};
+
+async function getCurrentLocation() {
+  let {status} = await Location.requestForegroundPermissionsAsync();
+  if (status !== 'granted') {
+    Alert.alert(
+      'Location Permission Needed',
+      'Location permission is necessary for app functionality. Grant access to enjoy a seamless experience',
+      [
+        {
+          text: 'Exit',
+          onPress: handleButtonPress,
+        },
+        {
+          text: 'Grant access',
+          onPress: () => trigggerLocationService(),
+        },
+      ],
+    );
+    console.log('Permission to access location was denied');
+    return;
+  }
+
+  let location = await Location.getCurrentPositionAsync({});
+  console.log(location, 'my location');
+  const address = await Location.reverseGeocodeAsync(location.coords);
+  console.log(address, 'my address');
+  const street = address[0].street;
+  const city = address[0].city;
+  const region = address[0].region;
+  const country = address[0].country;
+  console.log(`$${city}-${region}-${country}, 'my address33`);
+  const locationData = {
+    ...useUserStore.getState().currentUser,
+    city: city ?? undefined,
+    state: region ?? undefined,
+    country: country ?? undefined,
+  };
+
+  useUserStore.getState().getUser(locationData);
+}
+
+const speak = () => {
+  const thingToSay = 'Welcome to conectly';
+  Speech.speak(thingToSay);
+};
+async function serivesConfigurations() {
+  await monitorThemeAppearance();
+  await getCurrentLocation();
+  speak();
+}
+
+export {serivesConfigurations};

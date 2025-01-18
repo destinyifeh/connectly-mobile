@@ -23,6 +23,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -355,7 +356,11 @@ export const DashboardHomeScreen = () => {
             contentContainerStyle={{paddingBottom: 10}}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={
-              <View className="flex-row items-center gap-3 px-2 mt-5 self-center mb-5">
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                className=""
+                contentContainerClassName="flex-row items-center gap-3 px-2 mt-5 self-center mb-5">
                 <TouchableOpacity
                   onPress={openFilter}
                   className={`${
@@ -395,7 +400,7 @@ export const DashboardHomeScreen = () => {
                     Favorites
                   </Text>
                 </TouchableOpacity>
-              </View>
+              </ScrollView>
             }
           />
         </View>

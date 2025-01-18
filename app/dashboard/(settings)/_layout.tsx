@@ -2,13 +2,16 @@ import {Stack} from 'expo-router';
 
 export default function SettingsLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="account" options={{headerShown: false}} />
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="account" />
 
-      <Stack.Screen name="notification" options={{headerShown: false}} />
-      <Stack.Screen name="change-phone" options={{headerShown: false}} />
-      <Stack.Screen name="change-email" options={{headerShown: false}} />
-      <Stack.Screen name="change-password" options={{headerShown: false}} />
+      <Stack.Screen name="notification" />
+      <Stack.Screen name="change-phone" />
+      <Stack.Screen name="change-email" />
+      <Stack.Screen name="change-password" />
     </Stack>
   );
 }

@@ -8,13 +8,14 @@ import '../global.css';
 import AppWrapper from '@/helpers/App-wrapper';
 import {serivesConfigurations} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
+import {globalStore} from '@/stores/global-store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-
+  const {setIsAppMounted} = globalStore(state => state);
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     Roboto: require('../assets/fonts/Roboto-Regular.ttf'),
@@ -26,6 +27,7 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
       serivesConfigurations();
+      setIsAppMounted(true);
     }
   }, [loaded]);
 
@@ -35,13 +37,13 @@ export default function RootLayout() {
 
   return (
     <AppWrapper>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{headerShown: false}} />
-        <Stack.Screen name="dashboard" options={{headerShown: false}} />
-        <Stack.Screen name="privacy-policy" options={{headerShown: false}} />
-        <Stack.Screen name="terms-of-service" options={{headerShown: false}} />
-        <Stack.Screen name="feedback" options={{headerShown: false}} />
-        <Stack.Screen name="faq" options={{headerShown: false}} />
+      <Stack screenOptions={{headerShown: false}}>
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="dashboard" />
+        <Stack.Screen name="privacy-policy" />
+        <Stack.Screen name="terms-of-service" />
+        <Stack.Screen name="feedback" />
+        <Stack.Screen name="faq" />
         <Stack.Screen name="+not-found" />
       </Stack>
       {/* <StatusBar style="auto" /> */}

@@ -6,8 +6,6 @@ interface AppWrapperProps {
 }
 
 const AppWrapper: FC<AppWrapperProps> = ({children}) => {
-  let deee = true;
-
   return <SafeAreaProvider>{children}</SafeAreaProvider>;
 };
 

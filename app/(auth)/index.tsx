@@ -1,8 +1,8 @@
 import {AppContainer} from '@/components/AppContainer';
 import {appContainerStyle} from '@/constants/Styles';
+import ProtectedRoute from '@/helpers/ProtectedRoute';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useRouter} from 'expo-router';
-import {useEffect} from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -10,58 +10,63 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 const landingBg = require('../../assets/images/couple_bg.jpg');
 export default function LandingScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
-  useEffect(() => {}, []);
-  return (
-    <AppContainer
-      barColor="light-content"
-      barTranslucent
-      barBackground="transparent"
-      showBackButton={true}
-      allowContentContainer={false}>
-      <ImageBackground source={landingBg} className="flex-1" resizeMode="cover">
-        <LinearGradient
-          colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)']}
-          style={{flex: 1}}>
-          <SafeAreaView style={[appContainerStyle.appContent, {marginTop: 15}]}>
-            <Text className="text-app-light text-center text-2xl font-bold font-sans">
-              Connectly
-            </Text>
 
-            <View className="absolute bottom-10 w-full">
-              <Text className="text-app-light text-3xl font-bold font-sans">
-                Connect to Love with Connectly
+  return (
+    <ProtectedRoute>
+      <AppContainer
+        barColor="light-content"
+        barTranslucent
+        barBackground="transparent"
+        showBackButton={true}
+        allowContentContainer={false}>
+        <ImageBackground
+          source={landingBg}
+          className="flex-1"
+          resizeMode="cover">
+          <LinearGradient
+            colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.5)']}
+            style={{flex: 1}}>
+            <SafeAreaView
+              style={[appContainerStyle.appContent, {marginTop: 15}]}>
+              <Text className="text-app-light text-center text-2xl font-bold font-sans">
+                Connectly
               </Text>
-              <Text className="text-white text-lg font-sans">
-                Find, Connect, and Meet Your Perfect Match, Right Here, Right
-                Now!
-              </Text>
-              <TouchableOpacity
-                onPress={() => router.push('/login')}
-                className="bg-app-default h-[43px] rounded-3xl w-full justify-center my-5 mt-8">
-                <Text className="text-app-dark text-center text-lg font-bold font-sans">
-                  Get Started
+
+              <View className="absolute bottom-10 w-full">
+                <Text className="text-app-light text-3xl font-bold font-sans">
+                  Connect to Love with Connectly
                 </Text>
-              </TouchableOpacity>
-              <View className="flex-row items-center ml-[80] gap-2">
-                <Text className="text-white font-sans">
-                  Haven't registered yet?{' '}
+                <Text className="text-white text-lg font-sans">
+                  Find, Connect, and Meet Your Perfect Match, Right Here, Right
+                  Now!
                 </Text>
-                <TouchableOpacity onPress={() => router.push('/signup')}>
-                  <Text className="text-app-defaultMuted font-bold font-sans">
-                    Register
+                <TouchableOpacity
+                  onPress={() => router.push('/login')}
+                  className="bg-app-default h-[43px] rounded-3xl w-full justify-center my-5 mt-8">
+                  <Text className="text-app-dark text-center text-lg font-bold font-sans">
+                    Get Started
                   </Text>
                 </TouchableOpacity>
+                <View className="flex-row items-center ml-[80] gap-2">
+                  <Text className="text-white font-sans">
+                    Haven't registered yet?{' '}
+                  </Text>
+                  <TouchableOpacity onPress={() => router.push('/signup')}>
+                    <Text className="text-app-defaultMuted font-bold font-sans">
+                      Register
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </SafeAreaView>
-        </LinearGradient>
-      </ImageBackground>
-    </AppContainer>
+            </SafeAreaView>
+          </LinearGradient>
+        </ImageBackground>
+      </AppContainer>
+    </ProtectedRoute>
   );
 }
 

@@ -13,11 +13,11 @@ export const AccountSettingsScreen = () => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {getUser} = useUserStore(state => state);
+  const {logoutUser} = useUserStore(state => state);
   const {themeColor} = globalStore(state => state);
   const onLogoutProceed = () => {
     setIsLogoutModalVisible(false);
-    router.push('/');
+    logoutUser();
   };
 
   const onLogoutCancel = () => {

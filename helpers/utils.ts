@@ -100,7 +100,7 @@ async function getCurrentLocation() {
     country: country ?? undefined,
   };
 
-  useUserStore.getState().getUser(locationData);
+  useUserStore.getState().setUser(locationData);
 }
 
 const speak = () => {

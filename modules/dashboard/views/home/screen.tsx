@@ -41,7 +41,7 @@ type ActiveUsersProps = {
 const ActiveUsers: FC<ActiveUsersProps> = ({item}) => {
   const router = useRouter();
 
-  console.log(item, 'itemmmii');
+  //console.log(item, 'itemmmii');
 
   return (
     <View className="mb-[8] mx-auto">

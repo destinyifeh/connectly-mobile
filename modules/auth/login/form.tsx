@@ -1,5 +1,6 @@
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {useUserStore} from '@/stores/user-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
@@ -19,6 +20,7 @@ export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const router = useRouter();
+  const {setUser, currentUser} = useUserStore(state => state);
   const onPasswordVisible = () => {
     console.log('yesss33');
 
@@ -45,10 +47,16 @@ export const LoginForm = () => {
     setTimeout(() => {
       setIsLoading(false);
       reset(); // Clear the form fields after submission
-      setError('email', {
-        //type: 'server',
-        message: 'Incorrect email',
-      });
+      // setError('email', {
+      //   //type: 'server',
+      //   message: 'Incorrect email',
+      // });
+
+      const user = {
+        ...currentUser,
+        email: data.email,
+      };
+      setUser(user);
 
       router.push('/dashboard');
     }, 2000);

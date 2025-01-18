@@ -6,6 +6,7 @@ import 'react-native-reanimated';
 import '../global.css';
 
 import AppWrapper from '@/helpers/App-wrapper';
+import {initializeUser} from '@/helpers/auth';
 import {serivesConfigurations} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
 import {globalStore} from '@/stores/global-store';
@@ -23,6 +24,9 @@ export default function RootLayout() {
     Sans: require('../assets/fonts/OpenSans-Regular.ttf'),
   });
 
+  useEffect(() => {
+    initializeUser();
+  }, []);
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();

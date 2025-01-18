@@ -11,15 +11,17 @@ interface ProctedRouteProps {
 
 const ProtectedRoute: FC<ProctedRouteProps> = ({children}) => {
   const {currentUser} = useUserStore(state => state);
-  const {isAppMounted} = globalStore(state => state);
+  const {isAppMounted, setIsAppMounted} = globalStore(state => state);
 
   useEffect(() => {
-    if (isAppMounted && !currentUser.email) {
+    if (isAppMounted && currentUser.email) {
+      //  console.log(currentUser, 'my current');
+
       router.navigate('/dashboard');
     }
   }, [currentUser, router, isAppMounted]);
 
-  if (!currentUser.email && !isAppMounted) {
+  if (!isAppMounted) {
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator color={APP_DEFAULT_COLOUR} size="large" />
@@ -27,7 +29,11 @@ const ProtectedRoute: FC<ProctedRouteProps> = ({children}) => {
     );
   }
 
-  return children;
+  if (isAppMounted && !currentUser.email) {
+    return children;
+  }
+
+  return null;
 };
 
 export default ProtectedRoute;

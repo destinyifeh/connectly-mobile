@@ -20,7 +20,7 @@ export interface UserDetailsProps {
   otherPhotos?: string[];
   phone?: string;
   gender: string;
-  password: string;
+  password?: string;
   _id: string;
   location?: string;
   age?: string;

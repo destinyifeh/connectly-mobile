@@ -1,9 +1,9 @@
-import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {AppLoader} from '@/components/AppLoader';
 import {globalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {router} from 'expo-router';
 import {FC, useEffect} from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {View} from 'react-native';
 
 interface ProctedRouteProps {
   children: React.ReactNode;
@@ -24,7 +24,7 @@ const ProtectedRoute: FC<ProctedRouteProps> = ({children}) => {
   if (!isAppMounted) {
     return (
       <View className="flex-1 justify-center items-center">
-        <ActivityIndicator color={APP_DEFAULT_COLOUR} size="large" />
+        <AppLoader />
       </View>
     );
   }

@@ -81,7 +81,11 @@ export const UserDetailsScreen = () => {
             </View>
           </View>
           <TouchableOpacity onPress={handleModal}>
-            <Entypo name="dots-three-vertical" size={16} color="black" />
+            <Entypo
+              name="dots-three-vertical"
+              size={16}
+              color={themeColor.text}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -202,6 +206,10 @@ export const UserDetailsScreen = () => {
           />
         </TouchableOpacity>
       </View>
+
+      <TouchableOpacity onPress={() => router.navigate('/dashboard/chat')}>
+        <Text className="screen-title">chat</Text>
+      </TouchableOpacity>
       {isModalVisible === true && (
         <Animated.View
           entering={SlideInRight.duration(500)}

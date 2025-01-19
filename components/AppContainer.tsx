@@ -31,7 +31,7 @@ export const AppContainer: FC<AppContainerProps> = ({
   barColor = 'dark-content',
   showBackButton = false,
   allowContentContainer = true,
-  barBackground,
+  barBackground = '#fff',
   barTranslucent,
   appBackgroundColor,
   showScreenTitle,
@@ -52,7 +52,11 @@ export const AppContainer: FC<AppContainerProps> = ({
           themeColor.type == THEME_ISDARK ? themeColor.barColor : barColor
         }
         translucent={barTranslucent}
-        backgroundColor={barBackground}
+        backgroundColor={
+          themeColor.type == THEME_ISDARK
+            ? themeColor.background
+            : barBackground
+        }
       />
       {allowContentContainer ? (
         <SafeAreaView style={appContainerStyle.appContent}>

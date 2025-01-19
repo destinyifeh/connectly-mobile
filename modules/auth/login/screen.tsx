@@ -18,6 +18,7 @@ export const LoginScreen = () => {
           <Text className="screen-title" style={{color: themeColor.text}}>
             Login
           </Text>
+
           <Text className="screen-desc">
             Log in and Discover Effortless Connections to Your Perfect Match.
           </Text>

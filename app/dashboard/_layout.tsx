@@ -23,6 +23,15 @@ export default function DashboardLayout() {
           animation: 'slide_from_bottom',
         }}
       />
+      <Stack.Screen
+        name="chat"
+        options={{
+          presentation: 'modal',
+          headerShown: false,
+          gestureDirection: 'vertical',
+          animation: 'slide_from_bottom',
+        }}
+      />
     </Stack>
   );
 }

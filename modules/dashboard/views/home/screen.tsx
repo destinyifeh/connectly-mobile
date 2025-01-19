@@ -1,4 +1,5 @@
 import {AppContainer} from '@/components/AppContainer';
+import {AppLoader} from '@/components/AppLoader';
 import {AppBottomSheet} from '@/components/BottomSheet';
 import {users} from '@/constants/AppData';
 import AppList from '@/constants/AppPackages';
@@ -241,6 +242,13 @@ export const DashboardHomeScreen = () => {
     }
   };
 
+  const renderFooter = () => {
+    return (
+      <View style={{paddingVertical: 20, marginTop: 80}}>
+        <AppLoader />
+      </View>
+    );
+  };
   return (
     <AppContainer barColor="dark-content">
       <View className="flex-1">
@@ -355,6 +363,7 @@ export const DashboardHomeScreen = () => {
             numColumns={2}
             contentContainerStyle={{paddingBottom: 10}}
             showsVerticalScrollIndicator={false}
+            ListFooterComponent={!users.length ? renderFooter : null}
             ListHeaderComponent={
               <ScrollView
                 horizontal

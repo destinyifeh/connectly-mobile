@@ -59,15 +59,21 @@
           "android": {
             "datePicker": {
               "colorAccent": {
-                "light": "#FF5722"
+                "light": "#d4b300"
               },
               "textColorPrimary": {
-                "light": "#FF5722"
+                "light": "#d4b300"
               }
             },
             "timePicker": {
-              "background": {"light": "#FF5722", "dark": "#383838"},
-              "numbersBackgroundColor": {"light": "#FF5722", "dark": "#383838"}
+              "background": {
+                "light": "#d4b300",
+                "dark": "#383838"
+              },
+              "numbersBackgroundColor": {
+                "light": "#d4b300",
+                "dark": "#383838"
+              }
             }
           }
         }
@@ -75,6 +81,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c7fad474-12be-4224-be5d-3d863af7db3a"
+      }
     }
   }
 }

@@ -241,7 +241,7 @@ export const CompleteSetupForm = () => {
           </Text>
         )}
       </View>
-      <View className="absolute bottom-10 ">
+      <View className="absolute bottom-10 w-full">
         <AppButton
           title={isLoading ? 'Please wait...' : 'Continue'}
           onPress={handleSubmit(onSubmitData)}

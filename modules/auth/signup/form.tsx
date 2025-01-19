@@ -74,7 +74,7 @@ export const SignupForm = () => {
         //type: 'server',
         message: 'User already exists',
       });
-      router.push('/verify-email');
+      router.replace('/verify-email');
     }, 2000);
   };
 

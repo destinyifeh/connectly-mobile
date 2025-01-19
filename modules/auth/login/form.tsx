@@ -58,7 +58,7 @@ export const LoginForm = () => {
       };
       setUser(user);
 
-      router.push('/dashboard');
+      router.replace('/dashboard');
     }, 2000);
   };
 

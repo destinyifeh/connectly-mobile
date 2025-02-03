@@ -6,6 +6,8 @@ import * as ImagePicker from 'expo-image-picker';
 import {useRouter} from 'expo-router';
 import {FC, useCallback, useEffect, useState} from 'react';
 import {View} from 'react-native';
+import io from 'socket.io-client';
+
 import {
   Actions,
   Bubble,
@@ -35,7 +37,20 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
   const {themeColor} = globalStore(state => state);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const router = useRouter();
+  const socket = io('http://192.168.0.198:4000');
 
+  useEffect(() => {
+    // Listen for new messages from the server
+    socket.on('newMessage', message => {
+      console.log(message, 'messageeeeedee');
+      setMessages(prevMessages => [...prevMessages, message]);
+    });
+
+    // Cleanup on unmount
+    return () => {
+      socket.off('newMessage');
+    };
+  }, []);
   useEffect(() => {
     setMessages([
       //   {
@@ -82,6 +97,17 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
     ]);
   }, []);
   const onSend = useCallback((newMessages: IMessage[] = []) => {
+    const item = newMessages.map(item => item);
+    console.log(item, 'itemm');
+    socket.emit('sendMessage', ...item);
+
+    // const post = {
+    //   text: 'deeee',
+    //   userId: 1,
+    //   username: 'dee',
+    //   image: 'ddddd',
+    // };
+    // axios.post('http://192.168.0.198:4000/api/v1/user/chat', post);
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, newMessages),
     );
@@ -164,8 +190,8 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
           _id: 1, // Adjust to your user ID
           name: 'User Name', // Adjust to your user's name
         },
-        image: uri,
-        text: '',
+        image: uri || 'ddeee',
+        text: 'destoo',
       };
       onSend([imageMessage]);
     }
@@ -189,7 +215,8 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
       messages={messages}
       onSend={messages => onSend(messages)}
       user={{
-        _id: 1,
+        _id: 2,
+        name: 'React Native',
       }}
       renderSend={renderSend}
       renderBubble={renderBubble}

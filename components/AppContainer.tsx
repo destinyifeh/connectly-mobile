@@ -1,6 +1,7 @@
 import {THEME_ISDARK} from '@/constants/Colors';
 import {appContainerStyle, COLOUR_Dark_WHITE} from '@/constants/Styles';
 import {globalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {Ionicons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 
@@ -40,6 +41,20 @@ export const AppContainer: FC<AppContainerProps> = ({
   const router = useRouter();
   const {themeColor} = globalStore(state => state);
   const insets = useSafeAreaInsets();
+  const {setApplication, application, resetApplication} = useUserStore(
+    state => state,
+  );
+
+  const onNavigateBack = () => {
+    console.log(application, 'appli con');
+    if (application?.username) {
+      console.log(application, 'appli con22');
+      resetApplication();
+      router.back();
+    } else {
+      router.back();
+    }
+  };
 
   return (
     <View
@@ -62,9 +77,7 @@ export const AppContainer: FC<AppContainerProps> = ({
         <SafeAreaView style={appContainerStyle.appContent}>
           <View className="flex-row gap-8">
             {showBackButton && (
-              <TouchableOpacity
-                onPress={() => router.back()}
-                style={styles.button}>
+              <TouchableOpacity onPress={onNavigateBack} style={styles.button}>
                 <Ionicons name="chevron-back-sharp" size={18} color="black" />
               </TouchableOpacity>
             )}

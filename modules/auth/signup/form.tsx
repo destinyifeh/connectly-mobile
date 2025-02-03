@@ -1,5 +1,6 @@
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {useUserStore} from '@/stores/user-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
@@ -47,6 +48,9 @@ export const SignupForm = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] =
     useState<boolean>(false);
   const router = useRouter();
+  const {setApplication, application, resetApplication} = useUserStore(
+    state => state,
+  );
   const {
     control,
     handleSubmit,
@@ -62,41 +66,28 @@ export const SignupForm = () => {
     mode: 'onChange',
   });
 
+  const resetFormError = () => {
+    clearErrors(['username', 'email', 'password', 'phone', 'confirmPassword']);
+  };
+
   const onSubmitSignupData = (data: signupFormData) => {
     console.log(data, 'ss data');
 
     setIsLoading(true);
-    clearErrors(['username', 'email', 'password', 'phone', 'confirmPassword']);
+    resetFormError();
+    const saveToDraft = {
+      ...application,
+      ...data,
+    };
+
+    //resetApplication();
+    setApplication(saveToDraft);
     setTimeout(() => {
       setIsLoading(false);
       reset(); // Clear the form fields after submission
-      setError('username', {
-        //type: 'server',
-        message: 'User already exists',
-      });
-      router.replace('/verify-email');
-    }, 2000);
+      router.replace('/complete-setup');
+    }, 1000);
   };
-
-  // const onSubmit = async (data) => {
-  //   try {
-  //     const response = await fakeApiCall(data);
-
-  //     // If successful, proceed with your logic
-  //     console.log("Form submitted:", response);
-  //   } catch (error) {
-  //     // Assuming error.response.data.message contains a generic message
-  //     const serverMessage = error.response.data.message;
-
-  //     if (serverMessage === "User already exists") {
-  //       // Set the error to the 'username' field
-  //       setError("username", {
-  //         type: "server",
-  //         message: "User already exists",
-  //       });
-  //     }
-  //   }
-  // };
 
   return (
     <View>

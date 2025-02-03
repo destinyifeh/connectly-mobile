@@ -1,7 +1,9 @@
 import {AppButton} from '@/components/Button';
+import {apiHookRequester} from '@/services/api/hooks';
 import {globalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useRouter} from 'expo-router';
+import {useLocalSearchParams, useRouter} from 'expo-router';
 import {useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {
@@ -26,11 +28,24 @@ const otpDataSchema = z.object({
   otp: z.string().trim().length(4, {message: 'Code must be 4 characters long'}),
 });
 export const VerifyEmailForm = () => {
+  const {email, previousRoute} = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isResending, setIsResending] = useState<boolean>(false);
   const otpRef = useRef<OTPRefProp>(null);
   const router = useRouter();
   const {themeColor} = globalStore(state => state);
+  const {setApplication, application, resetApplication} = useUserStore(
+    state => state,
+  );
+
+  const verifySignupToken = apiHookRequester.usePostData(
+    '/api/v1/user/verify-signup-token',
+  );
+
+  const verifyResetPasswordToken = apiHookRequester.usePostData(
+    '/api/v1/user/verify-password-token',
+  );
+  const resendToken = apiHookRequester.usePostData('/api/v1/user/resend-token');
   const {
     control,
     handleSubmit,
@@ -42,7 +57,7 @@ export const VerifyEmailForm = () => {
     resolver: zodResolver(otpDataSchema),
     mode: 'onSubmit',
   });
-
+  console.log(email, 'emailler', previousRoute);
   const clearOtp = () => {
     if (otpRef.current) {
       otpRef.current?.clear(); // Clear the OTP input field
@@ -53,30 +68,94 @@ export const VerifyEmailForm = () => {
     console.log(data, 'dataa');
 
     setIsLoading(true);
-    //clearErrors(['username', 'email', 'password', 'phone', 'confirmPassword']);
-    setTimeout(() => {
-      setIsLoading(false);
-      reset(); // Clear the form fields after submission
-      clearOtp();
-      setError('otp', {
-        //type: 'server',
-        message: 'Incorrect otp',
-      });
+    const otpPayload = {
+      ...data,
+      email: email,
+    };
+    clearErrors('otp');
 
-      router.push('/reset-password');
-    }, 2000);
+    if (previousRoute === 'forgotRoute') {
+      verifyResetPasswordToken.mutate(otpPayload, {
+        onSuccess(data, variables, context) {
+          console.log(data, 'data issuccess');
+          reset(); // Clear the form fields after submission
+          clearOtp();
+
+          router.replace({
+            pathname: '/reset-password',
+            params: {email: email, previousRoute: 'verifyEmail'},
+          });
+        },
+        onError(error: any, variables, context) {
+          console.log(error, 'erorr ocurred');
+          const {message} = error.data;
+          ToastAndroid.show(
+            message || 'Oops! Something went wrong',
+            ToastAndroid.LONG,
+          );
+          setError('otp', {
+            type: 'server',
+            message: message,
+          });
+        },
+        onSettled(data, error, variables, context) {
+          setIsLoading(false);
+        },
+      });
+    } else {
+      verifySignupToken.mutate(otpPayload, {
+        onSuccess(data: any, variables, context) {
+          console.log(data, 'data issuccess');
+          reset(); // Clear the form fields after submission
+          clearOtp();
+          const {message} = data.data;
+          ToastAndroid.show(message, ToastAndroid.LONG);
+          router.replace({
+            pathname: '/login',
+            params: {previousRoute: 'isFromFinalSetup'},
+          });
+        },
+        onError(error: any, variables, context) {
+          console.log(error, 'erorr ocurred');
+          const {message} = error.data;
+          setError('otp', {
+            type: 'server',
+            message: message,
+          });
+        },
+        onSettled(data, error, variables, context) {
+          setIsLoading(false);
+        },
+      });
+    }
   };
 
   const onResendCode = () => {
     setIsResending(true);
     setIsLoading(true);
     clearErrors('otp');
-    setTimeout(() => {
-      setIsResending(false);
-      setIsLoading(false);
-      router.push('/complete-setup');
-      ToastAndroid.show('Code resent successfully', ToastAndroid.LONG);
-    }, 2000);
+    const data = {
+      email: email,
+    };
+    resendToken.mutate(data, {
+      onSuccess(data: any, variables, context) {
+        console.log(data, 'data');
+        const {message} = data.data;
+        ToastAndroid.show(message, ToastAndroid.LONG);
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'error');
+        const {message} = error.data;
+        setError('otp', {
+          type: 'server',
+          message: message,
+        });
+      },
+      onSettled(data, error, variables, context) {
+        setIsResending(false);
+        setIsLoading(false);
+      },
+    });
   };
 
   return (

@@ -1,10 +1,11 @@
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {apiHookRequester} from '@/services/api/hooks';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {View} from 'react-native';
+import {ToastAndroid, View} from 'react-native';
 import {z} from 'zod';
 type formData = {
   email: string;
@@ -18,6 +19,8 @@ export const ForgotPasswordForm = () => {
 
   const router = useRouter();
 
+  const {mutate} = apiHookRequester.usePostData('/api/v1/user/forgot-password');
+
   const {
     control,
     handleSubmit,
@@ -30,21 +33,36 @@ export const ForgotPasswordForm = () => {
     mode: 'onChange',
   });
 
-  const onSubmitLoginData = (data: formData) => {
+  const onSubmitForgotData = (data: formData) => {
     console.log(data, 'dataa');
-
+    const payload = {
+      ...data,
+    };
     setIsLoading(true);
-    //clearErrors(['username', 'email', 'password', 'phone', 'confirmPassword']);
-    setTimeout(() => {
-      setIsLoading(false);
-      reset(); // Clear the form fields after submission
-      setError('email', {
-        //type: 'server',
-        message: 'Incorrect email',
-      });
-
-      router.push('/verify-email');
-    }, 2000);
+    mutate(payload, {
+      onSuccess(data: any, variables, context) {
+        console.log(data, 'data isSuccess');
+        const {message} = data.data;
+        reset();
+        ToastAndroid.show(message, ToastAndroid.LONG);
+        router.replace({
+          pathname: '/verify-email',
+          params: {email: payload.email, previousRoute: 'forgotRoute'},
+        });
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'forgot err...');
+        const {message} = error.data;
+        setError('email', {
+          type: 'server',
+          message: message,
+        });
+      },
+      onSettled(data, error, variables, context) {
+        setIsLoading(false);
+        console.log(data, 'final data');
+      },
+    });
   };
 
   return (
@@ -71,7 +89,7 @@ export const ForgotPasswordForm = () => {
 
       <AppButton
         title={isLoading ? 'Please wait...' : 'Continue'}
-        onPress={handleSubmit(onSubmitLoginData)}
+        onPress={handleSubmit(onSubmitForgotData)}
         disabled={isLoading || !isValid}
       />
     </View>

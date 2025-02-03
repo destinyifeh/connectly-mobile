@@ -1,4 +1,5 @@
 import {AppBottomSheet} from '@/components/BottomSheet';
+import {useUserStore} from '@/stores/user-store';
 import * as ImagePicker from 'expo-image-picker';
 import {FC} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
@@ -12,6 +13,9 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
   handleSetFile,
   actionSheetRef,
 }) => {
+  const {setApplication, application, currentUser} = useUserStore(
+    state => state,
+  );
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -28,7 +32,27 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
       console.log(result, 'resultt');
+      const uploadedFileObject = {
+        uri: uri,
+        width: width,
+        height: height,
+        mimeType: mimeType,
+        fileSize: fileSize,
+        size: fileSize,
+        type: type,
+        fileName: fileName,
+        name: fileName,
+      };
+      const saveToDraft = {
+        ...application,
+        file: uploadedFileObject,
+        state: currentUser.state,
+        city: currentUser.city,
+        country: currentUser.country,
+      };
+      console.log(uploadedFileObject, 'resultt');
       if (handleSetFile) {
+        setApplication(saveToDraft);
         handleSetFile(uri);
       }
     }
@@ -50,21 +74,29 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
 
-      const uploadedFile = {
+      const uploadedFileObject = {
         uri: uri,
         width: width,
         height: height,
         mimeType: mimeType,
         fileSize: fileSize,
         size: fileSize,
-        type: type,
-        fileName: 'Dez_profile_photo',
-        name: 'Dez_profile_photo',
+        type: mimeType,
+        fileName: fileName,
+        name: fileName,
       };
-      console.log(uploadedFile, 'oopppp');
+      const saveToDraft = {
+        ...application,
+        file: uploadedFileObject,
+        state: currentUser.state,
+        city: currentUser.city,
+        country: currentUser.country,
+      };
+      console.log(saveToDraft, 'oopppp');
       console.log(result, 'resultt');
       // setImage(result.assets[0].uri);
       if (handleSetFile) {
+        setApplication(saveToDraft);
         handleSetFile(uri);
       }
     }

@@ -3,8 +3,9 @@ import {AppLoader} from '@/components/AppLoader';
 import {AppBottomSheet} from '@/components/BottomSheet';
 import {users} from '@/constants/AppData';
 import AppList from '@/constants/AppPackages';
-import {UserDetailsProps} from '@/constants/types';
+import {CurrentUserProps} from '@/constants/types';
 import {globalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {
   FontAwesome,
   FontAwesome6,
@@ -37,7 +38,7 @@ const deviceWidth = Dimensions.get('window').width;
 const deviceHight = Dimensions.get('window').height;
 
 type ActiveUsersProps = {
-  item: UserDetailsProps;
+  item: CurrentUserProps;
 };
 const ActiveUsers: FC<ActiveUsersProps> = ({item}) => {
   const router = useRouter();
@@ -56,7 +57,7 @@ const ActiveUsers: FC<ActiveUsersProps> = ({item}) => {
         <ImageBackground
           imageStyle={{borderRadius: 15}}
           style={{width: deviceWidth * 0.43, height: 220, borderRadius: 15}}
-          source={{uri: item.profilePhoto}}
+          source={{uri: item.profilePhoto.url}}
           resizeMode="cover">
           <LinearGradient
             colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.3)']}
@@ -114,8 +115,9 @@ export const DashboardHomeScreen = () => {
   const [isTopNavVisible, setIsTopNavVisible] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isTabBarVisible, setIsTabBarVisible] = useState(true);
-
+  const {currentUser} = useUserStore(state => state);
   console.log(isFocused, 'idffoooo');
+  console.log(currentUser, 'current boss');
   useEffect(() => {
     setIsSelected('foryou');
   }, []);
@@ -253,7 +255,7 @@ export const DashboardHomeScreen = () => {
     <AppContainer barColor="dark-content">
       <View className="flex-1">
         <View className="flex-row justify-between items-center">
-          {image ? (
+          {!currentUser?.profilePhoto.url ? (
             <TouchableOpacity
               onPress={() => router.push('/dashboard/profile')}
               className="bg-app-ghost rounded-[25] w-[45] h-[45] justify-center items-center">
@@ -262,7 +264,7 @@ export const DashboardHomeScreen = () => {
           ) : (
             <TouchableOpacity onPress={() => router.push('/dashboard/profile')}>
               <Image
-                source={require('../../../../assets/images/couple_bg.jpg')}
+                source={{uri: currentUser.profilePhoto.url}}
                 style={{width: 45, height: 45, borderRadius: 25}}
                 resizeMode="cover"
               />

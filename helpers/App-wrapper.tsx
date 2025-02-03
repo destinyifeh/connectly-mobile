@@ -5,8 +5,15 @@ interface AppWrapperProps {
   children: React.ReactNode;
 }
 
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 const AppWrapper: FC<AppWrapperProps> = ({children}) => {
-  return <SafeAreaProvider>{children}</SafeAreaProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>{children}</SafeAreaProvider>
+    </QueryClientProvider>
+  );
 };
 
 export default AppWrapper;

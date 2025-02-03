@@ -1,9 +1,11 @@
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {apiHookRequester} from '@/services/api/hooks';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useRouter} from 'expo-router';
+import {useLocalSearchParams, useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import {ToastAndroid, View} from 'react-native';
 import {z} from 'zod';
 const signupSchema = z
   .object({
@@ -39,6 +41,7 @@ export const ResetPasswordForm = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] =
     useState<boolean>(false);
   const router = useRouter();
+  const {email, previousRoute} = useLocalSearchParams();
   const {
     control,
     handleSubmit,
@@ -54,44 +57,44 @@ export const ResetPasswordForm = () => {
     mode: 'onChange',
   });
 
-  const onSubmitSignupData = (data: resetPasswordFormData) => {
-    console.log(data, 'ss data');
+  const {mutate} = apiHookRequester.usePostData('/api/v1/user/new-password');
 
+  const onSubmitResetData = (data: resetPasswordFormData) => {
+    console.log(data, 'ss data', email, previousRoute);
+    const payload = {
+      ...data,
+      email: email,
+    };
     setIsLoading(true);
-    clearErrors(['password', 'confirmPassword']);
-    setTimeout(() => {
-      setIsLoading(false);
-      reset(); // Clear the form fields after submission
-      setError('password', {
-        //type: 'server',
-        message: 'User already exists',
-      });
-      router.push('/dashboard');
-    }, 2000);
+    mutate(payload, {
+      onSuccess(data: any, variables, context) {
+        console.log(data, 'data isSuccess');
+        const {message} = data.data;
+        reset();
+        ToastAndroid.show(message, ToastAndroid.LONG);
+        router.replace({
+          pathname: '/login',
+          params: {previousRoute: 'resetPasswordRoute'},
+        });
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'error submitting...');
+        const {message} = error.data;
+
+        setError('password', {
+          type: 'server',
+          message: message,
+        });
+      },
+      onSettled(data, error, variables, context) {
+        setIsLoading(false);
+        console.log(data, 'final data');
+      },
+    });
   };
 
-  // const onSubmit = async (data) => {
-  //   try {
-  //     const response = await fakeApiCall(data);
-
-  //     // If successful, proceed with your logic
-  //     console.log("Form submitted:", response);
-  //   } catch (error) {
-  //     // Assuming error.response.data.message contains a generic message
-  //     const serverMessage = error.response.data.message;
-
-  //     if (serverMessage === "User already exists") {
-  //       // Set the error to the 'username' field
-  //       setError("username", {
-  //         type: "server",
-  //         message: "User already exists",
-  //       });
-  //     }
-  //   }
-  // };
-
   return (
-    <>
+    <View>
       <Controller
         name="password"
         control={control}
@@ -131,9 +134,9 @@ export const ResetPasswordForm = () => {
 
       <AppButton
         title={isLoading ? 'Submitting...' : 'Continue'}
-        onPress={handleSubmit(onSubmitSignupData)}
+        onPress={handleSubmit(onSubmitResetData)}
         disabled={isLoading || !isValid}
       />
-    </>
+    </View>
   );
 };

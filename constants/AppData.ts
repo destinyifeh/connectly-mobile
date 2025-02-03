@@ -1,13 +1,13 @@
-import {UserDetailsProps} from './types';
+import {CurrentUserProps} from './types';
 
-export const users: UserDetailsProps[] = [
+export const users: CurrentUserProps[] = [
   {
     _id: '1',
     username: 'johndoe1',
     email: 'johndoe1@example.com',
     dob: '1990-05-15',
     hobbies: ['reading', 'hiking'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/1.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/1.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/2.jpg',
       'https://randomuser.me/api/portraits/men/3.jpg',
@@ -24,7 +24,7 @@ export const users: UserDetailsProps[] = [
     email: 'janedoe2@example.com',
     dob: '1985-10-20',
     hobbies: ['cooking', 'painting'],
-    profilePhoto: 'https://randomuser.me/api/portraits/women/1.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/women/1.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/women/2.jpg',
       'https://randomuser.me/api/portraits/women/3.jpg',
@@ -41,7 +41,7 @@ export const users: UserDetailsProps[] = [
     email: 'mikesmith3@example.com',
     dob: '1978-03-22',
     hobbies: ['cycling', 'photography'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/3.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/3.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/4.jpg',
       'https://randomuser.me/api/portraits/men/5.jpg',
@@ -58,7 +58,7 @@ export const users: UserDetailsProps[] = [
     email: 'emilyjones4@example.com',
     dob: '1992-07-11',
     hobbies: ['yoga', 'traveling'],
-    profilePhoto: 'https://randomuser.me/api/portraits/women/4.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/women/4.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/women/5.jpg',
       'https://randomuser.me/api/portraits/women/6.jpg',
@@ -75,7 +75,7 @@ export const users: UserDetailsProps[] = [
     email: 'davidharris5@example.com',
     dob: '1983-11-30',
     hobbies: ['gaming', 'gardening'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/5.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/5.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/6.jpg',
       'https://randomuser.me/api/portraits/men/7.jpg',
@@ -92,7 +92,7 @@ export const users: UserDetailsProps[] = [
     email: 'sarahwilson6@example.com',
     dob: '1995-02-14',
     hobbies: ['dancing', 'writing'],
-    profilePhoto: 'https://randomuser.me/api/portraits/women/6.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/women/6.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/women/7.jpg',
       'https://randomuser.me/api/portraits/women/8.jpg',
@@ -109,7 +109,7 @@ export const users: UserDetailsProps[] = [
     email: 'chrisbrown7@example.com',
     dob: '1988-09-09',
     hobbies: ['running', 'swimming'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/7.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/7.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/8.jpg',
       'https://randomuser.me/api/portraits/men/9.jpg',
@@ -126,7 +126,7 @@ export const users: UserDetailsProps[] = [
     email: 'lauradavis8@example.com',
     dob: '1991-12-25',
     hobbies: ['singing', 'baking'],
-    profilePhoto: 'https://randomuser.me/api/portraits/women/8.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/women/8.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/women/9.jpg',
       'https://randomuser.me/api/portraits/women/10.jpg',
@@ -143,7 +143,7 @@ export const users: UserDetailsProps[] = [
     email: 'matthewmiller9@example.com',
     dob: '1980-04-18',
     hobbies: ['fishing', 'woodworking'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/9.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/9.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/10.jpg',
       'https://randomuser.me/api/portraits/men/11.jpg',
@@ -160,7 +160,7 @@ export const users: UserDetailsProps[] = [
     email: 'oliviaroberts10@example.com',
     dob: '1993-08-05',
     hobbies: ['painting', 'skiing'],
-    profilePhoto: 'https://randomuser.me/api/portraits/women/10.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/women/10.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/women/11.jpg',
       'https://randomuser.me/api/portraits/women/12.jpg',
@@ -177,7 +177,7 @@ export const users: UserDetailsProps[] = [
     email: 'alexjohnson11@example.com',
     dob: '1987-01-23',
     hobbies: ['photography', 'traveling'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/11.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/11.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/12.jpg',
       'https://randomuser.me/api/portraits/men/13.jpg',
@@ -194,7 +194,7 @@ export const users: UserDetailsProps[] = [
     email: 'bethanysmith12@example.com',
     dob: '1994-06-17',
     hobbies: ['cooking', 'reading'],
-    profilePhoto: 'https://randomuser.me/api/portraits/women/12.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/women/12.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/women/13.jpg',
       'https://randomuser.me/api/portraits/women/14.jpg',
@@ -211,7 +211,7 @@ export const users: UserDetailsProps[] = [
     email: 'charlesdavis13@example.com',
     dob: '1982-11-05',
     hobbies: ['hiking', 'gaming'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/13.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/13.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/14.jpg',
       'https://randomuser.me/api/portraits/men/15.jpg',
@@ -228,7 +228,7 @@ export const users: UserDetailsProps[] = [
     email: 'daniellewilliams14@example.com',
     dob: '1990-09-12',
     hobbies: ['yoga', 'painting'],
-    profilePhoto: 'https://randomuser.me/api/portraits/women/14.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/women/14.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/women/15.jpg',
       'https://randomuser.me/api/portraits/women/16.jpg',
@@ -245,7 +245,7 @@ export const users: UserDetailsProps[] = [
     email: 'ethanmartinez15@example.com',
     dob: '1985-03-30',
     hobbies: ['cycling', 'music'],
-    profilePhoto: 'https://randomuser.me/api/portraits/men/15.jpg',
+    profilePhoto: {url: 'https://randomuser.me/api/portraits/men/15.jpg'},
     otherPhotos: [
       'https://randomuser.me/api/portraits/men/16.jpg',
       'https://randomuser.me/api/portraits/men/17.jpg',

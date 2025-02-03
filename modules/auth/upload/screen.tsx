@@ -2,7 +2,9 @@ import {AppContainer} from '@/components/AppContainer';
 import {AppButton} from '@/components/Button';
 import {FontAwesome6} from '@expo/vector-icons';
 
+import {apiHookRequester} from '@/services/api/hooks';
 import {globalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {useRouter} from 'expo-router';
 import {useRef, useState} from 'react';
 import {
@@ -10,6 +12,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -18,8 +21,13 @@ import {PhotoUploader} from './uploader';
 export const UploadProfilePhotoScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string>('');
   const actionSheetRef = useRef<ActionSheetRef>(null);
+  const [email, setEmail] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const {themeColor} = globalStore(state => state);
+  const {application, resetApplication} = useUserStore(state => state);
+  const {mutate, isSuccess, isError, error, isPending, data} =
+    apiHookRequester.usePostData('/api/v1/user/signup');
   const onUpload = () => {
     actionSheetRef.current?.show();
   };
@@ -36,9 +44,36 @@ export const UploadProfilePhotoScreen = () => {
   };
 
   const handleSubmit = () => {
-    router.push('/login');
-  };
+    console.log(application, 'appli server');
+    setIsLoading(true);
+    setEmail(application.email);
+    mutate(application, {
+      onSuccess(data: any, variables, context) {
+        console.log(data, 'data isSuccess');
+        const {message} = data.data;
+        resetApplication();
+        ToastAndroid.show(message, ToastAndroid.LONG);
+        router.replace({
+          pathname: '/verify-email',
+          params: {email: application.email},
+        });
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'error submitting...');
+        const {message} = error.data;
 
+        ToastAndroid.show(
+          message || 'Oops! Something went wrong, please try again',
+          ToastAndroid.LONG,
+        );
+      },
+      onSettled(data, error, variables, context) {
+        setIsLoading(false);
+        console.log(data, 'final data');
+      },
+    });
+  };
+  console.log(isSuccess, 'isccc');
   return (
     <AppContainer showBackButton barColor="dark-content">
       <ScrollView
@@ -72,19 +107,20 @@ export const UploadProfilePhotoScreen = () => {
         </View>
 
         <View className="absolute bottom-10 w-full">
-          <TouchableOpacity className="self-center mt-5">
+          <TouchableOpacity className="self-center mt-5" disabled={isPending}>
             <Text
-              className="text-app-default font-bold font-sans text-base"
+              className={`${
+                isLoading ? 'text-app-ghost' : 'text-app-default '
+              } "font-bold font-sans text-base"`}
               onPress={onUpload}>
               {selectedImage ? 'Change Photo' : 'Upload Photo'}
             </Text>
           </TouchableOpacity>
 
           <AppButton
-            title="Continue"
-            // title={isLoading ? 'Please wait...' : 'Continue'}
+            title={isLoading ? 'Please wait...' : 'Continue'}
             onPress={handleSubmit}
-            disabled={!selectedImage}
+            disabled={!selectedImage || isLoading}
           />
         </View>
       </ScrollView>

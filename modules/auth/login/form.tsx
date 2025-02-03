@@ -1,5 +1,6 @@
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {apiHookRequester} from '@/services/api/hooks';
 import {useUserStore} from '@/stores/user-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
@@ -20,10 +21,10 @@ export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const router = useRouter();
-  const {setUser, currentUser} = useUserStore(state => state);
-  const onPasswordVisible = () => {
-    console.log('yesss33');
+  const {setCurrentUser, currentUser} = useUserStore(state => state);
+  const {mutate} = apiHookRequester.usePostData('/api/v1/user/login');
 
+  const onPasswordVisible = () => {
     setPasswordVisible(!passwordVisible);
   };
 
@@ -42,24 +43,43 @@ export const LoginForm = () => {
   const onSubmitLoginData = (data: formData) => {
     console.log(data, 'dataa');
 
+    clearErrors(['email', 'password']);
+
+    const payload = {
+      ...data,
+    };
     setIsLoading(true);
-    //clearErrors(['username', 'email', 'password', 'phone', 'confirmPassword']);
-    setTimeout(() => {
-      setIsLoading(false);
-      reset(); // Clear the form fields after submission
-      // setError('email', {
-      //   //type: 'server',
-      //   message: 'Incorrect email',
-      // });
-
-      const user = {
-        ...currentUser,
-        email: data.email,
-      };
-      setUser(user);
-
-      router.replace('/dashboard');
-    }, 2000);
+    mutate(payload, {
+      onSuccess(data: any, variables, context) {
+        console.log(data, 'data isSuccess');
+        const {message, user} = data.data;
+        setCurrentUser(user);
+        reset();
+        router.replace({
+          pathname: '/dashboard',
+          params: {previousRoute: 'login'},
+        });
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'error submitting...');
+        const {message} = error.data;
+        if (message === 'Incorrect credentials') {
+          setError('password', {
+            type: 'server',
+            message: message,
+          });
+          return;
+        }
+        setError('email', {
+          type: 'server',
+          message: message,
+        });
+      },
+      onSettled(data, error, variables, context) {
+        setIsLoading(false);
+        console.log(data, 'final data');
+      },
+    });
   };
 
   return (

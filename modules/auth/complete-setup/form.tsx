@@ -1,6 +1,7 @@
 import {AppButton} from '@/components/Button';
 import {THEME_ISDARK} from '@/constants/Colors';
 import {globalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {AntDesign} from '@expo/vector-icons';
 import {zodResolver} from '@hookform/resolvers/zod';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
@@ -15,7 +16,7 @@ import {genderOptions, hobbies} from './contants/data';
 
 type formData = {
   gender: string;
-  hobby: string[];
+  hobbies: string[];
   dob: Date;
   //hobby: { label: string; value: string }[];
 };
@@ -26,7 +27,7 @@ interface dropDownProps {
 
 const formSchema = z.object({
   gender: z.string().min(1, {message: 'Code must be 4 characters long'}),
-  hobby: z
+  hobbies: z
     .array(z.string())
     .min(1, {message: 'At least one hobby is required'}),
   dob: z.date({required_error: 'Date of birth is required'}),
@@ -44,6 +45,7 @@ export const CompleteSetupForm = () => {
   const dropDownRef = useRef<dropDownProps>(null);
   const router = useRouter();
   const {themeColor} = globalStore(state => state);
+  const {setApplication, application} = useUserStore(state => state);
   const {
     control,
     handleSubmit,
@@ -60,19 +62,21 @@ export const CompleteSetupForm = () => {
     console.log(data, 'dataa');
 
     setIsLoading(true);
-    //clearErrors(['username', 'email', 'password', 'phone', 'confirmPassword']);
+    const saveToDraft = {
+      ...application,
+      ...data,
+      dob: isFormattedDate,
+    };
+    setApplication(saveToDraft);
+
     setTimeout(() => {
       setIsLoading(false);
       reset(); // Clear the form fields after submission
       setSelected([]);
       setIsFormattedDate('');
 
-      setError('dob', {
-        //type: 'server',
-        message: 'Incorrect otp',
-      });
-      router.push('/upload');
-    }, 2000);
+      router.replace('/upload');
+    }, 1000);
   };
 
   const selectedmessage = `${selected?.length} ${
@@ -135,7 +139,7 @@ export const CompleteSetupForm = () => {
         </Text>
         <Controller
           control={control}
-          name="hobby"
+          name="hobbies"
           render={({field: {onChange, onBlur, value}}) => (
             <MultiSelect
               style={[
@@ -169,9 +173,9 @@ export const CompleteSetupForm = () => {
             />
           )}
         />
-        {Boolean(errors.hobby?.message) && (
+        {Boolean(errors.hobbies?.message) && (
           <Text className="text-app-danger text-sm font-sans text-center mt-2">
-            {errors.hobby?.message}
+            {errors.hobbies?.message}
           </Text>
         )}
       </View>

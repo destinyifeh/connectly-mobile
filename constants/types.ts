@@ -11,12 +11,16 @@ export interface ThemeColorProps {
   barColor: StatusBarStyle;
 }
 
-export interface UserDetailsProps {
+type ProfilePhotoProps = {
+  url: string;
+  id?: string;
+};
+export interface CurrentUserProps {
   username: string;
   email: string;
   dob: string;
   hobbies: string[];
-  profilePhoto: string;
+  profilePhoto: ProfilePhotoProps;
   otherPhotos?: string[];
   phone?: string;
   gender: string;
@@ -29,4 +33,4 @@ export interface UserDetailsProps {
   country?: string;
 }
 
-export type PartialUserDetailsProps = Partial<UserDetailsProps>;
+export type PartialCurrentUserProps = Partial<CurrentUserProps>;

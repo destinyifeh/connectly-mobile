@@ -25,7 +25,7 @@ export interface CurrentUserProps {
   phone?: string;
   gender: string;
   password?: string;
-  _id: string;
+  _id?: string;
   location?: string;
   age?: string;
   state?: string;

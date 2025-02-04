@@ -255,7 +255,7 @@ export const DashboardHomeScreen = () => {
     <AppContainer barColor="dark-content">
       <View className="flex-1">
         <View className="flex-row justify-between items-center">
-          {!currentUser?.profilePhoto.url ? (
+          {!currentUser?.profilePhoto?.url ? (
             <TouchableOpacity
               onPress={() => router.push('/dashboard/profile')}
               className="bg-app-ghost rounded-[25] w-[45] h-[45] justify-center items-center">

@@ -7,7 +7,6 @@ import {deleteDeviceData, saveDeviceData} from './device-store';
 type State = {
   users: string[];
   currentUser: CurrentUserProps;
-  currentUser2: object;
   currentUserLocation: object;
   application: any;
 };
@@ -23,25 +22,7 @@ type Actions = {
 
 const initialState: State = {
   users: [],
-  currentUser: {
-    // username: '',
-    // email: '',
-    // dob: '',
-    // hobbies: [],
-    // profilePhoto: {url: ''},
-    // otherPhotos: [],
-    // phone: '',
-    // gender: '',
-    // password: '',
-    // _id: '',
-    // location: '',
-    // age: '',
-    // city: '',
-    // state: '',
-    // country: '',
-  },
-
-  currentUser2: {},
+  currentUser: {},
   currentUserLocation: {},
   application: {},
 };

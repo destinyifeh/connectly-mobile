@@ -2,6 +2,7 @@ import {AppContainer} from '@/components/AppContainer';
 import {users} from '@/constants/AppData';
 import {currentDeviceWidth} from '@/constants/Styles';
 import {globalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {Entypo, Feather, Ionicons, Octicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useLocalSearchParams, useRouter} from 'expo-router';
@@ -22,7 +23,7 @@ export const UserDetailsScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const {themeColor} = globalStore(state => state);
   const {userId} = useLocalSearchParams();
-
+  const {currentUser} = useUserStore(state => state);
   useFocusEffect(
     useCallback(() => {
       return () => {

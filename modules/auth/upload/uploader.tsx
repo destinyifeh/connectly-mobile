@@ -13,9 +13,8 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
   handleSetFile,
   actionSheetRef,
 }) => {
-  const {setApplication, application, currentUser} = useUserStore(
-    state => state,
-  );
+  const {setApplication, application, currentUser, currentUserLocation} =
+    useUserStore(state => state);
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -88,9 +87,7 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
       const saveToDraft = {
         ...application,
         file: uploadedFileObject,
-        state: currentUser.state,
-        city: currentUser.city,
-        country: currentUser.country,
+        ...currentUserLocation,
       };
       console.log(saveToDraft, 'oopppp');
       console.log(result, 'resultt');

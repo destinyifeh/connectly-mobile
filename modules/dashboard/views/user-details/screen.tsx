@@ -23,7 +23,10 @@ export const UserDetailsScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const {themeColor} = globalStore(state => state);
   const {userId} = useLocalSearchParams();
-  const {currentUser} = useUserStore(state => state);
+  const {currentUser, currentUserLocation} = useUserStore(state => state);
+
+  console.log(currentUserLocation, 'curretLocatt');
+
   useFocusEffect(
     useCallback(() => {
       return () => {

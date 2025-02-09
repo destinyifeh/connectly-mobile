@@ -74,9 +74,20 @@ export const updateData = async (
   data: PostData,
 ): Promise<AxiosResponse<ApiResponse>> => {
   try {
-    const response = await api.put(url, data);
-    // Handle the response data if needed
-    return response;
+    if (data?.file) {
+      console.log(data.file, 'dataass');
+      const formData = new FormData();
+
+      formData.append(data.file.fieldName, data.file);
+      const response = await api.put(url, formData, {
+        headers: {'content-type': 'multipart/form-data'},
+      });
+
+      return response;
+    } else {
+      const response = await api.put(url, data);
+      return response;
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       // Handle Axios-specific errors
@@ -92,11 +103,20 @@ export const updateData = async (
 
 export const deleteData = async (
   url: string,
+  data?: PostData,
 ): Promise<AxiosResponse<ApiResponse>> => {
   try {
-    const response = await api.delete(url);
-    // Handle the response data if needed
-    return response;
+    if (data) {
+      const response = await api.delete(url, {
+        data: {item: data.item},
+      });
+
+      return response;
+    } else {
+      const response = await api.delete(url);
+
+      return response;
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       // Handle Axios-specific errors

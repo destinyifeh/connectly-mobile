@@ -37,6 +37,7 @@ const createApiInstance = () => {
   apiInstance.interceptors.response.use(
     response => {
       // Process the response data
+      console.log(response, 'respoooo');
       return response;
     },
     error => {

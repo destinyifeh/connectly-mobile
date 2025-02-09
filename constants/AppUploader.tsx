@@ -1,27 +1,20 @@
+import {AppActivityIndicator} from '@/components/AppLoader';
 import {AppBottomSheet} from '@/components/BottomSheet';
 import {globalStore} from '@/stores/global-store';
 import * as ImagePicker from 'expo-image-picker';
 import {FC} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {ActionSheetRef} from 'react-native-actions-sheet';
-
-interface FileObject {
-  uri?: string;
-  width?: number;
-  height?: number;
-  mimeType?: string;
-  fileSize?: number;
-  size?: number;
-  type?: 'image' | 'video' | 'livePhoto' | 'pairedVideo';
-  fileName?: string;
-  name?: string;
-}
+import {FileProps} from './types';
 
 interface AppUploaderProps {
   handleSetFile?: (file: string) => void;
   actionSheetRef: React.RefObject<ActionSheetRef>;
-  handleFileObject?: (file: FileObject) => void;
+  handleFileObject?: (file: FileProps) => void;
   imageType?: string;
+  isLoading?: boolean;
+  closeOnDragDown?: boolean;
+  closeOnTouchBackdrop?: boolean;
 }
 
 export const AppUploader: FC<AppUploaderProps> = ({
@@ -46,9 +39,26 @@ export const AppUploader: FC<AppUploaderProps> = ({
     if (!result.canceled) {
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
+      const theFileName = rest.imageType;
+      const uploadedFile = {
+        uri: uri,
+        width: width,
+        height: height,
+        mimeType: mimeType,
+        fileSize: fileSize,
+        size: fileSize,
+        type: type,
+        fileName: fileName ?? undefined,
+        name: theFileName,
+      };
+      console.log(uploadedFile, 'from gallery');
       console.log(result, 'resultt');
+
       if (handleSetFile) {
         handleSetFile(uri);
+      }
+      if (handleFileObject) {
+        handleFileObject(uploadedFile);
       }
     }
   };
@@ -68,8 +78,7 @@ export const AppUploader: FC<AppUploaderProps> = ({
     if (!result.canceled) {
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
-      const theFileName =
-        rest.imageType === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : rest.imageType;
+      const theFileName = rest.imageType;
       const uploadedFile = {
         uri: uri,
         width: width,
@@ -77,8 +86,8 @@ export const AppUploader: FC<AppUploaderProps> = ({
         mimeType: mimeType,
         fileSize: fileSize,
         size: fileSize,
-        type: type,
-        fileName: theFileName,
+        type: mimeType,
+        fileName: fileName ?? undefined,
         name: theFileName,
       };
       console.log(uploadedFile, 'oopppp');
@@ -91,6 +100,7 @@ export const AppUploader: FC<AppUploaderProps> = ({
         handleFileObject(uploadedFile);
       }
     }
+    return false;
   };
 
   const onUpload = () => {
@@ -104,28 +114,45 @@ export const AppUploader: FC<AppUploaderProps> = ({
   return (
     <AppBottomSheet
       ref={actionSheetRef}
-      closeOnDragDown
+      closeOnTouchBackdrop={rest.closeOnTouchBackdrop}
+      closeOnDragDown={rest.closeOnDragDown}
       containerStyle={{height: 160, backgroundColor: themeColor.background}}>
       <View className="w-[90%] self-center my-5">
-        <TouchableOpacity
-          className="border-gray-300 border h-[40.7] rounded-3xl items-center justify-center px-3 w-full"
-          onPress={takePhoto}>
-          <Text
-            className="font-sans font-bold text-base"
-            style={{color: themeColor.text}}>
-            Take photo
-          </Text>
-        </TouchableOpacity>
+        {rest.isLoading ? (
+          <View>
+            <Text
+              className="font-sans font-bold text-base text-center"
+              style={{color: themeColor.text}}>
+              Uploading your photo...
+            </Text>
 
-        <TouchableOpacity
-          className="border-gray-300 border h-[40.7] rounded-3xl items-center justify-center px-3 w-full mt-5"
-          onPress={pickImage}>
-          <Text
-            className="font-sans font-bold text-base"
-            style={{color: themeColor.text}}>
-            Add from library
-          </Text>
-        </TouchableOpacity>
+            <View className="mt-5">
+              <AppActivityIndicator />
+            </View>
+          </View>
+        ) : (
+          <View>
+            <TouchableOpacity
+              className="border-gray-300 border h-[40.7] rounded-3xl items-center justify-center px-3 w-full"
+              onPress={takePhoto}>
+              <Text
+                className="font-sans font-bold text-base"
+                style={{color: themeColor.text}}>
+                Take photo
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="border-gray-300 border h-[40.7] rounded-3xl items-center justify-center px-3 w-full mt-5"
+              onPress={pickImage}>
+              <Text
+                className="font-sans font-bold text-base"
+                style={{color: themeColor.text}}>
+                Add from library
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </AppBottomSheet>
   );

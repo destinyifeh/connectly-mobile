@@ -94,13 +94,13 @@ async function getCurrentLocation() {
   const country = address[0].country;
   console.log(`$${city}-${region}-${country}, 'my address33`);
   const locationData = {
-    ...useUserStore.getState().currentUser,
+    ...useUserStore.getState().currentUserLocation,
     city: city ?? undefined,
     state: region ?? undefined,
     country: country ?? undefined,
   };
 
-  useUserStore.getState().setCurrentUser(locationData);
+  useUserStore.getState().setCurrentUserLocation(locationData);
 }
 
 const speak = () => {

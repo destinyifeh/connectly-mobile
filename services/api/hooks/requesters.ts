@@ -47,11 +47,11 @@ export const useUpdateData = (
 
 export const useDeleteData = (
   url: string,
-): UseMutationResult<AxiosResponse<ApiResponse>, Error, void> => {
-  return useMutation<AxiosResponse<ApiResponse>, Error, void>({
-    mutationFn: async () => {
+): UseMutationResult<AxiosResponse<ApiResponse>, Error, PostData> => {
+  return useMutation<AxiosResponse<ApiResponse>, Error, PostData>({
+    mutationFn: async (payload?: PostData) => {
       console.log('Deleting data at:', url);
-      const res = await apiRequester.deleteData(url);
+      const res = await apiRequester.deleteData(url, payload);
       return res;
     },
   });

@@ -14,7 +14,7 @@ const ProtectedRoute: FC<ProctedRouteProps> = ({children}) => {
   const {isAppMounted, setIsAppMounted} = globalStore(state => state);
 
   useEffect(() => {
-    if (isAppMounted && currentUser.email) {
+    if (isAppMounted && currentUser?.email) {
       //  console.log(currentUser, 'my current');
 
       router.navigate('/dashboard');
@@ -29,7 +29,7 @@ const ProtectedRoute: FC<ProctedRouteProps> = ({children}) => {
     );
   }
 
-  if (isAppMounted && !currentUser.email) {
+  if (isAppMounted && !currentUser?.email) {
     return children;
   }
 

@@ -1,6 +1,13 @@
 import {globalStore} from '@/stores/global-store';
 import React from 'react';
-import {Modal, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Modal,
+  Platform,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 type AppModalProps = {
   onPressButtonOne?: () => void;
@@ -178,4 +185,10 @@ export const AppAlert = ({
       </View>
     </Modal>
   );
+};
+
+export const AppToast = (message: string) => {
+  if (Platform.OS === 'android') {
+    return ToastAndroid.show(message, ToastAndroid.LONG);
+  }
 };

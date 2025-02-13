@@ -105,11 +105,12 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
             </TouchableOpacity>
           )}
 
-          {rest.isSearchFieldCancelText && value && (
-            <TouchableOpacity onPress={rest.onRemoveSearchText}>
-              <Octicons name="x" size={18} color="gray" />
-            </TouchableOpacity>
-          )}
+          {(rest.isSearchFieldCancelText && value) ||
+            (defaultValue && (
+              <TouchableOpacity onPress={rest.onRemoveSearchText}>
+                <Octicons name="x" size={18} color="gray" />
+              </TouchableOpacity>
+            ))}
         </View>
         {Boolean(error) && (
           <Text className="text-app-danger text-sm font-sans">{error}</Text>

@@ -1,13 +1,14 @@
 import {AppContainer} from '@/components/AppContainer';
-import {users} from '@/constants/AppData';
 import {currentDeviceWidth} from '@/constants/Styles';
+import {formatTodaysDate, getUserCurrentAge} from '@/helpers/formatters';
+import {apiHookRequester} from '@/services/api/hooks';
 import {globalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Entypo, Feather, Ionicons, Octicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useLocalSearchParams, useRouter} from 'expo-router';
 import * as SMS from 'expo-sms';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -18,14 +19,22 @@ import {
   View,
 } from 'react-native';
 import Animated, {SlideInRight, SlideOutRight} from 'react-native-reanimated';
+import {Toast} from 'toastify-react-native';
 export const UserDetailsScreen = () => {
   const router = useRouter();
+
+  const [isReporting, setIsReporting] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const {themeColor} = globalStore(state => state);
-  const {userId} = useLocalSearchParams();
-  const {currentUser, currentUserLocation} = useUserStore(state => state);
+  const {userId, userInfo} = useLocalSearchParams();
+  const {currentUser} = useUserStore(state => state);
+  const theUser = userInfo ? JSON.parse(userInfo as string) : null;
 
-  console.log(currentUserLocation, 'curretLocatt');
+  console.log(theUser, 'Parsed User Info');
+
+  const reportUserRequester = apiHookRequester.useUpdateData(
+    `/api/v1/user/report/${theUser._id}`,
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -35,9 +44,6 @@ export const UserDetailsScreen = () => {
     }, []),
   );
 
-  useEffect(() => {
-    console.log(userId, 'userssoooo');
-  }, []);
   const handleSms = async () => {
     // Check if SMS is available on the device
     const isAvailable = await SMS.isAvailableAsync();
@@ -63,7 +69,37 @@ export const UserDetailsScreen = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const user = users.find;
+  const onReport = () => {
+    setIsReporting(true);
+    const reporterIdentity = {
+      username: currentUser.username,
+      _id: currentUser._id,
+      email: currentUser.email,
+      phone: currentUser.phone,
+      dateOfReport: formatTodaysDate(),
+    };
+    console.log(reporterIdentity, 'identity');
+
+    reportUserRequester.mutate(reporterIdentity, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'data');
+        const {message} = data.data;
+        Toast.success(message, 'bottom');
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'err');
+        const {message} = error.data || {};
+        Toast.error(
+          message || 'Oops! Something went wrong, please try again later',
+          'bottom',
+        );
+      },
+      onSettled(data, error, variables, context) {
+        console.log(data, 'settled');
+        setIsReporting(false);
+      },
+    });
+  };
   return (
     <AppContainer>
       <View className="border-b-2 border-b-[#f3f3f4] w-screen self-center py-[0.5]">
@@ -76,9 +112,10 @@ export const UserDetailsScreen = () => {
             </TouchableOpacity>
             <View className="flex-row gap-2 items-center">
               <Text
-                className="text-black font-sans font-bold text-lg"
+                className="text-black font-sans font-bold text-lg capitalize"
                 style={{color: themeColor.text}}>
-                Anita, 25
+                {theUser.username}, {''}
+                {getUserCurrentAge(theUser.dob)}
               </Text>
 
               <Octicons name="dot-fill" size={13} color="green" />
@@ -100,7 +137,7 @@ export const UserDetailsScreen = () => {
         showsVerticalScrollIndicator={false}>
         <View className="my-3 w-full">
           <ImageBackground
-            source={require('../../../../assets/images/couple_bg.jpg')}
+            source={{uri: theUser.profilePhoto?.url}}
             imageStyle={{
               borderRadius: 15,
             }}
@@ -110,13 +147,14 @@ export const UserDetailsScreen = () => {
               colors={['rgba(0,0,0,0.2)', 'rgba(0,0,0,0.2)']}
               style={{flex: 1, borderRadius: 15}}>
               <View className="absolute bottom-5 px-2">
-                <Text className="text-white font-sans font-bold text-lg">
-                  Jones, 34
+                <Text className="text-white font-sans font-bold text-lg capitalize">
+                  {theUser.username}, {''}
+                  {getUserCurrentAge(theUser.dob)}
                 </Text>
                 <View className="flex-row items-center">
                   <Ionicons name="location-sharp" size={10} color="#fff" />
                   <Text className="text-white font-sans text-sm">
-                    Ikorodu,Lagos
+                    {theUser.city}, {theUser.state}
                   </Text>
                 </View>
               </View>
@@ -133,18 +171,15 @@ export const UserDetailsScreen = () => {
             </Text>
 
             <View className="p-2 flex-row gap-2 flex-wrap">
-              <View className="bg-app-default min-w-[20] px-5 h-[40] justify-center rounded-[25]">
-                <Text className="text-base text-black font-sans">Dancing</Text>
-              </View>
-              <View className="bg-app-default min-w-[20] px-5 h-[40] justify-center rounded-[25]">
-                <Text className="text-base text-black font-sans">Chatting</Text>
-              </View>
-              <View className="bg-app-default min-w-[20] px-5 h-[40] justify-center rounded-[25]">
-                <Text className="text-base text-black font-sans">Cooking</Text>
-              </View>
-              <View className="bg-app-default min-w-[20] px-5 h-[40] justify-center rounded-[25]">
-                <Text className="text-base text-black font-sans">reading</Text>
-              </View>
+              {theUser.hobbies.map((hobby: string) => (
+                <View
+                  className="bg-app-default min-w-[20] px-5 h-[40] justify-center rounded-[25]"
+                  key={hobby}>
+                  <Text className="text-base text-black font-sans capitalize">
+                    {hobby}
+                  </Text>
+                </View>
+              ))}
             </View>
 
             <View className="mt-5">
@@ -159,17 +194,22 @@ export const UserDetailsScreen = () => {
                 contentContainerClassName="flex-row gap-3"
                 horizontal
                 showsHorizontalScrollIndicator={false}>
-                <Image
-                  source={require('../../../../assets/images/couple_bg.jpg')}
-                  resizeMode="cover"
-                  alt="Anita photo"
-                  style={{width: 250, height: 200, borderRadius: 10}}
-                />
-                <Image
-                  source={require('../../../../assets/images/couple_bg.jpg')}
-                  resizeMode="cover"
-                  style={{width: 250, height: 200, borderRadius: 10}}
-                />
+                {theUser.otherPhotos?.length > 0 ? (
+                  theUser.otherPhotos.map(
+                    (photo: {url: string; id: string}) => (
+                      <View key={photo.url}>
+                        <Image
+                          source={{uri: photo.url}}
+                          resizeMode="cover"
+                          alt={theUser.username + ' ' + 'photo'}
+                          style={{width: 250, height: 200, borderRadius: 10}}
+                        />
+                      </View>
+                    ),
+                  )
+                ) : (
+                  <Text>No Photo available</Text>
+                )}
               </ScrollView>
             </View>
           </View>
@@ -218,11 +258,11 @@ export const UserDetailsScreen = () => {
         <Animated.View
           entering={SlideInRight.duration(500)}
           exiting={SlideOutRight.duration(500)}
-          className="absolute right-0 top-[10.4%] p-2 bg-app-default min-h-[5%] w-[30%] mr-1 rounded-lg z-10 ">
+          className="absolute right-0 top-[10.4%] p-2 bg-app-default min-h-[5%] min-w-[20%] mr-1 rounded-lg z-10 ">
           <View className="">
-            <TouchableOpacity>
+            <TouchableOpacity disabled={isReporting} onPress={onReport}>
               <Text className="text-black font-sans text-lg font-bold text-center">
-                Report
+                {isReporting ? 'Reporting..' : 'Report'}
               </Text>
             </TouchableOpacity>
           </View>

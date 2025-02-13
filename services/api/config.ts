@@ -6,7 +6,7 @@ const createApiInstance = () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    timeout: 5000,
+    // timeout: 5000,
   });
 
   // Add a request interceptor

@@ -1,10 +1,13 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {apiHookRequester} from '@/services/api/hooks';
+import {useUserStore} from '@/stores/user-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import {Toast} from 'toastify-react-native';
 import {z} from 'zod';
 type formData = {
   password: string;
@@ -34,7 +37,10 @@ export const ChangePasswordScreen = () => {
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] =
     useState<boolean>(false);
-
+  const {currentUser, logoutUser} = useUserStore(state => state);
+  const {mutate} = apiHookRequester.useUpdateData(
+    `/api/v1/user/change-password/${currentUser._id}`,
+  );
   const router = useRouter();
 
   const {
@@ -53,17 +59,31 @@ export const ChangePasswordScreen = () => {
     console.log(data, 'dataa');
 
     setIsLoading(true);
-    clearErrors(['password', 'confirmPassword']);
-    setTimeout(() => {
-      setIsLoading(false);
-      reset(); // Clear the form fields after submission
-      setError('password', {
-        //type: 'server',
-        message: 'Incorrect password',
-      });
 
-      router.back();
-    }, 2000);
+    const payload = {
+      password: data.password,
+    };
+
+    mutate(payload, {
+      onSuccess(data: any, variables, context) {
+        console.log(data, 'data issuccess');
+        reset();
+        const {message} = data.data;
+        Toast.success(message, 'bottom');
+        logoutUser();
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'erorr ocurred');
+        const {message} = error.data;
+        setError('password', {
+          type: 'server',
+          message: message,
+        });
+      },
+      onSettled(data, error, variables, context) {
+        setIsLoading(false);
+      },
+    });
   };
 
   return (

@@ -1,9 +1,11 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppLoader} from '@/components/AppLoader';
 import {AppBottomSheet} from '@/components/BottomSheet';
-import {users} from '@/constants/AppData';
 import AppList from '@/constants/AppPackages';
-import {CurrentUserProps} from '@/constants/types';
+import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {AppListType, CurrentUserProps} from '@/constants/types';
+import {getUserCurrentAge} from '@/helpers/formatters';
+import {apiHookRequester} from '@/services/api/hooks';
 import {globalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {
@@ -25,6 +27,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -33,6 +36,7 @@ import {
 } from 'react-native';
 import {ActionSheetRef} from 'react-native-actions-sheet';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
+import {Toast} from 'toastify-react-native';
 import {HomeFilter} from './components/filter';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHight = Dimensions.get('window').height;
@@ -40,57 +44,109 @@ const deviceHight = Dimensions.get('window').height;
 type ActiveUsersProps = {
   item: CurrentUserProps;
 };
-const ActiveUsers: FC<ActiveUsersProps> = ({item}) => {
+const ActiveUsers: FC<AppListType> = ({user, refetchUsers, isSelected}) => {
   const router = useRouter();
+  const [isAdding, setIsAdding] = useState(false);
+  const {currentUser, setCurrentUser} = useUserStore(state => state);
+  const {mutate} = apiHookRequester.useUpdateData(
+    `/api/v1/user/add-to-favourites/${currentUser?._id}`,
+  );
 
-  //console.log(item, 'itemmmii');
+  const onFavourite = (user: string) => {
+    const payload = {
+      user: user,
+    };
+    setIsAdding(true);
 
+    mutate(payload, {
+      onSuccess(data, variables, context) {
+        console.log(data);
+        const {message, user} = data.data || {};
+        console.log(user, 'userme');
+        Toast.success(message, 'bottom');
+        setCurrentUser(user);
+        console.log(currentUser, 'curret');
+        if (isSelected === 'fav') {
+          refetchUsers();
+        }
+      },
+      onError(error: any, variables, context) {
+        console.log(error, 'fav err');
+        const {message} = error.data || {};
+        Toast.error(message, 'bottom');
+      },
+      onSettled(data, error, variables, context) {
+        console.log(data, 'settled');
+        setIsAdding(false);
+      },
+    });
+  };
+
+  const isFavourite = currentUser.favourites?.includes(user._id);
+  console.log(isFavourite, 'isFav');
+  console.log(isFavourite, 'isFav');
   return (
     <View className="mb-[8] mx-auto">
       <Pressable
         onPress={() =>
           router.push({
             pathname: '/dashboard/user-details',
-            params: {userId: item._id},
+            params: {userInfo: JSON.stringify(user)},
           })
         }>
         <ImageBackground
           imageStyle={{borderRadius: 15}}
           style={{width: deviceWidth * 0.43, height: 220, borderRadius: 15}}
-          source={{uri: item.profilePhoto.url}}
+          source={{uri: user.profilePhoto.url}}
           resizeMode="cover">
           <LinearGradient
             colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.3)']}
             style={{flex: 1, borderRadius: 15}}>
-            <TouchableOpacity className="self-end p-2">
-              <FontAwesome name="heart-o" size={18} color="white" />
+            <TouchableOpacity
+              disabled={isAdding}
+              className="self-end p-2"
+              onPress={() => onFavourite(user._id)}>
+              <FontAwesome
+                name="heart-o"
+                size={18}
+                color={isFavourite ? APP_DEFAULT_COLOUR : 'white'}
+              />
             </TouchableOpacity>
             <View className="absolute bottom-5 px-2">
               <View className="flex-row gap-2 items-center">
                 <View className="flex-row gap-1 items-center">
                   <Text
-                    className="text-white font-sans font-bold text-lg max-w-[100]"
+                    className="text-white font-sans font-bold text-lg max-w-[120] capitalize"
                     ellipsizeMode="tail"
                     numberOfLines={1}>
-                    {item.username},
+                    {user.username},
                   </Text>
                   <Text className="text-white font-sans font-bold text-lg">
-                    {item.age}
+                    {getUserCurrentAge(user.dob)}
                   </Text>
                 </View>
                 <View className="bg-white w-[10] h-[10] rounded-3xl items-center justify-center ">
-                  <Octicons
-                    name="dot-fill"
-                    size={13}
-                    color="green"
-                    className="bottom-[1.9]"
-                  />
+                  {user.isOnline ? (
+                    <Octicons
+                      name="dot-fill"
+                      size={13}
+                      color="green"
+                      className="bottom-[1.9]"
+                    />
+                  ) : (
+                    <Octicons
+                      name="dot-fill"
+                      size={13}
+                      color="grey"
+                      className="bottom-[1.9]"
+                    />
+                  )}
                 </View>
               </View>
               <View className="flex-row items-center">
                 <Ionicons name="location-sharp" size={10} color="#fff" />
                 <Text className="text-white font-sans text-sm">
-                  {item.location}
+                  {user.state}
                 </Text>
               </View>
             </View>
@@ -114,13 +170,35 @@ export const DashboardHomeScreen = () => {
   const {themeColor} = globalStore(state => state);
   const [isTopNavVisible, setIsTopNavVisible] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
-  const [isTabBarVisible, setIsTabBarVisible] = useState(true);
+  const [isFil, setIsFil] = useState(false);
   const {currentUser} = useUserStore(state => state);
   console.log(isFocused, 'idffoooo');
   console.log(currentUser, 'current boss');
+
+  const {
+    isSuccess,
+    isLoading: isLoadingUsers,
+    isFetching,
+    isError,
+    error,
+    refetch,
+    data: usersData,
+  } = apiHookRequester.useFetchData(
+    isSelected
+      ? `/api/v1/active-users/${currentUser?._id}?query=${isSelected}`
+      : '',
+    'activeUsers',
+  );
+
   useEffect(() => {
     setIsSelected('foryou');
   }, []);
+
+  useEffect(() => {
+    if (isSelected) {
+      refetch(); // Ensure the API is called again when isSelected changes
+    }
+  }, [isSelected]);
 
   useFocusEffect(
     // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
@@ -208,11 +286,13 @@ export const DashboardHomeScreen = () => {
 
   const closeFilter = () => {
     actionSheetRef.current?.hide();
-    setIsSelected('foryou');
+    setIsFil(false);
+    // setIsSelected('foryou');
   };
 
   const openFilter = () => {
-    setIsSelected('fil');
+    // setIsSelected('fil');
+    setIsFil(true);
     actionSheetRef.current?.show();
   };
 
@@ -245,10 +325,31 @@ export const DashboardHomeScreen = () => {
   };
 
   const renderFooter = () => {
+    console.log(error, 'err users');
+    const {message, code} = (error as any)?.data || {};
+    const {userMessage, userCode} = usersData?.data || {};
+
+    if (isLoadingUsers || isFetching)
+      return (
+        <View style={{paddingVertical: 20, marginTop: 80, alignSelf: 'center'}}>
+          <AppLoader />
+        </View>
+      );
     return (
       <View style={{paddingVertical: 20, marginTop: 80}}>
-        <AppLoader />
+        <Text className="text-black text-base font-sans text-center">
+          {message || userMessage}
+        </Text>
       </View>
+    );
+  };
+
+  const {users} = usersData?.data || [];
+  console.log(users, 'list for users');
+
+  const renderItem = ({item}: {item: AppListType}) => {
+    return (
+      <ActiveUsers user={item} refetchUsers={refetch} isSelected={isSelected} />
     );
   };
   return (
@@ -320,7 +421,7 @@ export const DashboardHomeScreen = () => {
                 isSelected === 'fav' ? 'bg-app-default' : 'bg-app-ghost'
               } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
               <Text className="text-lg text-black font-bold font-sans">
-                Favorites
+                Favourites
               </Text>
             </TouchableOpacity>
           </View>
@@ -359,13 +460,20 @@ export const DashboardHomeScreen = () => {
         </View>
         <View className="flex-1">
           <AppList
-            data={users}
-            renderItem={({item}) => <ActiveUsers item={item} />}
+            data={isFetching ? [] : users}
+            renderItem={renderItem}
             estimatedItemSize={200}
             numColumns={2}
             contentContainerStyle={{paddingBottom: 10}}
             showsVerticalScrollIndicator={false}
-            ListFooterComponent={!users.length ? renderFooter : null}
+            ListFooterComponent={renderFooter}
+            refreshControl={
+              <RefreshControl
+                refreshing={false}
+                onRefresh={refetch}
+                colors={[APP_DEFAULT_COLOUR]}
+              />
+            }
             ListHeaderComponent={
               <ScrollView
                 horizontal
@@ -408,7 +516,7 @@ export const DashboardHomeScreen = () => {
                     isSelected === 'fav' ? 'bg-app-default' : 'bg-app-ghost'
                   } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
                   <Text className="text-lg text-black font-bold font-sans">
-                    Favorites
+                    Favourites
                   </Text>
                 </TouchableOpacity>
               </ScrollView>

@@ -9,7 +9,7 @@ import {useUserStore} from '@/stores/user-store';
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useRouter} from 'expo-router';
-import {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -26,6 +26,7 @@ export const ProfileScreen = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState('');
   const [isMainPhotoModalVisible, setIsMainPhotoModalVisible] = useState(false);
   const [fileObject, setFileObject] = useState<object>({});
@@ -33,9 +34,8 @@ export const ProfileScreen = () => {
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const [imageType, setImageType] = useState<string>('');
   const {themeColor} = globalStore(state => state);
-  const {currentUser, currentUserLocation, setCurrentUser} = useUserStore(
-    state => state,
-  );
+  const {currentUser, currentUserLocation, setCurrentUser, updateUserProperty} =
+    useUserStore(state => state);
   const otherPhotoUploadRequester = apiHookRequester.useUpdateData(
     `/api/v1/user/photo-upload/${currentUser._id}`,
   );
@@ -84,10 +84,10 @@ export const ProfileScreen = () => {
       const fileObject = {
         ...file,
         name: file.fileName,
-        fieldName: 'profilePhoto',
       };
       const payload = {
         file: fileObject,
+        fieldName: 'profilePhoto',
       };
       profilePhotoUploadRequester.mutate(payload, {
         onSuccess(data, variables, context) {
@@ -117,10 +117,10 @@ export const ProfileScreen = () => {
       const fileObject = {
         ...file,
         name: file.fileName,
-        fieldName: 'otherPhotos',
       };
       const payload = {
         file: fileObject,
+        fieldName: 'otherPhotos',
       };
       otherPhotoUploadRequester.mutate(payload, {
         onSuccess(data, variables, context) {
@@ -216,7 +216,7 @@ export const ProfileScreen = () => {
             </Animated.View>
           )}
           <ImageBackground
-            source={{uri: currentUser.profilePhoto.url}}
+            source={{uri: currentUser.profilePhoto?.url}}
             imageStyle={{
               borderRadius: 15,
             }}
@@ -297,7 +297,7 @@ export const ProfileScreen = () => {
                       <Image
                         source={{uri: photo.url}}
                         resizeMode="cover"
-                        alt={currentUser.userame + ' ' + 'photo'}
+                        alt={currentUser.username + ' ' + 'photo'}
                         style={{width: 250, height: 200, borderRadius: 10}}
                       />
 
@@ -335,7 +335,7 @@ export const ProfileScreen = () => {
                     style={{width: 250, height: 200, borderRadius: 10}}
                   />
                 </View> */}
-                {currentUser.otherPhotos.length < 3 && (
+                {currentUser.otherPhotos?.length < 3 && (
                   <TouchableOpacity
                     onPress={() => onUpload('OTHER_PHOTO')}
                     className=" min-w-[20] px-5 h-[40] justify-center rounded-[25]">

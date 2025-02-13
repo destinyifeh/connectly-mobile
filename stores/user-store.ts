@@ -2,7 +2,7 @@ import {CURRENT_USER} from '@/constants/config';
 import {CurrentUserLocationProps, CurrentUserProps} from '@/constants/types';
 import {router} from 'expo-router';
 import {create} from 'zustand';
-import {deleteDeviceData, saveDeviceData} from './device-store';
+import {deleteDeviceData, getDeviceData, saveDeviceData} from './device-store';
 
 type State = {
   users: string[];
@@ -18,6 +18,7 @@ type Actions = {
   setApplication: (data: any) => void;
   resetApplication: () => void;
   setCurrentUser: (data: CurrentUserProps) => void;
+  updateUserProperty: (data: CurrentUserProps, field: string) => void;
 };
 
 const initialState: State = {
@@ -50,7 +51,7 @@ export const useUserStore = create<State & Actions>((set, get) => ({
   logoutUser: () => {
     set(initialState);
     deleteDeviceData(CURRENT_USER);
-    router.replace('/');
+    router.replace('/login');
   },
   setApplication: (application: any) => {
     console.log(application, 'draft application');
@@ -63,5 +64,22 @@ export const useUserStore = create<State & Actions>((set, get) => ({
     console.log(user, 'currentUser state');
     set({currentUser: user});
     saveDeviceData(CURRENT_USER, user);
+  },
+
+  updateUserProperty: (property: CurrentUserProps, field: string) => {
+    console.log(property, 'other photos update');
+    set(state => ({
+      currentUser: {
+        ...state.currentUser,
+        [field]: property[field],
+      },
+    }));
+    getDeviceData(CURRENT_USER).then(theUser => {
+      console.log(theUser, 'theUser');
+      saveDeviceData(CURRENT_USER, {
+        ...theUser,
+        [field]: property[field],
+      });
+    });
   },
 }));

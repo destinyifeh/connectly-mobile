@@ -18,6 +18,7 @@ export const useFetchData = (
     queryKey: [queryKey],
     queryFn: () => apiRequester.fetchData(url),
     ...options,
+    enabled: !!url,
   });
 };
 

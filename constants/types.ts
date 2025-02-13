@@ -15,6 +15,10 @@ export interface CurrentUserProps {
   [key: string]: any;
 }
 
+export interface AppListType {
+  [key: string]: any;
+}
+
 export interface CurrentUserLocationProps {
   city: string | undefined;
   state: string | undefined;

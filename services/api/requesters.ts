@@ -8,7 +8,7 @@ export const fetchData = async (
   url: string,
 ): Promise<AxiosResponse<ApiResponse>> => {
   try {
-    const response = await axios.get(url);
+    const response = await api.get(url);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -78,7 +78,7 @@ export const updateData = async (
       console.log(data.file, 'dataass');
       const formData = new FormData();
 
-      formData.append(data.file.fieldName, data.file);
+      formData.append(data.fieldName, data.file);
       const response = await api.put(url, formData, {
         headers: {'content-type': 'multipart/form-data'},
       });

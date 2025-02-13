@@ -30,6 +30,7 @@
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
     "expo-dev-client": "~5.0.9",
+    "expo-file-system": "~18.0.8",
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
     "expo-image": "~2.0.3",
@@ -69,10 +70,10 @@
     "react-native-webview": "13.12.5",
     "socket.io-client": "^4.8.1",
     "tailwindcss": "^3.4.17",
+    "toastify-react-native": "^5.0.4",
     "use-debounce": "^10.0.4",
     "zod": "^3.24.1",
-    "zustand": "^5.0.2",
-    "expo-file-system": "~18.0.8"
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

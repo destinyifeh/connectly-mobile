@@ -2,7 +2,7 @@ import {AppContainer} from '@/components/AppContainer';
 import {currentDeviceWidth} from '@/constants/Styles';
 import {formatTodaysDate, getUserCurrentAge} from '@/helpers/formatters';
 import {apiHookRequester} from '@/services/api/hooks';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Entypo, Feather, Ionicons, Octicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -25,7 +25,7 @@ export const UserDetailsScreen = () => {
 
   const [isReporting, setIsReporting] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const {userId, userInfo} = useLocalSearchParams();
   const {currentUser} = useUserStore(state => state);
   const theUser = userInfo ? JSON.parse(userInfo as string) : null;
@@ -251,7 +251,13 @@ export const UserDetailsScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={() => router.navigate('/dashboard/chat')}>
+      <TouchableOpacity
+        onPress={() =>
+          router.navigate({
+            pathname: '/dashboard/chat',
+            params: {user: userInfo},
+          })
+        }>
         <Text className="screen-title">chat</Text>
       </TouchableOpacity>
       {isModalVisible === true && (

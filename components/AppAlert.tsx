@@ -1,4 +1,4 @@
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import React from 'react';
 import {
   Modal,
@@ -42,7 +42,7 @@ export const AppAlert = ({
   const [isPressedOne, setIsPressedOne] = React.useState(false);
   const [isPressedTwo, setIsPressedTwo] = React.useState(false);
   const [isPressedThree, setIsPressedThree] = React.useState(false);
-  const {themeColor, setThemeColor} = globalStore(state => state);
+  const {themeColor, setThemeColor} = useGlobalStore(state => state);
   return (
     <Modal
       animationType="slide"

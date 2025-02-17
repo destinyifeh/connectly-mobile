@@ -1,7 +1,7 @@
 import {AppAlert} from '@/components/AppAlert';
 import {AppContainer} from '@/components/AppContainer';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Octicons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
@@ -14,7 +14,7 @@ export const AccountSettingsScreen = () => {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const {logoutUser} = useUserStore(state => state);
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const onLogoutProceed = () => {
     setIsLogoutModalVisible(false);
     logoutUser();
@@ -63,12 +63,12 @@ export const AccountSettingsScreen = () => {
           <Octicons name="chevron-right" size={16} color="gray" />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => router.push('/dashboard/change-phone')}
+          onPress={() => router.push('/dashboard/basic-info')}
           className="border border-gray-300 flex-row justify-between items-center h-[50] rounded-lg px-5 my-3">
           <Text
             className="text-black font-sans text-base"
             style={{color: themeColor.text}}>
-            Change phone number
+            Basic Info
           </Text>
           <Octicons name="chevron-right" size={16} color="gray" />
         </TouchableOpacity>

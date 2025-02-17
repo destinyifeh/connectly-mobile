@@ -1,5 +1,5 @@
 import {AppLoader} from '@/components/AppLoader';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {router} from 'expo-router';
 import {FC, useEffect} from 'react';
@@ -11,10 +11,10 @@ interface ProctedRouteProps {
 
 const ProtectedRoute: FC<ProctedRouteProps> = ({children}) => {
   const {currentUser} = useUserStore(state => state);
-  const {isAppMounted, setIsAppMounted} = globalStore(state => state);
+  const {isAppMounted, setIsAppMounted} = useGlobalStore(state => state);
 
   useEffect(() => {
-    if (isAppMounted && currentUser?.email) {
+    if (isAppMounted && currentUser?._id) {
       //  console.log(currentUser, 'my current');
 
       router.navigate('/dashboard');
@@ -29,7 +29,7 @@ const ProtectedRoute: FC<ProctedRouteProps> = ({children}) => {
     );
   }
 
-  if (isAppMounted && !currentUser?.email) {
+  if (isAppMounted && !currentUser?._id) {
     return children;
   }
 

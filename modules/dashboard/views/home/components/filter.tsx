@@ -1,6 +1,6 @@
 import {AppButton} from '@/components/Button';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {FontAwesome} from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import {FC, useEffect} from 'react';
@@ -34,9 +34,9 @@ export const HomeFilter: FC<FilterProps> = ({
   isFilterGender,
   setIsFilterGender,
 }) => {
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   useEffect(() => {
-    setIsFilterGender('men');
+    setIsFilterGender('male');
   }, []);
 
   const onMaxAgeChange = useDebouncedCallback((value: number) => {
@@ -65,16 +65,16 @@ export const HomeFilter: FC<FilterProps> = ({
 
       <View className="flex-row items-center my-3 gap-3">
         <TouchableOpacity
-          onPress={() => setIsFilterGender('men')}
+          onPress={() => setIsFilterGender('male')}
           className={`${
-            isFilterGender === 'men' ? 'bg-app-default' : 'bg-app-ghost'
+            isFilterGender === 'male' ? 'bg-app-default' : 'bg-app-ghost'
           } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
-          <Text className="text-base font-sans">Men</Text>
+          <Text className="text-base font-sans">male</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => setIsFilterGender('women')}
+          onPress={() => setIsFilterGender('female')}
           className={`${
-            isFilterGender === 'women' ? 'bg-app-default' : 'bg-app-ghost'
+            isFilterGender === 'female' ? 'bg-app-default' : 'bg-app-ghost'
           } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
           <Text className="text-base font-sans">Women</Text>
         </TouchableOpacity>

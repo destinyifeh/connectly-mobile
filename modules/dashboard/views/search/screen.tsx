@@ -4,7 +4,7 @@ import {TextField} from '@/components/TextField';
 import {getUserCurrentAge} from '@/helpers/formatters';
 //import AppList from '@/constants/AppPackages';
 import {apiHookRequester} from '@/services/api/hooks';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {FlashList as AppList} from '@shopify/flash-list';
 import {useFocusEffect, useRouter} from 'expo-router';
@@ -16,7 +16,7 @@ interface ItemType {
 }
 const QueryItems = ({item}: ItemType) => {
   const router = useRouter();
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
 
   return (
     <View className="w-full self-center border-b border-gray-200 h-[60] justify-center">

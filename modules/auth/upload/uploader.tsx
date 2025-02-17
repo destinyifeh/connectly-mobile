@@ -38,17 +38,17 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
         mimeType: mimeType,
         fileSize: fileSize,
         size: fileSize,
-        type: type,
+        type: mimeType,
         fileName: fileName,
         name: fileName,
       };
       const saveToDraft = {
         ...application,
         file: uploadedFileObject,
-        state: currentUser.state,
-        city: currentUser.city,
-        country: currentUser.country,
+        ...currentUserLocation,
       };
+      console.log(saveToDraft, 'oopppp lib');
+      console.log(result, 'resultt');
       console.log(uploadedFileObject, 'resultt');
       if (handleSetFile) {
         setApplication(saveToDraft);

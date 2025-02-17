@@ -9,14 +9,14 @@ import AppWrapper from '@/helpers/App-wrapper';
 import {initializeUser} from '@/helpers/auth';
 import {serivesConfigurations} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const {setIsAppMounted} = globalStore(state => state);
+  const {setIsAppMounted} = useGlobalStore(state => state);
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     Roboto: require('../assets/fonts/Roboto-Regular.ttf'),

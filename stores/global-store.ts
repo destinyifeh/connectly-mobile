@@ -21,7 +21,7 @@ const initiaState: State = {
   isAppMounted: false,
 };
 
-export const globalStore = create<State & Actions>((set, get) => ({
+export const useGlobalStore = create<State & Actions>((set, get) => ({
   ...initiaState,
 
   reset: () => {

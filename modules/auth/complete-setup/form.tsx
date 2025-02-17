@@ -1,6 +1,7 @@
 import {AppButton} from '@/components/Button';
 import {THEME_ISDARK} from '@/constants/Colors';
-import {globalStore} from '@/stores/global-store';
+import {getUserCurrentAge} from '@/helpers/formatters';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {AntDesign} from '@expo/vector-icons';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -44,7 +45,7 @@ export const CompleteSetupForm = () => {
   const [date, setDate] = useState(new Date());
   const dropDownRef = useRef<dropDownProps>(null);
   const router = useRouter();
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const {setApplication, application} = useUserStore(state => state);
   const {
     control,
@@ -66,6 +67,7 @@ export const CompleteSetupForm = () => {
       ...application,
       ...data,
       dob: isFormattedDate,
+      age: getUserCurrentAge(isFormattedDate),
     };
     setApplication(saveToDraft);
 

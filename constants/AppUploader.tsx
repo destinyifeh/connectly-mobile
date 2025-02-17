@@ -1,6 +1,6 @@
 import {AppActivityIndicator} from '@/components/AppLoader';
 import {AppBottomSheet} from '@/components/BottomSheet';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import * as ImagePicker from 'expo-image-picker';
 import {FC} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
@@ -23,7 +23,7 @@ export const AppUploader: FC<AppUploaderProps> = ({
   handleFileObject,
   ...rest
 }) => {
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({

@@ -1,8 +1,10 @@
 import {AppContainer} from '@/components/AppContainer';
 import {currentDeviceWidth} from '@/constants/Styles';
-import {globalStore} from '@/stores/global-store';
+import {getUserCurrentAge} from '@/helpers/formatters';
+import {useUserOnline} from '@/hooks/useUserOnline';
+import {useGlobalStore} from '@/stores/global-store';
 import {Entypo, Feather, Octicons} from '@expo/vector-icons';
-import {useRouter} from 'expo-router';
+import {useLocalSearchParams, useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {SlideInRight, SlideOutRight} from 'react-native-reanimated';
@@ -10,11 +12,15 @@ import {ChatForm} from './components/form';
 
 export const ChatScreen = () => {
   const [form, setForm] = useState({email: ''});
-  const {themeColor} = globalStore(state => state);
-
+  const {themeColor} = useGlobalStore(state => state);
+  const {userId, user} = useLocalSearchParams();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const theUser = user ? JSON.parse(user as string) : null;
+  const isOnline = useUserOnline();
+  console.log(theUser, 'my user');
+  console.log(isOnline, 'issonn');
+  console.log(user, 'infooo');
   const handleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -31,17 +37,21 @@ export const ChatScreen = () => {
             </TouchableOpacity>
             <View className="flex-row gap-2 items-center">
               <Image
-                source={require('./../../../../assets/images/couple_bg.jpg')}
+                source={{uri: theUser.profilePhoto.url}}
                 className="w-[30] h-[30] rounded-[15]"
                 resizeMode="cover"
               />
               <Text
-                className="text-black font-sans font-bold text-lg"
+                className="text-black font-sans font-bold text-lg capitalize"
                 style={{color: themeColor.text}}>
-                Anita, 25
+                {theUser.username}, {getUserCurrentAge(theUser.dob)}
               </Text>
 
-              <Octicons name="dot-fill" size={13} color="green" />
+              <Octicons
+                name="dot-fill"
+                size={13}
+                color={isOnline ? 'green' : 'gray'}
+              />
             </View>
           </View>
           <TouchableOpacity onPress={handleModal}>
@@ -53,7 +63,7 @@ export const ChatScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <ChatForm />
+      <ChatForm chatUser={user} />
       {isModalVisible === true && (
         <Animated.View
           entering={SlideInRight.duration(500)}

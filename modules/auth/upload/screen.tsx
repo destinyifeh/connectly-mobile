@@ -3,7 +3,7 @@ import {AppButton} from '@/components/Button';
 import {FontAwesome6} from '@expo/vector-icons';
 
 import {apiHookRequester} from '@/services/api/hooks';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {useRouter} from 'expo-router';
 import {useRef, useState} from 'react';
@@ -24,7 +24,7 @@ export const UploadProfilePhotoScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const {application, resetApplication} = useUserStore(state => state);
   const {mutate, isSuccess, isError, error, isPending, data} =
     apiHookRequester.usePostData('/api/v1/user/signup');

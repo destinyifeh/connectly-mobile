@@ -1,6 +1,6 @@
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {Dimensions, Platform, StyleSheet} from 'react-native';
-const themeColor = globalStore.getState().themeColor;
+const themeColor = useGlobalStore.getState().themeColor;
 
 export const currentDeviceWidth = Dimensions.get('window').width;
 export const MAX_ALLOWED_WIDTH = currentDeviceWidth > 480 ? 441 : 480;

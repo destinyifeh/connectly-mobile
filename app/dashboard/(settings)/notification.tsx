@@ -1,6 +1,6 @@
 import {AppContainer} from '@/components/AppContainer';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useState} from 'react';
 import {ScrollView, Text, TouchableOpacity} from 'react-native';
@@ -10,7 +10,7 @@ export const NotificationSettingsScreen = () => {
     useState<boolean>(false);
   const [enablePushNotification, setEnablePushNotification] =
     useState<boolean>(false);
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   return (
     <AppContainer showBackButton showScreenTitle title="Notification settings">
       <ScrollView

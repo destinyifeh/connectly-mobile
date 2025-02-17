@@ -1,6 +1,6 @@
 import {THEME_ISDARK} from '@/constants/Colors';
 import {appContainerStyle, COLOUR_Dark_WHITE} from '@/constants/Styles';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Ionicons} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
@@ -39,7 +39,7 @@ export const AppContainer: FC<AppContainerProps> = ({
   title,
 }) => {
   const router = useRouter();
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const insets = useSafeAreaInsets();
   const {setApplication, application, resetApplication} = useUserStore(
     state => state,

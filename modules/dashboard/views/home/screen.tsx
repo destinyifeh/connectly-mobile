@@ -5,8 +5,9 @@ import AppList from '@/constants/AppPackages';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {AppListType, CurrentUserProps} from '@/constants/types';
 import {getUserCurrentAge} from '@/helpers/formatters';
+import {useUserOnline} from '@/hooks/useUserOnline';
 import {apiHookRequester} from '@/services/api/hooks';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {
   FontAwesome,
@@ -43,6 +44,11 @@ const deviceHight = Dimensions.get('window').height;
 
 type ActiveUsersProps = {
   item: CurrentUserProps;
+};
+type FilType = {
+  gender?: string;
+  minAge?: number;
+  maxAge?: number;
 };
 const ActiveUsers: FC<AppListType> = ({user, refetchUsers, isSelected}) => {
   const router = useRouter();
@@ -167,14 +173,17 @@ export const DashboardHomeScreen = () => {
   const [minAge, setMinAge] = useState<number>(18);
   const [maxAge, setMaxAge] = useState<number>(50);
   const [isLoadingFilter, setIsLoadingFilter] = useState<boolean>(false);
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const [isTopNavVisible, setIsTopNavVisible] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isFil, setIsFil] = useState(false);
+  const [filPayload, setFilPayload] = useState<FilType>({});
   const {currentUser} = useUserStore(state => state);
   console.log(isFocused, 'idffoooo');
   console.log(currentUser, 'current boss');
-
+  const onlineUser = useUserOnline();
+  console.log(onlineUser, 'online');
+  const params = new URLSearchParams();
   const {
     isSuccess,
     isLoading: isLoadingUsers,
@@ -185,7 +194,7 @@ export const DashboardHomeScreen = () => {
     data: usersData,
   } = apiHookRequester.useFetchData(
     isSelected
-      ? `/api/v1/active-users/${currentUser?._id}?query=${isSelected}`
+      ? `/api/v1/active-users/${currentUser?._id}?query=${isSelected}&gender=${filPayload.gender}&minAge=${filPayload.minAge}&maxAge=${filPayload.maxAge}`
       : '',
     'activeUsers',
   );
@@ -216,6 +225,7 @@ export const DashboardHomeScreen = () => {
   const handleSelectedNav = (selected: string) => {
     console.log(selected, 'sssss');
     setIsSelected(selected);
+    setIsFil(false);
   };
   const image = false;
 
@@ -286,12 +296,17 @@ export const DashboardHomeScreen = () => {
 
   const closeFilter = () => {
     actionSheetRef.current?.hide();
-    setIsFil(false);
-    // setIsSelected('foryou');
+    setIsFil(prev => !prev);
+    setIsSelected('foryou');
+  };
+
+  const closeFilterOnApply = () => {
+    actionSheetRef.current?.hide();
+    setIsSelected('fil');
   };
 
   const openFilter = () => {
-    // setIsSelected('fil');
+    console.log('herre');
     setIsFil(true);
     actionSheetRef.current?.show();
   };
@@ -302,12 +317,14 @@ export const DashboardHomeScreen = () => {
       minAge: minAge,
       gender: isFilterGender,
     };
+    setFilPayload(payload);
     console.log(payload, 'fil pay');
-    setIsLoadingFilter(true);
-    setTimeout(() => {
-      setIsLoadingFilter(false);
-      closeFilter();
-    }, 5000);
+    closeFilterOnApply();
+    // setIsLoadingFilter(true);
+    // setTimeout(() => {
+    //   setIsLoadingFilter(false);
+    //   closeFilterOnApply();
+    // }, 5000);
   };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -337,7 +354,9 @@ export const DashboardHomeScreen = () => {
       );
     return (
       <View style={{paddingVertical: 20, marginTop: 80}}>
-        <Text className="text-black text-base font-sans text-center">
+        <Text
+          className="text-base font-sans text-center"
+          style={{color: themeColor.text}}>
           {message || userMessage}
         </Text>
       </View>
@@ -352,6 +371,11 @@ export const DashboardHomeScreen = () => {
       <ActiveUsers user={item} refetchUsers={refetch} isSelected={isSelected} />
     );
   };
+
+  const foryouBg = isSelected === 'foryou' ? 'bg-app-default' : 'bg-app-ghost';
+  const nearbyBg = isSelected === 'nearby' ? 'bg-app-default' : 'bg-app-ghost';
+  const favBg = isSelected === 'fav' ? 'bg-app-default' : 'bg-app-ghost';
+  const filBg = isSelected === 'fill' ? 'bg-app-default' : 'bg-app-ghost';
   return (
     <AppContainer barColor="dark-content">
       <View className="flex-1">
@@ -481,9 +505,10 @@ export const DashboardHomeScreen = () => {
                 className=""
                 contentContainerClassName="flex-row items-center gap-3 px-2 mt-5 self-center mb-5">
                 <TouchableOpacity
+                  disabled={isFil}
                   onPress={openFilter}
                   className={`${
-                    isSelected === 'fil' ? 'bg-app-default' : 'bg-app-ghost '
+                    isFil ? 'bg-app-default' : 'bg-app-ghost'
                   } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
                   <MaterialCommunityIcons
                     size={24}
@@ -494,7 +519,7 @@ export const DashboardHomeScreen = () => {
                 <TouchableOpacity
                   onPress={() => handleSelectedNav('foryou')}
                   className={`${
-                    isSelected === 'foryou' ? 'bg-app-default' : 'bg-app-ghost'
+                    isFil ? 'bg-app-ghost' : foryouBg
                   } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
                   <Text className="text-lg text-black font-bold font-sans">
                     For you
@@ -503,7 +528,7 @@ export const DashboardHomeScreen = () => {
                 <TouchableOpacity
                   onPress={() => handleSelectedNav('nearby')}
                   className={`${
-                    isSelected === 'nearby' ? 'bg-app-default' : 'bg-app-ghost'
+                    isFil ? 'bg-app-ghost' : nearbyBg
                   } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
                   <Text className="text-lg text-black font-bold font-sans">
                     Nearby
@@ -513,7 +538,7 @@ export const DashboardHomeScreen = () => {
                 <TouchableOpacity
                   onPress={() => handleSelectedNav('fav')}
                   className={`${
-                    isSelected === 'fav' ? 'bg-app-default' : 'bg-app-ghost'
+                    isFil ? 'bg-app-ghost' : favBg
                   } px-5 rounded-[25] min-w-[45] h-[40] justify-center items-center`}>
                   <Text className="text-lg text-black font-bold font-sans">
                     Favourites

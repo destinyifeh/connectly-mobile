@@ -4,7 +4,7 @@ import {currentDeviceWidth} from '@/constants/Styles';
 import {FileProps} from '@/constants/types';
 import {getUserCurrentAge} from '@/helpers/formatters';
 import {apiHookRequester} from '@/services/api/hooks';
-import {globalStore} from '@/stores/global-store';
+import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -33,7 +33,7 @@ export const ProfileScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string>('');
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const [imageType, setImageType] = useState<string>('');
-  const {themeColor} = globalStore(state => state);
+  const {themeColor} = useGlobalStore(state => state);
   const {currentUser, currentUserLocation, setCurrentUser, updateUserProperty} =
     useUserStore(state => state);
   const otherPhotoUploadRequester = apiHookRequester.useUpdateData(

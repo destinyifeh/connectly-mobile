@@ -2,10 +2,11 @@ import {AppContainer} from '@/components/AppContainer';
 import {currentDeviceWidth} from '@/constants/Styles';
 import {getUserCurrentAge} from '@/helpers/formatters';
 import {useUserOnline} from '@/hooks/useUserOnline';
+import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {Entypo, Feather, Octicons} from '@expo/vector-icons';
 import {useLocalSearchParams, useRouter} from 'expo-router';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {SlideInRight, SlideOutRight} from 'react-native-reanimated';
 import {ChatForm} from './components/form';
@@ -18,9 +19,32 @@ export const ChatScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const theUser = user ? JSON.parse(user as string) : null;
   const isOnline = useUserOnline();
-  console.log(theUser, 'my user');
+  console.log(theUser.isFromMychats, 'my user');
   console.log(isOnline, 'issonn');
   console.log(user, 'infooo');
+
+  const {mutate} = apiHookRequester.useUpdateData('/api/v1/user/chat/viewed');
+
+  useEffect(() => {
+    if (theUser?.isFromMychats && theUser?.isViewed === false) {
+      onChatViewed();
+    }
+  }, [theUser?.isFromMychats]);
+
+  const onChatViewed = () => {
+    const payload = {
+      chatId: theUser.messageId,
+    };
+
+    mutate(payload, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'updated view');
+      },
+      onError(error, variables, context) {
+        console.log(error, 'err');
+      },
+    });
+  };
   const handleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -50,7 +74,7 @@ export const ChatScreen = () => {
               <Octicons
                 name="dot-fill"
                 size={13}
-                color={isOnline ? 'green' : 'gray'}
+                color={theUser.isOnline ? 'green' : 'gray'}
               />
             </View>
           </View>

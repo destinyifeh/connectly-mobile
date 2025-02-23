@@ -36,6 +36,10 @@ export default function TabLayout() {
     return <Ionicons name="search" size={20} color={color} />;
   };
 
+  const renderChatIcon = (color: string) => {
+    return <AntDesign name="message1" size={20} color={color} />;
+  };
+
   return (
     <Tabs
       screenOptions={{
@@ -78,6 +82,14 @@ export default function TabLayout() {
         options={{
           title: '',
           tabBarIcon: ({color}) => renderSearchIcon(color),
+        }}
+      />
+
+      <Tabs.Screen
+        name="chats"
+        options={{
+          title: '',
+          tabBarIcon: ({color}) => renderChatIcon(color),
         }}
       />
 

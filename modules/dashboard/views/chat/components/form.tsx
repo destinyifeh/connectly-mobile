@@ -6,8 +6,8 @@ import {useUserStore} from '@/stores/user-store';
 import {EvilIcons, MaterialIcons} from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import {useRouter} from 'expo-router';
-import {FC, useCallback, useEffect, useRef, useState} from 'react';
-import {Text, View} from 'react-native';
+import {FC, useCallback, useEffect, useState} from 'react';
+import {Image, View} from 'react-native';
 import {
   Actions,
   Bubble,
@@ -16,10 +16,11 @@ import {
   Send,
 } from 'react-native-gifted-chat';
 import {io, Socket} from 'socket.io-client';
+import {Toast} from 'toastify-react-native';
 
 interface IMessages {
   _id: string | number;
-  text: string;
+  text?: string;
   createdAt: Date | number;
   user: {
     _id: string | number;
@@ -39,6 +40,8 @@ interface IMessages {
 interface CustomMessage extends IMessage {
   receiverId?: string; // ✅ Add receiverId
   senderId?: string;
+  senderPhoto?: string;
+  receiverPhoto?: string;
 }
 
 type ChatFormProps = {
@@ -48,9 +51,11 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
   const {themeColor} = useGlobalStore(state => state);
   const {currentUser} = useUserStore(state => state);
   const [messages, setMessages] = useState<CustomMessage[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
   const router = useRouter();
-  const socketRef = useRef<Socket | null>(null);
-  const socket = io('http://192.168.0.198:4000');
+  // const socketRef = useRef<Socket | null>(null);
+  //const socket = io('http://192.168.0.198:4000');
+  const [socket, setSocket] = useState<Socket | null>(null);
   console.log(JSON.parse(chatUser), 'cheet user');
   const theUser = JSON.parse(chatUser);
 
@@ -71,99 +76,110 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
 
   console.log(chatsData, 'chatsdata');
   useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io('http://192.168.0.198:4000'); // Initialize socket only once
-    }
-    const socket = socketRef.current;
+    const newSocket = io('http://192.168.0.199:4000');
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    if (!socket) return;
     socket.emit('userConnected', currentUser._id);
     // Listen for new messages from the server
     socket.on('newMessage', message => {
       console.log(message, 'messageeeeedee');
-      setMessages(prevMessages => GiftedChat.append(prevMessages, [message]));
+      const updatedMessage = {...message, received: true};
+
+      setMessages(prevMessages =>
+        GiftedChat.append(prevMessages, [updatedMessage]),
+      );
+      //setMessages(prevMessages => GiftedChat.append(prevMessages, [message]));
       // setMessages(prevMessages => [...prevMessages, message]);
 
       // if (message.receiverId === currentUser._id) {
       //   // setMessages(prevMessages => GiftedChat.append(prevMessages, [receivedMessage]));
       //   setMessages(prevMessages => GiftedChat.append(prevMessages, [message]));
       // }
+
+      // Notify the server that this message was received
+      socket.emit('messageReceived', {
+        messageId: message._id,
+        receiverId: currentUser._id, // The person who just received it
+        senderId: theUser._id,
+      });
     });
 
     // Cleanup on unmount
     return () => {
       socket.off('newMessage');
-      socket.disconnect();
     };
-  }, [currentUser._id]);
-  // useEffect(() => {
-  //   setMessages([
-  //     //   {
-  //     //     _id: 1,
-  //     //     text: 'Hello developer',
-  //     //     createdAt: new Date(),
-  //     //     user: {
-  //     //       _id: 2,
-  //     //       name: 'React Native',
-  //     //       avatar: 'https://placeimg.com/140/140/any',
-  //     //     },
-  //     //     sent: true,
-  //     //     received: true,
-  //     //   },
+  }, [currentUser._id, socket]);
 
-  //     {
-  //       _id: 1,
-  //       text: 'My received message',
-  //       createdAt: new Date(Date.UTC(2016, 5, 11, 17, 20, 0)),
-  //       user: {
-  //         _id: 2,
-  //         name: 'React Native',
-  //         avatar: 'https://facebook.github.io/react/img/logo_og.png',
-  //       },
-  //       //  image: 'https://facebook.github.io/react/img/logo_og.png',
-  //       // additional custom parameters
-  //       sent: true,
-  //       received: true,
-  //     },
-  //     {
-  //       _id: 2,
-  //       text: 'My sent message',
-  //       createdAt: new Date(Date.UTC(2016, 5, 11, 17, 21, 0)),
-  //       user: {
-  //         _id: 1,
-  //         name: 'React Native',
-  //         avatar: 'https://facebook.github.io/react/img/logo_og.png',
-  //       },
-  //       //  image: 'https://facebook.github.io/react/img/logo_og.png',
-  //       // additional custom parameters
-  //       sent: true,
-  //       received: true,
-  //     },
-  //   ]);
-  // }, []);
-  // const onSend = useCallback((newMessages: IMessage[] = []) => {
-  //   console.log(newMessages, 'new messa');
-  //   const item = newMessages.map(item => item);
-  //   console.log(item, 'itemm');
-  //   socket.emit('sendMessage', ...item);
+  useEffect(() => {
+    if (!socket) return;
+    console.log('📡 Listening for messageSaved events...');
 
-  //   // const post = {
-  //   //   text: 'deeee',
-  //   //   userId: 1,
-  //   //   username: 'dee',
-  //   //   image: 'ddddd',
-  //   // };
-  //   // axios.post('http://192.168.0.198:4000/api/v1/user/chat', post);
-  //   setMessages(previousMessages =>
-  //     GiftedChat.append(previousMessages, newMessages),
-  //   );
-  // }, []);
+    socket.on('messageSaved', message => {
+      console.log('📩 Received messageSaved event:', message);
+      setMessages(prevMessages => GiftedChat.append(prevMessages, [message]));
+    });
+
+    return () => {
+      console.log('🛑 Removing messageSaved listener...');
+      socket.off('messageSaved');
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (isSuccess && chatsData?.data?.chats?.length > 0) {
+      setMessages([]);
+
       setMessages(prevMessages =>
         GiftedChat.append(prevMessages, chatsData.data.chats),
       );
     }
   }, [isSuccess, chatsData]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('typing', ({senderId, isTyping}) => {
+      // Use senderId and isTyping here
+      console.log(`User ${senderId} is ${isTyping ? 'typing' : 'not typing'}`);
+      if (isTyping) {
+        console.log('okayyyy');
+        setIsTyping(true);
+      } else {
+        setIsTyping(false);
+      }
+    });
+
+    return () => {
+      socket.off('typing');
+      setIsTyping(false);
+    };
+  }, [theUser._id, socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('messageReceivedStatus', ({messageId, received}) => {
+      console.log(
+        `Message ${messageId} status updated to received: ${received}`,
+      );
+
+      setMessages(prevMessages =>
+        prevMessages.map(msg =>
+          msg._id === messageId ? {...msg, received} : msg,
+        ),
+      );
+    });
+
+    return () => {
+      socket.off('messageReceivedStatus');
+    };
+  }, [socket]);
 
   const onSend = useCallback(
     (newMessages: CustomMessage[] = []) => {
@@ -178,16 +194,19 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
         receiverId: theUser._id,
         senderId: currentUser._id,
         received: false,
-        sent: true,
+        sent: false,
+        pending: true,
+        //senderPhoto:currentUser.profilePhoto.url,
+        //receiverPhoto:theUser.profilePhoto.url,
       };
       console.log(formattedMessage, 'fmmess');
-      setMessages(previousMessages =>
-        GiftedChat.append(previousMessages, [formattedMessage]),
-      );
+      // setMessages(previousMessages =>
+      //   GiftedChat.append(previousMessages, [formattedMessage]),
+      // );
 
       // Send the message to your backend or Firebase
       //sendMessageToBackend(formattedMessage);
-      socket.emit('sendMessage', formattedMessage);
+      socket?.emit('sendMessage', formattedMessage);
     },
     [theUser],
   );
@@ -229,22 +248,47 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
       aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: false,
+      base64: true,
     });
 
     if (response.canceled) {
       console.log('User cancelled image picker');
     } else {
-      const {uri} = response.assets[0];
+      console.log(response.assets, 'myuyuu');
+      const {uri, type, mimeType, width, base64, fileSize} = response.assets[0];
+
+      // Convert size from bytes to MB
+      const ONE_MB = 1000000;
+
+      // Allowed MIME types
+      const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+
+      // Check file size
+      if (fileSize && fileSize > ONE_MB) {
+        Toast.error('File too big!.', 'bottom');
+        return;
+      }
+
+      // Check file type
+      if (!allowedMimeTypes.includes(mimeType?.toLowerCase() || '')) {
+        Toast.error('Unsupported file type!', 'bottom');
+        return;
+      }
       const imageMessage = {
         _id: Math.random().toString(36).substring(7),
         createdAt: new Date(),
         user: {
-          _id: currentUser._id, // Adjust to your user ID
-          name: currentUser.username, // Adjust to your user's name
+          _id: currentUser._id,
+          name: currentUser.username,
         },
-        image: uri,
+        image: 'data:image/jpeg;base64,' + base64,
         text: '',
         receiverId: theUser._id,
+        received: false,
+        pending: true,
+        sent: false,
+        //senderPhoto:currentUser.profilePhoto.url,
+        //receiverPhoto:theUser.profilePhoto.url,
       };
       onSend([imageMessage]);
     }
@@ -262,7 +306,7 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
     if (response.canceled) {
       console.log('User cancelled image picker');
     } else {
-      const {uri} = response.assets[0];
+      const {uri, base64} = response.assets[0];
       const imageMessage = {
         _id: Math.random().toString(36).substring(7),
         createdAt: new Date(),
@@ -270,7 +314,7 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
           _id: 1, // Adjust to your user ID
           name: 'User Name', // Adjust to your user's name
         },
-        image: uri || 'ddeee',
+        image: 'data:image/jpeg;base64,' + base64 || undefined,
         text: 'destoo',
       };
       onSend([imageMessage]);
@@ -298,16 +342,6 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
         </View>
       );
     }
-  };
-
-  const renderChatEmpty = () => {
-    const {chats, code} = chatsData?.data || [];
-
-    return (
-      <View className="mx-auto">
-        <Text>Hi! {currentUser.username}</Text>
-      </View>
-    );
   };
 
   const renderFooter = () => {
@@ -338,6 +372,15 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
     // );
   };
 
+  // Call this function on text input change
+  const handleTyping = (text: string) => {
+    // Emit typing event: true if there is text, false otherwise
+    socket?.emit('typing', {
+      senderId: currentUser._id,
+      receiverId: theUser._id,
+      isTyping: text.length > 0,
+    });
+  };
   return (
     <View style={{flex: 1}}>
       <GiftedChat
@@ -351,21 +394,22 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
         renderBubble={renderBubble}
         renderActions={renderActions}
         renderLoading={renderLoading}
+        isTyping={isTyping}
+        onInputTextChanged={handleTyping}
+        renderMessageImage={props => (
+          <Image
+            source={{uri: props.currentMessage.image}}
+            style={{
+              width: 200,
+              height: 200,
+              borderRadius: 15,
+              margin: 3,
+            }}
+            resizeMode="cover"
+          />
+        )}
         //renderChatEmpty={renderChatEmpty}
-        renderFooter={renderFooter}
-        // messageIdGenerator={message =>
-        //   message
-        //     ? `${message._id}_${message.createdAt}_${message.user.name}`
-        //     : Math.random().toString(36).substring(7)
-        // }
-
-        keyExtractor={message =>
-          message
-            ? `${message._id}_${message.createdAt}_${
-                message.user.name
-              }_${Math.random().toString(36).substring(7)}`
-            : Math.random().toString(36).substring(7)
-        }
+        //renderFooter={renderFooter}
 
         //messagesContainerStyle={{backgroundColor: COLOUR_Dark_WHITE}}
       />

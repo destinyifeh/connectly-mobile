@@ -9,6 +9,7 @@ type State = {
   currentUser: CurrentUserProps;
   currentUserLocation: CurrentUserLocationProps;
   application: any;
+  isConnected?: boolean;
 };
 type Actions = {
   getUsers: (data: string[]) => void;
@@ -19,6 +20,7 @@ type Actions = {
   resetApplication: () => void;
   setCurrentUser: (data: CurrentUserProps) => void;
   updateUserProperty: (data: CurrentUserProps, field: string) => void;
+  setIsConnnected: (isConnected: boolean) => void;
 };
 
 const initialState: State = {
@@ -30,6 +32,7 @@ const initialState: State = {
     country: undefined,
   },
   application: {},
+  isConnected: false,
 };
 export const useUserStore = create<State & Actions>((set, get) => ({
   ...initialState,
@@ -66,6 +69,9 @@ export const useUserStore = create<State & Actions>((set, get) => ({
     saveDeviceData(CURRENT_USER, user);
   },
 
+  setIsConnnected: (isConected: boolean) => {
+    set({isConnected: isConected});
+  },
   updateUserProperty: (property: CurrentUserProps, field: string) => {
     console.log(property, 'other photos update');
     set(state => ({

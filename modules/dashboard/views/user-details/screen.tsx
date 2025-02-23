@@ -8,7 +8,7 @@ import {Entypo, Feather, Ionicons, Octicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useFocusEffect, useLocalSearchParams, useRouter} from 'expo-router';
 import * as SMS from 'expo-sms';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -35,6 +35,9 @@ export const UserDetailsScreen = () => {
   const reportUserRequester = apiHookRequester.useUpdateData(
     `/api/v1/user/report/${theUser._id}`,
   );
+  const {mutate} = apiHookRequester.usePostData(
+    `/api/v1/user/notify/${currentUser?._id}`,
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -43,7 +46,26 @@ export const UserDetailsScreen = () => {
       };
     }, []),
   );
+  useEffect(() => {
+    notify();
+  }, []);
 
+  const notify = () => {
+    const payload = {
+      from: currentUser._id,
+      to: theUser._id,
+      title: 'Visited your profile',
+      body: currentUser.username + ' ' + 'is interested in you',
+    };
+    mutate(payload, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'datamee updating');
+      },
+      onError(error, variables, context) {
+        console.log(error, 'err updating...');
+      },
+    });
+  };
   const handleSms = async () => {
     // Check if SMS is available on the device
     const isAvailable = await SMS.isAvailableAsync();
@@ -118,7 +140,11 @@ export const UserDetailsScreen = () => {
                 {getUserCurrentAge(theUser.dob)}
               </Text>
 
-              <Octicons name="dot-fill" size={13} color="green" />
+              <Octicons
+                name="dot-fill"
+                size={13}
+                color={theUser.isOnline ? 'green' : 'gray'}
+              />
             </View>
           </View>
           <TouchableOpacity onPress={handleModal}>
@@ -253,7 +279,7 @@ export const UserDetailsScreen = () => {
 
       <TouchableOpacity
         onPress={() =>
-          router.navigate({
+          router.push({
             pathname: '/dashboard/chat',
             params: {user: userInfo},
           })

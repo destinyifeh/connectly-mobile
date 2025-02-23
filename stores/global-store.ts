@@ -6,6 +6,7 @@ type State = {
   theme: string;
   themeColor: ThemeColorProps;
   isAppMounted: boolean;
+  notificationToken: string;
 };
 
 type Actions = {
@@ -13,12 +14,14 @@ type Actions = {
   setThemeColor: (color: ThemeColorProps) => void;
   reset: () => void;
   setIsAppMounted: (isAppMounted: boolean) => void;
+  setNotificationToken: (token: string) => void;
 };
 
 const initiaState: State = {
   theme: THEME_ISLIGHT,
   themeColor: AppLightTheme,
   isAppMounted: false,
+  notificationToken: '',
 };
 
 export const useGlobalStore = create<State & Actions>((set, get) => ({
@@ -41,5 +44,9 @@ export const useGlobalStore = create<State & Actions>((set, get) => ({
   setIsAppMounted: (mounted: boolean) => {
     console.log(mounted, 'app mounted');
     set({isAppMounted: mounted});
+  },
+  setNotificationToken(token) {
+    console.log(token, 'device token');
+    set({notificationToken: token});
   },
 }));

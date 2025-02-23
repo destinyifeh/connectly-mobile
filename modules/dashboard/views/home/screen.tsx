@@ -19,8 +19,8 @@ import {
 } from '@expo/vector-icons';
 import {useIsFocused} from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
-import {useFocusEffect, useRouter} from 'expo-router';
-import {FC, useCallback, useEffect, useRef, useState} from 'react';
+import {useRouter} from 'expo-router';
+import {FC, useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -143,7 +143,7 @@ const ActiveUsers: FC<AppListType> = ({user, refetchUsers, isSelected}) => {
                     <Octicons
                       name="dot-fill"
                       size={13}
-                      color="grey"
+                      color="gray"
                       className="bottom-[1.9]"
                     />
                   )}
@@ -178,11 +178,11 @@ export const DashboardHomeScreen = () => {
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isFil, setIsFil] = useState(false);
   const [filPayload, setFilPayload] = useState<FilType>({});
-  const {currentUser} = useUserStore(state => state);
+  const {currentUser, isConnected} = useUserStore(state => state);
   console.log(isFocused, 'idffoooo');
   console.log(currentUser, 'current boss');
   const onlineUser = useUserOnline();
-  console.log(onlineUser, 'online');
+  console.log(onlineUser, 'user isOnline');
   const params = new URLSearchParams();
   const {
     isSuccess,
@@ -204,23 +204,17 @@ export const DashboardHomeScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (isSelected) {
-      refetch(); // Ensure the API is called again when isSelected changes
+    //setIsSelected('foryou');
+    if (isSelected && isFocused) {
+      refetch();
     }
-  }, [isSelected]);
+  }, [isSelected, isFocused]);
 
-  useFocusEffect(
-    // Callback should be wrapped in `React.useCallback` to avoid running the effect too often.
-    useCallback(() => {
-      // Invoked whenever the route is focused.
-      console.log('Hello!');
-
-      // Return function is invoked whenever the route gets out of focus.
-      return () => {
-        console.log('This route is now unfocused.');
-      };
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     refetch();
+  //   }, []),
+  // );
 
   const handleSelectedNav = (selected: string) => {
     console.log(selected, 'sssss');

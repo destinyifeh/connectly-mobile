@@ -9,6 +9,7 @@ export function useNotificationObserver() {
     function redirect(notification: Notifications.Notification) {
       const url = notification.request.content.data?.url;
       if (url) {
+        console.log(url, 'urlll');
         router.push(url);
       }
     }

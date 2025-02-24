@@ -1,3 +1,4 @@
+import {API_BASE_URL} from '@/constants/config';
 import {useUserStore} from '@/stores/user-store';
 import {useEffect, useState} from 'react';
 import {Socket, io} from 'socket.io-client';
@@ -10,7 +11,7 @@ export const useUserOnline = () => {
   useEffect(() => {
     if (!currentUser?._id) return;
 
-    const newSocket = io('http://192.168.0.199:4000'); // Replace with your backend URL
+    const newSocket = io(API_BASE_URL); // Replace with your backend URL
     setSocket(newSocket);
 
     // Notify backend that the user is online

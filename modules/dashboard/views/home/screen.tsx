@@ -173,7 +173,7 @@ export const DashboardHomeScreen = () => {
   const [minAge, setMinAge] = useState<number>(18);
   const [maxAge, setMaxAge] = useState<number>(50);
   const [isLoadingFilter, setIsLoadingFilter] = useState<boolean>(false);
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor, notificationToken} = useGlobalStore(state => state);
   const [isTopNavVisible, setIsTopNavVisible] = useState(false);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isFil, setIsFil] = useState(false);
@@ -198,9 +198,13 @@ export const DashboardHomeScreen = () => {
       : '',
     'activeUsers',
   );
-
+  const pushToken = apiHookRequester.usePostData(
+    `/api/v1/user/push-token/${currentUser?._id}`,
+  );
   useEffect(() => {
     setIsSelected('foryou');
+
+    postPushToken();
   }, []);
 
   useEffect(() => {
@@ -215,6 +219,24 @@ export const DashboardHomeScreen = () => {
   //     refetch();
   //   }, []),
   // );
+
+  const postPushToken = () => {
+    if (!notificationToken) {
+      console.log('No token available');
+      return false;
+    }
+    const payload = {
+      token: notificationToken,
+    };
+    pushToken.mutate(payload, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'push data');
+      },
+      onError(error, variables, context) {
+        console.log(error, 'push err');
+      },
+    });
+  };
 
   const handleSelectedNav = (selected: string) => {
     console.log(selected, 'sssss');

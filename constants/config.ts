@@ -1,3 +1,4 @@
 export const APP_THEME_PREFERENCE = 'APP_THEME_PREFERENCE';
 export const CURRENT_USER = 'CURRENT_USER';
 export const USER_LOCATION_DATA = 'USER_LOCATION_DATA';
+export const API_BASE_URL = 'http://192.168.0.199:4000';

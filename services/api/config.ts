@@ -1,8 +1,9 @@
+import {API_BASE_URL} from '@/constants/config';
 import axios from 'axios';
 
 const createApiInstance = () => {
   const apiInstance = axios.create({
-    baseURL: 'http://192.168.0.199:4000',
+    baseURL: API_BASE_URL,
     headers: {
       'Content-Type': 'application/json',
     },

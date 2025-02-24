@@ -1,4 +1,5 @@
 import {AppLoader} from '@/components/AppLoader';
+import {API_BASE_URL} from '@/constants/config';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
@@ -76,7 +77,7 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
 
   console.log(chatsData, 'chatsdata');
   useEffect(() => {
-    const newSocket = io('http://192.168.0.199:4000');
+    const newSocket = io(API_BASE_URL);
     setSocket(newSocket);
 
     return () => {

@@ -10,6 +10,7 @@ import {initializeUser} from '@/helpers/auth';
 import {useAppNotification} from '@/helpers/services/notification';
 import {serivesConfigurations} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
+import {useNotificationObserver} from '@/hooks/useNotificationObserver';
 import {useGlobalStore} from '@/stores/global-store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -27,11 +28,8 @@ export default function RootLayout() {
     RobotoItalic: require('../assets/fonts/Roboto-Italic.ttf'),
     Sans: require('../assets/fonts/OpenSans-Regular.ttf'),
   });
-
+  useNotificationObserver();
   useEffect(() => {
-    console.log(notification, 'noter');
-    console.log(channels, 'note channel');
-    console.log(expoPushToken, 'note token');
     initializeUser();
   }, []);
   useEffect(() => {
@@ -39,6 +37,10 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
       serivesConfigurations();
       setIsAppMounted(true);
+      console.log(notification, 'noter');
+      console.log(channels, 'note channel');
+      console.log(expoPushToken, 'note token');
+      setNotificationToken(expoPushToken);
     }
   }, [loaded]);
 

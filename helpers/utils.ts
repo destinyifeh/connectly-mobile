@@ -107,10 +107,10 @@ const speak = () => {
   const thingToSay = 'Welcome to conectly';
   Speech.speak(thingToSay);
 };
-async function serivesConfigurations() {
+async function servicesConfigurations() {
   await monitorThemeAppearance();
   await getCurrentLocation();
   speak();
 }
 
-export {serivesConfigurations};
+export {servicesConfigurations};

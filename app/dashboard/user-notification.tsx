@@ -6,6 +6,7 @@ import {AppListType} from '@/constants/types';
 import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
+import {useIsFocused} from '@react-navigation/native';
 import {useRouter} from 'expo-router';
 import {useEffect} from 'react';
 import {
@@ -65,10 +66,15 @@ export default function NotificationScreen() {
   const {mutate} = apiHookRequester.useUpdateData(
     `/api/v1/user/notification/${currentUser?._id}`,
   );
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     updateNotification();
   }, []);
+
+  // useEffect(() => {
+  //   dismissAllNotifications();
+  // }, [isFocused]);
 
   const updateNotification = () => {
     const payload = {

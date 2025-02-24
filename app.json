@@ -82,13 +82,10 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/media/notification_icon.png",
-          "color": "#ffffff",
+          "icon": "/assets/media/notification_icon.png",
+          "color": "#d4b300",
           "defaultChannel": "default",
-          "sounds": [
-            "./assets/media/notification_sound.wav"
-            // "./assets/notification_sound_other.wav"
-          ],
+          "sounds": ["/assets/media/notification_sound.wav"],
           "enableBackgroundRemoteNotifications": false
         }
       ]

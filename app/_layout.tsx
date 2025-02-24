@@ -7,10 +7,10 @@ import '../global.css';
 
 import AppWrapper from '@/helpers/App-wrapper';
 import {initializeUser} from '@/helpers/auth';
+import {configureNotifications} from '@/helpers/services/app-notification/configure-notifications';
 import {useAppNotification} from '@/helpers/services/notification';
-import {serivesConfigurations} from '@/helpers/utils';
+import {servicesConfigurations} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
-import {useNotificationObserver} from '@/hooks/useNotificationObserver';
 import {useGlobalStore} from '@/stores/global-store';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -28,14 +28,15 @@ export default function RootLayout() {
     RobotoItalic: require('../assets/fonts/Roboto-Italic.ttf'),
     Sans: require('../assets/fonts/OpenSans-Regular.ttf'),
   });
-  useNotificationObserver();
+  //useNotificationObserver();
   useEffect(() => {
     initializeUser();
+    configureNotifications();
   }, []);
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
-      serivesConfigurations();
+      servicesConfigurations();
       setIsAppMounted(true);
       console.log(notification, 'noter');
       console.log(channels, 'note channel');

@@ -2,6 +2,11 @@ import * as Notifications from 'expo-notifications';
 import {router} from 'expo-router';
 import {useEffect} from 'react';
 
+export const dismissAllNotifications = () => {
+  console.log('dismiss note');
+  Notifications.dismissAllNotificationsAsync();
+};
+
 export function useNotificationObserver() {
   useEffect(() => {
     let isMounted = true;
@@ -11,6 +16,7 @@ export function useNotificationObserver() {
       if (url) {
         console.log(url, 'urlll');
         router.push(url);
+        dismissAllNotifications();
       }
     }
 

@@ -19,21 +19,22 @@ export const ChatScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const theUser = user ? JSON.parse(user as string) : null;
   const isOnline = useUserOnline();
-  console.log(theUser.isFromMychats, 'my user');
+  console.log(theUser?.isFromMychats, 'my user');
   console.log(isOnline, 'issonn');
   console.log(user, 'infooo');
 
   const {mutate} = apiHookRequester.useUpdateData('/api/v1/user/chat/viewed');
 
   useEffect(() => {
-    if (theUser?.isFromMychats && theUser?.isViewed === false) {
+    if (theUser?.isFromMychats) {
       onChatViewed();
     }
   }, [theUser?.isFromMychats]);
 
   const onChatViewed = () => {
     const payload = {
-      chatId: theUser.messageId,
+      receiverId: theUser?.receiverId,
+      senderId: theUser?.senderId,
     };
 
     mutate(payload, {

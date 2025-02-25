@@ -7,6 +7,7 @@ type State = {
   themeColor: ThemeColorProps;
   isAppMounted: boolean;
   notificationToken: string;
+  isChatting: boolean;
 };
 
 type Actions = {
@@ -15,6 +16,7 @@ type Actions = {
   reset: () => void;
   setIsAppMounted: (isAppMounted: boolean) => void;
   setNotificationToken: (token: string) => void;
+  setIsChatting: (ischatting: boolean) => void;
 };
 
 const initiaState: State = {
@@ -22,6 +24,7 @@ const initiaState: State = {
   themeColor: AppLightTheme,
   isAppMounted: false,
   notificationToken: '',
+  isChatting: false,
 };
 
 export const useGlobalStore = create<State & Actions>((set, get) => ({
@@ -48,5 +51,9 @@ export const useGlobalStore = create<State & Actions>((set, get) => ({
   setNotificationToken(token) {
     console.log(token, 'device token');
     set({notificationToken: token});
+  },
+  setIsChatting(isChatting) {
+    console.log(isChatting, 'i am chatting...');
+    set({isChatting: isChatting});
   },
 }));

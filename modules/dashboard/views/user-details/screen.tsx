@@ -26,12 +26,12 @@ export const UserDetailsScreen = () => {
   const [isReporting, setIsReporting] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const {themeColor} = useGlobalStore(state => state);
-  const {userId, userInfo} = useLocalSearchParams();
+  const {userId, userInfo, previousScreen} = useLocalSearchParams();
   const {currentUser} = useUserStore(state => state);
   const theUser = userInfo ? JSON.parse(userInfo as string) : null;
 
   console.log(theUser, 'Parsed User Info');
-
+  console.log(previousScreen, 'PrevScreen');
   const reportUserRequester = apiHookRequester.useUpdateData(
     `/api/v1/user/report/${theUser._id}`,
   );
@@ -47,14 +47,16 @@ export const UserDetailsScreen = () => {
     }, []),
   );
   useEffect(() => {
-    notify();
-  }, []);
+    if (previousScreen === 'Dashboard') {
+      notify();
+    }
+  }, [previousScreen]);
 
   const notify = () => {
     const payload = {
       from: currentUser._id,
       to: theUser._id,
-      title: 'Visited your profile',
+      title: 'visited your profile',
       body: currentUser.username + ' ' + 'is interested in you',
     };
     mutate(payload, {

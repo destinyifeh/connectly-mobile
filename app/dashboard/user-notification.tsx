@@ -3,6 +3,7 @@ import {AppLoader} from '@/components/AppLoader';
 import AppList from '@/constants/AppPackages';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {AppListType} from '@/constants/types';
+import {formatToDynamicTime, getUserCurrentAge} from '@/helpers/formatters';
 import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
@@ -25,20 +26,30 @@ const MyNotifications = ({notification}: AppListType) => {
       <View className="w-[90%] self-center">
         <TouchableOpacity className="flex-row items-center gap-3">
           <Image
-            source={require('../../assets/images/couple_bg.jpg')}
+            source={{uri: notification.from.profilePhoto.url}}
             className="h-[45] w-[45] rounded-3xl"
             resizeMode="cover"
           />
-          <View className="flex-row items-center gap-1">
-            <Text
-              className="text-black font-sans font-bold text-lg"
-              style={{color: themeColor.text}}>
-              Anita, 28
-            </Text>
+          <View>
+            <View className="flex-row items-center gap-1  w-[100%]">
+              <Text
+                className="text-black font-sans font-bold text-lg capitalize"
+                style={{color: themeColor.text, maxWidth: 150}}
+                ellipsizeMode="tail"
+                numberOfLines={1}>
+                {notification.from.username},{' '}
+                {getUserCurrentAge(notification.from.dob)}
+              </Text>
+              <Text
+                className="text-gray font-sans"
+                style={{color: themeColor.text}}>
+                {notification.title}
+              </Text>
+            </View>
             <Text
               className="text-gray font-sans"
               style={{color: themeColor.text}}>
-              is interested in you
+              {formatToDynamicTime(notification.createdAt)}
             </Text>
           </View>
         </TouchableOpacity>
@@ -64,7 +75,7 @@ export default function NotificationScreen() {
   );
 
   const {mutate} = apiHookRequester.useUpdateData(
-    `/api/v1/user/notification/${currentUser?._id}`,
+    `/api/v1/user/notification/viewed/${currentUser?._id}`,
   );
   const isFocused = useIsFocused();
 
@@ -124,32 +135,6 @@ export default function NotificationScreen() {
 
   return (
     <AppContainer showBackButton showScreenTitle title="Notifications">
-      <View className="w-screen self-center border-b border-gray-200 h-[60] justify-center">
-        <View className="w-[90%] self-center">
-          <TouchableOpacity
-            onPress={() => router.push('/dashboard/user-details')}
-            className="flex-row items-center gap-3">
-            <Image
-              source={require('../../assets/images/couple_bg.jpg')}
-              className="h-[45] w-[45] rounded-3xl"
-              resizeMode="cover"
-            />
-            <View className="flex-row items-center gap-1">
-              <Text
-                className="text-black font-sans font-bold text-lg"
-                style={{color: themeColor.text}}>
-                Anita, 28
-              </Text>
-              <Text
-                className="text-gray font-sans"
-                style={{color: themeColor.text}}>
-                visited your profile
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
       <View className="flex-1">
         <AppList
           data={isFetching ? [] : notifications}

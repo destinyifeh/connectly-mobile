@@ -7,7 +7,6 @@ import '../global.css';
 
 import AppWrapper from '@/helpers/App-wrapper';
 import {initializeUser} from '@/helpers/auth';
-import {configureNotifications} from '@/helpers/services/app-notification/configure-notifications';
 import {useAppNotification} from '@/helpers/services/notification';
 import {servicesConfigurations} from '@/helpers/utils';
 import {useColorScheme} from '@/hooks/useColorScheme';
@@ -18,9 +17,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const {setIsAppMounted, setNotificationToken} = useGlobalStore(
-    state => state,
-  );
+  const {setIsAppMounted} = useGlobalStore(state => state);
   const {notification, channels, expoPushToken} = useAppNotification();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -28,10 +25,9 @@ export default function RootLayout() {
     RobotoItalic: require('../assets/fonts/Roboto-Italic.ttf'),
     Sans: require('../assets/fonts/OpenSans-Regular.ttf'),
   });
-  //useNotificationObserver();
+
   useEffect(() => {
     initializeUser();
-    configureNotifications();
   }, []);
   useEffect(() => {
     if (loaded) {
@@ -41,7 +37,6 @@ export default function RootLayout() {
       console.log(notification, 'noter');
       console.log(channels, 'note channel');
       console.log(expoPushToken, 'note token');
-      setNotificationToken(expoPushToken);
     }
   }, [loaded]);
 

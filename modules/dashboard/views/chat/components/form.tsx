@@ -1,6 +1,7 @@
 import {AppLoader} from '@/components/AppLoader';
 import {API_BASE_URL} from '@/constants/config';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {dismissAllNotifications} from '@/helpers/services/app-notification/configure-notifications';
 import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
@@ -49,7 +50,7 @@ type ChatFormProps = {
   chatUser: any;
 };
 export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
-  const {themeColor} = useGlobalStore(state => state);
+  const {themeColor, setIsChatting} = useGlobalStore(state => state);
   const {currentUser} = useUserStore(state => state);
   const [messages, setMessages] = useState<CustomMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -77,11 +78,14 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
 
   console.log(chatsData, 'chatsdata');
   useEffect(() => {
+    dismissAllNotifications();
+    setIsChatting(true);
     const newSocket = io(API_BASE_URL);
     setSocket(newSocket);
 
     return () => {
       newSocket.disconnect();
+      setIsChatting(false);
     };
   }, []);
   useEffect(() => {
@@ -91,17 +95,10 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
     socket.on('newMessage', message => {
       console.log(message, 'messageeeeedee');
       const updatedMessage = {...message, received: true};
-
+      setIsChatting(true);
       setMessages(prevMessages =>
         GiftedChat.append(prevMessages, [updatedMessage]),
       );
-      //setMessages(prevMessages => GiftedChat.append(prevMessages, [message]));
-      // setMessages(prevMessages => [...prevMessages, message]);
-
-      // if (message.receiverId === currentUser._id) {
-      //   // setMessages(prevMessages => GiftedChat.append(prevMessages, [receivedMessage]));
-      //   setMessages(prevMessages => GiftedChat.append(prevMessages, [message]));
-      // }
 
       // Notify the server that this message was received
       socket.emit('messageReceived', {
@@ -114,6 +111,7 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
     // Cleanup on unmount
     return () => {
       socket.off('newMessage');
+      setIsChatting(false);
     };
   }, [currentUser._id, socket]);
 
@@ -201,9 +199,6 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
         //receiverPhoto:theUser.profilePhoto.url,
       };
       console.log(formattedMessage, 'fmmess');
-      // setMessages(previousMessages =>
-      //   GiftedChat.append(previousMessages, [formattedMessage]),
-      // );
 
       // Send the message to your backend or Firebase
       //sendMessageToBackend(formattedMessage);

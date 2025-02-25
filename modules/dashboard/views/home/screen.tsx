@@ -19,14 +19,12 @@ import {
 } from '@expo/vector-icons';
 import {useIsFocused} from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
-import {useRouter} from 'expo-router';
-import {FC, useEffect, useRef, useState} from 'react';
+import {useFocusEffect, useRouter} from 'expo-router';
+import {FC, useCallback, useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   Image,
   ImageBackground,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -97,7 +95,10 @@ const ActiveUsers: FC<AppListType> = ({user, refetchUsers, isSelected}) => {
         onPress={() =>
           router.push({
             pathname: '/dashboard/user-details',
-            params: {userInfo: JSON.stringify(user)},
+            params: {
+              userInfo: JSON.stringify(user),
+              previousScreen: 'Dashboard',
+            },
           })
         }>
         <ImageBackground
@@ -175,7 +176,7 @@ export const DashboardHomeScreen = () => {
   const [isLoadingFilter, setIsLoadingFilter] = useState<boolean>(false);
   const {themeColor, notificationToken} = useGlobalStore(state => state);
   const [isTopNavVisible, setIsTopNavVisible] = useState(false);
-  const [currentOffset, setCurrentOffset] = useState(0);
+  const [notificationCounter, setNotificationCounter] = useState(0);
   const [isFil, setIsFil] = useState(false);
   const [filPayload, setFilPayload] = useState<FilType>({});
   const {currentUser, isConnected} = useUserStore(state => state);
@@ -201,24 +202,45 @@ export const DashboardHomeScreen = () => {
   const pushToken = apiHookRequester.usePostData(
     `/api/v1/user/push-token/${currentUser?._id}`,
   );
+
+  const {
+    error: countErr,
+    refetch: refetchCount,
+    data: notificationCountData,
+  } = apiHookRequester.useFetchData(
+    `/api/v1/user/notifications-count/${currentUser?._id}`,
+
+    'countNotifications',
+  );
+
   useEffect(() => {
     setIsSelected('foryou');
-
     postPushToken();
   }, []);
 
   useEffect(() => {
-    //setIsSelected('foryou');
     if (isSelected && isFocused) {
       refetch();
     }
   }, [isSelected, isFocused]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     refetch();
-  //   }, []),
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      refetchCount();
+      console.log(countErr, 'count errr');
+      console.log(notificationCountData, 'count data');
+
+      if (notificationCountData?.data?.code !== '200') {
+        console.log(countErr, 'count errr');
+        setNotificationCounter(0);
+        return;
+      }
+
+      const {notificationCount} = notificationCountData?.data || {};
+      console.log(notificationCount, 'noteCounter...');
+      setNotificationCounter(notificationCount);
+    }, [refetchCount, notificationCountData?.data, notificationCounter]),
+  );
 
   const postPushToken = () => {
     if (!notificationToken) {
@@ -343,18 +365,9 @@ export const DashboardHomeScreen = () => {
     // }, 5000);
   };
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const {contentOffset} = event.nativeEvent;
-    const {x, y} = contentOffset;
-    console.log(y, 'xman');
-    const newOffset = y;
-    const isScrollingDown = newOffset > currentOffset;
-
-    if (isScrollingDown && isTopNavVisible) {
-      setIsTopNavVisible(false);
-    } else if (!isScrollingDown && !isTopNavVisible) {
-      setIsTopNavVisible(true);
-    }
+  const onRefresh = () => {
+    refetch();
+    refetchCount();
   };
 
   const renderFooter = () => {
@@ -387,7 +400,7 @@ export const DashboardHomeScreen = () => {
       <ActiveUsers user={item} refetchUsers={refetch} isSelected={isSelected} />
     );
   };
-
+  const theCounter = notificationCounter > 99 ? '99+' : notificationCounter;
   const foryouBg = isSelected === 'foryou' ? 'bg-app-default' : 'bg-app-ghost';
   const nearbyBg = isSelected === 'nearby' ? 'bg-app-default' : 'bg-app-ghost';
   const favBg = isSelected === 'fav' ? 'bg-app-default' : 'bg-app-ghost';
@@ -420,6 +433,11 @@ export const DashboardHomeScreen = () => {
           <TouchableOpacity
             onPress={() => router.push('/dashboard/user-notification')}
             className="bg-app-ghost rounded-[25] w-[45] h-[45] justify-center items-center">
+            <View className="absolute top-1 z-5 left-8 ">
+              <Text className="text-app-default font-sans font-bold text-base">
+                {notificationCounter == 0 ? null : theCounter}
+              </Text>
+            </View>
             <MaterialIcons name="notifications" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -510,7 +528,7 @@ export const DashboardHomeScreen = () => {
             refreshControl={
               <RefreshControl
                 refreshing={false}
-                onRefresh={refetch}
+                onRefresh={onRefresh}
                 colors={[APP_DEFAULT_COLOUR]}
               />
             }

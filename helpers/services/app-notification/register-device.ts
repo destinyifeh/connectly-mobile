@@ -1,3 +1,4 @@
+import {useGlobalStore} from '@/stores/global-store';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -46,6 +47,7 @@ export async function registerForPushNotificationsAsync() {
         })
       ).data;
       console.log(token, 'device token');
+      useGlobalStore.getState().setNotificationToken(token);
     } catch (e) {
       token = `${e}`;
     }

@@ -3,13 +3,14 @@ import {AppLoader} from '@/components/AppLoader';
 import AppList from '@/constants/AppPackages';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {AppListType} from '@/constants/types';
+import {dismissAllNotifications} from '@/helpers/services/app-notification/configure-notifications';
 import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect, useRouter} from 'expo-router';
 import moment from 'moment';
-import {useCallback} from 'react';
+import {useCallback, useEffect} from 'react';
 import {
   Image,
   RefreshControl,
@@ -46,6 +47,8 @@ const MyChats = ({chat}: AppListType) => {
     messageId: chat._id,
     isFromMychats: true,
     isViewed: chat.isViewed,
+    senderId: chat.sender._id,
+    receiverId: chat.receiver._id,
   };
 
   return (
@@ -142,6 +145,9 @@ export default function ChatMainScreen() {
     'mychats',
   );
 
+  useEffect(() => {
+    dismissAllNotifications();
+  }, []);
   useFocusEffect(
     useCallback(() => {
       refetch();

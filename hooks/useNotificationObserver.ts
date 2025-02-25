@@ -1,11 +1,7 @@
+import {dismissAllNotifications} from '@/helpers/services/app-notification/configure-notifications';
 import * as Notifications from 'expo-notifications';
 import {router} from 'expo-router';
 import {useEffect} from 'react';
-
-export const dismissAllNotifications = () => {
-  console.log('dismiss note');
-  Notifications.dismissAllNotificationsAsync();
-};
 
 export function useNotificationObserver() {
   useEffect(() => {

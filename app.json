@@ -88,7 +88,8 @@
           "sounds": ["./assets/media/notification_sound.wav"],
           "enableBackgroundRemoteNotifications": false
         }
-      ]
+      ],
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true

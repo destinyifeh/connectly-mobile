@@ -21,6 +21,7 @@
     "@react-native-clipboard/clipboard": "^1.15.0",
     "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-community/slider": "4.5.5",
+    "@react-native-google-signin/google-signin": "^13.2.0",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
     "@shopify/flash-list": "^1.7.2",
@@ -30,6 +31,7 @@
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
     "expo-dev-client": "~5.0.9",
+    "expo-device": "~7.0.2",
     "expo-file-system": "~18.0.8",
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
@@ -39,6 +41,7 @@
     "expo-linking": "~7.0.3",
     "expo-location": "~18.0.5",
     "expo-navigation-bar": "~4.0.7",
+    "expo-notifications": "~0.29.13",
     "expo-router": "4.0.11",
     "expo-sms": "~13.0.0",
     "expo-speech": "~13.0.1",
@@ -73,9 +76,7 @@
     "toastify-react-native": "^5.0.4",
     "use-debounce": "^10.0.4",
     "zod": "^3.24.1",
-    "zustand": "^5.0.2",
-    "expo-notifications": "~0.29.13",
-    "expo-device": "~7.0.2"
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

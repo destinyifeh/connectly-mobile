@@ -1,5 +1,11 @@
 import {AppContainer} from '@/components/AppContainer';
 import {useGlobalStore} from '@/stores/global-store';
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  isSuccessResponse,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
@@ -8,6 +14,39 @@ export const LoginScreen = () => {
   const [form, setForm] = useState({email: ''});
   const {themeColor} = useGlobalStore(state => state);
   const router = useRouter();
+
+  GoogleSignin.configure();
+  const onGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      if (isSuccessResponse(response)) {
+        console.log(response, 'respooo');
+        // setState({ userInfo: response.data });
+      } else {
+        // sign in was cancelled by user
+      }
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.IN_PROGRESS:
+            console.log('in progress');
+            // operation (eg. sign in) already in progress
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            // Android only, play services not available or outdated
+            console.log('ot available');
+            break;
+          default:
+            // some other error happened
+            console.log('other issues');
+        }
+      } else {
+        // an error that's not related to google sign in occurred
+        console.log('Some other issues');
+      }
+    }
+  };
 
   return (
     <AppContainer showBackButton barColor="dark-content">
@@ -34,7 +73,9 @@ export const LoginScreen = () => {
         </View>
 
         <View className="mt-7">
-          <TouchableOpacity className="border border-gray-300 h-[40.7] rounded-3xl flex-row items-center justify-center px-3 w-full gap-[5]">
+          <TouchableOpacity
+            onPress={onGoogleSignIn}
+            className="border border-gray-300 h-[40.7] rounded-3xl flex-row items-center justify-center px-3 w-full gap-[5]">
             <Image
               source={require('../../../assets/images/google_brand_image.png')}
               resizeMode="contain"

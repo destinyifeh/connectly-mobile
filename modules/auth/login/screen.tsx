@@ -2,6 +2,7 @@ import {AppContainer} from '@/components/AppContainer';
 import {useGlobalStore} from '@/stores/global-store';
 import {
   GoogleSignin,
+  GoogleSigninButton,
   isErrorWithCode,
   isSuccessResponse,
   statusCodes,
@@ -15,7 +16,12 @@ export const LoginScreen = () => {
   const {themeColor} = useGlobalStore(state => state);
   const router = useRouter();
 
-  GoogleSignin.configure();
+  GoogleSignin.configure({
+    scopes: ['profile', 'email'],
+    offlineAccess: true,
+    webClientId:
+      '431893587938-e7tru3ah5qcqbup857r0i6iluks277mm.apps.googleusercontent.com',
+  });
   const onGoogleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -39,7 +45,7 @@ export const LoginScreen = () => {
             break;
           default:
             // some other error happened
-            console.log('other issues');
+            console.log(error, 'other issues');
         }
       } else {
         // an error that's not related to google sign in occurred
@@ -88,7 +94,11 @@ export const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-
+        <GoogleSigninButton
+          style={{alignSelf: 'center', marginTop: 10}}
+          size={GoogleSigninButton.Size.Wide}
+          color={GoogleSigninButton.Color.Dark}
+        />
         <View className="flex-row items-center self-center gap-1 mt-5">
           <Text className="screen-desc">Haven't registered yet? </Text>
           <TouchableOpacity onPress={() => router.push('/signup')}>

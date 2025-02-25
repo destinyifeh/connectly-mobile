@@ -12,7 +12,12 @@
           "package_name": "com.destech.connectly"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "431893587938-e7tru3ah5qcqbup857r0i6iluks277mm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAY9Son2mJc9bBZM6FjquqZKkay-WnpIN4"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431893587938-e7tru3ah5qcqbup857r0i6iluks277mm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -1,8 +1,10 @@
 import {AppContainer} from '@/components/AppContainer';
+import {AppValidatorLoader} from '@/components/AppLoader';
+import {API_BASE_URL, AUTH_CLIENT_ID} from '@/constants/config';
 import {useGlobalStore} from '@/stores/global-store';
+import {useUserStore} from '@/stores/user-store';
 import {
   GoogleSignin,
-  GoogleSigninButton,
   isErrorWithCode,
   isSuccessResponse,
   statusCodes,
@@ -10,17 +12,25 @@ import {
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Toast} from 'toastify-react-native';
 import {LoginForm} from './form';
 export const LoginScreen = () => {
   const [form, setForm] = useState({email: ''});
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const {themeColor} = useGlobalStore(state => state);
+  const {
+    setApplication,
+    application,
+    resetApplication,
+    currentUserLocation,
+    setCurrentUser,
+  } = useUserStore(state => state);
   const router = useRouter();
 
   GoogleSignin.configure({
     scopes: ['profile', 'email'],
     offlineAccess: true,
-    webClientId:
-      '431893587938-e7tru3ah5qcqbup857r0i6iluks277mm.apps.googleusercontent.com',
+    webClientId: AUTH_CLIENT_ID,
   });
   const onGoogleSignIn = async () => {
     try {
@@ -28,7 +38,29 @@ export const LoginScreen = () => {
       const response = await GoogleSignin.signIn();
       if (isSuccessResponse(response)) {
         console.log(response, 'respooo');
-        // setState({ userInfo: response.data });
+
+        const {user} = response.data;
+        const res = await validateAuthUser(user.email);
+        console.log(res, 'restooo');
+        await GoogleSignin.signOut();
+        if (res.code === '200') {
+          setCurrentUser(res.user);
+          router.push('/dashboard');
+          return;
+        }
+
+        if (res.code === '404') {
+          setApplication(user);
+          router.push({
+            pathname: '/complete-setup',
+            params: {isFromGoogleSignIn: 'isFromGoogleSignIn'},
+          });
+          return;
+        }
+        if (res.code === '409') {
+          Toast.error(res.message, 'bottom');
+          return;
+        }
       } else {
         // sign in was cancelled by user
       }
@@ -54,6 +86,36 @@ export const LoginScreen = () => {
     }
   };
 
+  const validateAuthUser = async (auth: string) => {
+    console.log(auth, 'my auth...');
+    const payload = {
+      email: auth,
+    };
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/api/v1/user/validate-google-auth`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+      const data = await res.json();
+      console.log(data, 'my val data');
+      return data;
+    } catch (err) {
+      console.log(err, 'err');
+      Toast.error('Oops! Something went wrong.', 'bottom');
+    }
+  };
+
+  const onRequestClose = () => {
+    setIsModalVisible(false);
+  };
   return (
     <AppContainer showBackButton barColor="dark-content">
       <ScrollView
@@ -94,11 +156,7 @@ export const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <GoogleSigninButton
-          style={{alignSelf: 'center', marginTop: 10}}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-        />
+
         <View className="flex-row items-center self-center gap-1 mt-5">
           <Text className="screen-desc">Haven't registered yet? </Text>
           <TouchableOpacity onPress={() => router.push('/signup')}>
@@ -108,6 +166,10 @@ export const LoginScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <AppValidatorLoader
+        isModalVisible={isModalVisible}
+        onRequestClose={onRequestClose}
+      />
     </AppContainer>
   );
 };

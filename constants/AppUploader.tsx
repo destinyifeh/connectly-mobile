@@ -5,6 +5,8 @@ import * as ImagePicker from 'expo-image-picker';
 import {FC} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {ActionSheetRef} from 'react-native-actions-sheet';
+import {Toast} from 'toastify-react-native';
+import {allowedMimeTypes, ONE_MB} from './config';
 import {FileProps} from './types';
 
 interface AppUploaderProps {
@@ -28,7 +30,7 @@ export const AppUploader: FC<AppUploaderProps> = ({
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       //mediaTypes: ['images', 'videos'],
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: false,
@@ -40,6 +42,18 @@ export const AppUploader: FC<AppUploaderProps> = ({
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
       const theFileName = rest.imageType;
+
+      // Check file size
+      if (fileSize && fileSize > ONE_MB) {
+        Toast.error('File too big!.', 'bottom');
+        return;
+      }
+
+      // Check file type
+      if (!allowedMimeTypes.includes(mimeType?.toLowerCase() ?? '')) {
+        Toast.error('Unsupported file type!', 'bottom');
+        return;
+      }
       const uploadedFile = {
         uri: uri,
         width: width,
@@ -47,7 +61,7 @@ export const AppUploader: FC<AppUploaderProps> = ({
         mimeType: mimeType,
         fileSize: fileSize,
         size: fileSize,
-        type: type,
+        type: mimeType,
         fileName: fileName ?? undefined,
         name: theFileName,
       };
@@ -79,6 +93,18 @@ export const AppUploader: FC<AppUploaderProps> = ({
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
       const theFileName = rest.imageType;
+
+      // Check file size
+      if (fileSize && fileSize > ONE_MB) {
+        Toast.error('File too big!.', 'bottom');
+        return;
+      }
+
+      // Check file type
+      if (!allowedMimeTypes.includes(mimeType?.toLowerCase() ?? '')) {
+        Toast.error('Unsupported file type!', 'bottom');
+        return;
+      }
       const uploadedFile = {
         uri: uri,
         width: width,

@@ -7,6 +7,7 @@ import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Text, TouchableOpacity, View} from 'react-native';
+import {Toast} from 'toastify-react-native';
 import {z} from 'zod';
 type formData = {
   email: string;
@@ -70,10 +71,11 @@ export const LoginForm = () => {
           });
           return;
         }
-        setError('email', {
-          type: 'server',
-          message: message,
-        });
+        // setError('email', {
+        //   type: 'server',
+        //   message: message,
+        // });
+        Toast.error(message, 'bottom');
       },
       onSettled(data, error, variables, context) {
         setIsLoading(false);

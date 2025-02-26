@@ -153,7 +153,7 @@ const ActiveUsers: FC<AppListType> = ({user, refetchUsers, isSelected}) => {
               <View className="flex-row items-center">
                 <Ionicons name="location-sharp" size={10} color="#fff" />
                 <Text className="text-white font-sans text-sm">
-                  {user.state}
+                  {isSelected === 'nearby' ? user.city : user.state}
                 </Text>
               </View>
             </View>
@@ -179,7 +179,9 @@ export const DashboardHomeScreen = () => {
   const [notificationCounter, setNotificationCounter] = useState(0);
   const [isFil, setIsFil] = useState(false);
   const [filPayload, setFilPayload] = useState<FilType>({});
-  const {currentUser, isConnected} = useUserStore(state => state);
+  const {currentUser, isConnected, currentUserLocation} = useUserStore(
+    state => state,
+  );
   console.log(isFocused, 'idffoooo');
   console.log(currentUser, 'current boss');
   const onlineUser = useUserOnline();
@@ -213,9 +215,14 @@ export const DashboardHomeScreen = () => {
     'countNotifications',
   );
 
+  const updateAdressRequest = apiHookRequester.useUpdateData(
+    `/api/v1/user/update/${currentUser?._id}`,
+  );
+
   useEffect(() => {
     setIsSelected('foryou');
     postPushToken();
+    updateUserAdress();
   }, []);
 
   useEffect(() => {
@@ -256,6 +263,25 @@ export const DashboardHomeScreen = () => {
       },
       onError(error, variables, context) {
         console.log(error, 'push err');
+      },
+    });
+  };
+
+  const updateUserAdress = () => {
+    if (currentUserLocation.city === undefined) {
+      console.log('No currentUserLocation');
+      return false;
+    }
+    const payload = {
+      ...currentUserLocation,
+    };
+    console.log('address-update', payload);
+    updateAdressRequest.mutate(payload, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'updated-address');
+      },
+      onSettled(data, error, variables, context) {
+        console.log('address-update', error);
       },
     });
   };

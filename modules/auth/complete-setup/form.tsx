@@ -1,16 +1,24 @@
 import {AppButton} from '@/components/Button';
 import {THEME_ISDARK} from '@/constants/Colors';
 import {getUserCurrentAge} from '@/helpers/formatters';
+import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {AntDesign} from '@expo/vector-icons';
 import {zodResolver} from '@hookform/resolvers/zod';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {useRouter} from 'expo-router';
+import {useLocalSearchParams} from 'expo-router/build/hooks';
 import moment from 'moment';
 import {useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
 import {z} from 'zod';
 import {genderOptions, hobbies} from './contants/data';
@@ -46,7 +54,14 @@ export const CompleteSetupForm = () => {
   const dropDownRef = useRef<dropDownProps>(null);
   const router = useRouter();
   const {themeColor} = useGlobalStore(state => state);
-  const {setApplication, application} = useUserStore(state => state);
+  const {
+    setApplication,
+    application,
+    resetApplication,
+    currentUserLocation,
+    setCurrentUser,
+  } = useUserStore(state => state);
+  const {isFromGoogleSignIn} = useLocalSearchParams();
   const {
     control,
     handleSubmit,
@@ -59,10 +74,43 @@ export const CompleteSetupForm = () => {
     mode: 'onChange',
   });
 
+  const {mutate} = apiHookRequester.usePostData('/api/v1/user/google-auth');
+
   const onSubmitData = (data: formData) => {
     console.log(data, 'dataa');
-
     setIsLoading(true);
+    if (isFromGoogleSignIn) {
+      const payload = {
+        ...application,
+        ...data,
+        dob: isFormattedDate,
+        age: getUserCurrentAge(isFormattedDate),
+        ...currentUserLocation,
+      };
+
+      mutate(payload, {
+        onSuccess(data, variables, context) {
+          console.log(data, 'data google auth');
+          resetApplication();
+          const {message, user} = data.data;
+          reset();
+          setCurrentUser(user);
+          ToastAndroid.show(message, ToastAndroid.LONG);
+          router.replace('/dashboard');
+        },
+        onError(error: any, variables, context) {
+          console.log(error, 'error google auth');
+          const {message} = error.data;
+          ToastAndroid.show(message, ToastAndroid.LONG);
+        },
+        onSettled(data, error, variables, context) {
+          console.log('settled');
+          setIsLoading(false);
+        },
+      });
+      return;
+    }
+
     const saveToDraft = {
       ...application,
       ...data,

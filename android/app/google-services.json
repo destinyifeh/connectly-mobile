@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "431893587938-e7tru3ah5qcqbup857r0i6iluks277mm.apps.googleusercontent.com",
+          "client_id": "431893587938-k5bhroh2qjk0ttkutddebh6375474b7v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.destech.connectly",
+            "certificate_hash": "a26ce2e90017f22351f21b516be61ae168d43da5"
+          }
+        },
+        {
+          "client_id": "431893587938-p0j0spjfc2candcvds0l0jq26f83u3hh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

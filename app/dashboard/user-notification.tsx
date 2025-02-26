@@ -21,10 +21,21 @@ import {
 const MyNotifications = ({notification}: AppListType) => {
   const {themeColor} = useGlobalStore(state => state);
   const router = useRouter();
+
   return (
     <View className="w-screen self-center border-b border-gray-200 h-[60] justify-center">
       <View className="w-[90%] self-center">
-        <TouchableOpacity className="flex-row items-center gap-3">
+        <TouchableOpacity
+          className="flex-row items-center gap-3"
+          onPress={() =>
+            router.push({
+              pathname: '/dashboard/user-details',
+              params: {
+                userInfo: JSON.stringify(notification.from),
+                previousScreen: 'notification',
+              },
+            })
+          }>
           <Image
             source={{uri: notification.from.profilePhoto.url}}
             className="h-[45] w-[45] rounded-3xl"

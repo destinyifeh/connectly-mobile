@@ -1,9 +1,11 @@
 import {AppBottomSheet} from '@/components/BottomSheet';
+import {allowedMimeTypes, ONE_MB} from '@/constants/config';
 import {useUserStore} from '@/stores/user-store';
 import * as ImagePicker from 'expo-image-picker';
 import {FC} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {ActionSheetRef} from 'react-native-actions-sheet';
+import {Toast} from 'toastify-react-native';
 interface PhotoUploaderProps {
   handleSetFile?: (file: string) => void;
   actionSheetRef: React.RefObject<ActionSheetRef>;
@@ -31,6 +33,17 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
       console.log(result, 'resultt');
+      // Check file size
+      if (fileSize && fileSize > ONE_MB) {
+        Toast.error('File too big!.', 'bottom');
+        return;
+      }
+
+      // Check file type
+      if (!allowedMimeTypes.includes(mimeType?.toLowerCase() ?? '')) {
+        Toast.error('Unsupported file type!', 'bottom');
+        return;
+      }
       const uploadedFileObject = {
         uri: uri,
         width: width,
@@ -72,6 +85,18 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
     if (!result.canceled) {
       const {uri, width, height, fileName, mimeType, type, fileSize} =
         result.assets[0];
+
+      // Check file size
+      if (fileSize && fileSize > ONE_MB) {
+        Toast.error('File too big!.', 'bottom');
+        return;
+      }
+
+      // Check file type
+      if (!allowedMimeTypes.includes(mimeType?.toLowerCase() ?? '')) {
+        Toast.error('Unsupported file type!', 'bottom');
+        return;
+      }
 
       const uploadedFileObject = {
         uri: uri,

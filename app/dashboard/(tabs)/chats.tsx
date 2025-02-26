@@ -1,5 +1,6 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppLoader} from '@/components/AppLoader';
+import {AppPhotoViewer} from '@/components/AppPhotoViewer';
 import AppList from '@/constants/AppPackages';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {AppListType} from '@/constants/types';
@@ -10,7 +11,7 @@ import {useUserStore} from '@/stores/user-store';
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect, useRouter} from 'expo-router';
 import moment from 'moment';
-import {useCallback, useEffect} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   Image,
   RefreshControl,
@@ -21,14 +22,14 @@ import {
 
 const MyChats = ({chat}: AppListType) => {
   const router = useRouter();
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const {themeColor} = useGlobalStore(state => state);
   const {currentUser} = useUserStore(state => state);
   const isSameUser = chat?.user._id === currentUser._id;
   console.log(isSameUser, 'issameuser');
   console.log(chat, 'meuser');
   console.log(currentUser._id, 'meuserId');
-  //const formatTime = moment(chat.createdAt).fromNow(true);
+
   const formatTime = moment(chat.createdAt).calendar(null, {
     sameDay: 'HH:mm', // Today, display only time, e.g., "19:20"
     lastDay: '[Yesterday]', // Yesterday, display "Yesterday"
@@ -51,6 +52,10 @@ const MyChats = ({chat}: AppListType) => {
     receiverId: chat.receiver._id,
   };
 
+  const onRequestClose = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <View className="w-screen self-center border-b border-gray-200 h-[60] justify-center">
       <TouchableOpacity
@@ -62,9 +67,7 @@ const MyChats = ({chat}: AppListType) => {
           })
         }>
         <View className="flex-row items-center gap-3">
-          <TouchableOpacity
-          // onPress={() => router.push('/dashboard/user-details')}
-          >
+          <TouchableOpacity onPress={() => setIsModalVisible(!isModalVisible)}>
             <Image
               source={
                 isSameUser
@@ -123,6 +126,11 @@ const MyChats = ({chat}: AppListType) => {
           )}
         </View>
       </TouchableOpacity>
+      <AppPhotoViewer
+        isModalVisible={isModalVisible}
+        onRequestClose={onRequestClose}
+        user={theUser}
+      />
     </View>
   );
 };

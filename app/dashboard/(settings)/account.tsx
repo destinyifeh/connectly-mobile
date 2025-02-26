@@ -1,22 +1,33 @@
 import {AppAlert} from '@/components/AppAlert';
 import {AppContainer} from '@/components/AppContainer';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {Octicons} from '@expo/vector-icons';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {useRouter} from 'expo-router';
 import {useState} from 'react';
 import {ScrollView, Text, TouchableOpacity} from 'react-native';
+import {Toast} from 'toastify-react-native';
 
 export const AccountSettingsScreen = () => {
   const router = useRouter();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {logoutUser} = useUserStore(state => state);
+  const {logoutUser, currentUser} = useUserStore(state => state);
   const {themeColor} = useGlobalStore(state => state);
-  const onLogoutProceed = () => {
+
+  const {mutate} = apiHookRequester.useDeleteData(
+    `/api/v1/user/delete/${currentUser?._id}`,
+  );
+
+  const onLogoutProceed = async () => {
     setIsLogoutModalVisible(false);
+    if (currentUser?.isGoogleAuthUser) {
+      await GoogleSignin.signOut();
+    }
     logoutUser();
   };
 
@@ -25,15 +36,29 @@ export const AccountSettingsScreen = () => {
   };
 
   const onDeleteAccountProceed = () => {
-    setIsDeleteModalVisible(false);
+    setIsLoading(true);
+    const payload = {
+      userid: currentUser._id,
+    };
+    mutate(payload, {
+      onSuccess(data, variables, context) {
+        console.log(data, 'deleted');
+        Toast.success('Account deleted', 'bottom');
+        setIsDeleteModalVisible(false);
+        onLogoutProceed();
+      },
+      onError(error, variables, context) {
+        console.log(error, 'deleted-err');
+        Toast.error('OOps! Something went wrong. Try again', 'bottom');
+      },
+      onSettled(data, error, variables, context) {
+        setIsLoading(false);
+      },
+    });
   };
 
   const onDeleteCancel = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsDeleteModalVisible(false);
-    }, 5000);
+    setIsDeleteModalVisible(false);
   };
 
   return (

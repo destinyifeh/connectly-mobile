@@ -75,7 +75,7 @@ export const updateData = async (
 ): Promise<AxiosResponse<ApiResponse>> => {
   try {
     if (data?.file) {
-      console.log(data.file, 'dataass');
+      console.log(data, 'dataass');
       const formData = new FormData();
 
       formData.append(data.fieldName, data.file);
@@ -89,7 +89,9 @@ export const updateData = async (
       return response;
     }
   } catch (error) {
+    console.error('dez33', error);
     if (axios.isAxiosError(error)) {
+      console.error('dez22', error);
       // Handle Axios-specific errors
       console.error('Axios error:', error.response?.data || error.message);
       throw error.response || error;

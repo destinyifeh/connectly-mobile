@@ -1,5 +1,6 @@
 import {AppBottomSheet} from '@/components/BottomSheet';
-import {allowedMimeTypes, ONE_MB} from '@/constants/config';
+import {allowedMimeTypes, ONE_MB, USER_LOCATION_DATA} from '@/constants/config';
+import {getDeviceData} from '@/stores/device-store';
 import {useUserStore} from '@/stores/user-store';
 import * as ImagePicker from 'expo-image-picker';
 import {FC} from 'react';
@@ -44,6 +45,8 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
         Toast.error('Unsupported file type!', 'bottom');
         return;
       }
+      const locationData = await getDeviceData(USER_LOCATION_DATA);
+
       const uploadedFileObject = {
         uri: uri,
         width: width,
@@ -58,7 +61,9 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
       const saveToDraft = {
         ...application,
         file: uploadedFileObject,
-        ...currentUserLocation,
+        ...(currentUserLocation.city
+          ? {...currentUserLocation}
+          : {...locationData}),
       };
       console.log(saveToDraft, 'oopppp lib');
       console.log(result, 'resultt');
@@ -97,7 +102,7 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
         Toast.error('Unsupported file type!', 'bottom');
         return;
       }
-
+      const locationData = await getDeviceData(USER_LOCATION_DATA);
       const uploadedFileObject = {
         uri: uri,
         width: width,
@@ -112,7 +117,9 @@ export const PhotoUploader: FC<PhotoUploaderProps> = ({
       const saveToDraft = {
         ...application,
         file: uploadedFileObject,
-        ...currentUserLocation,
+        ...(currentUserLocation.city
+          ? {...currentUserLocation}
+          : {...locationData}),
       };
       console.log(saveToDraft, 'oopppp');
       console.log(result, 'resultt');

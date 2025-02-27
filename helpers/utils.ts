@@ -4,7 +4,7 @@ import {
   THEME_ISDARK,
   THEME_ISLIGHT,
 } from '@/constants/Colors';
-import {APP_THEME_PREFERENCE} from '@/constants/config';
+import {APP_THEME_PREFERENCE, USER_LOCATION_DATA} from '@/constants/config';
 import {getDeviceData, saveDeviceData} from '@/stores/device-store';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
@@ -100,7 +100,9 @@ async function getCurrentLocation() {
     country: country ?? undefined,
   };
 
+  saveDeviceData(USER_LOCATION_DATA, locationData);
   useUserStore.getState().setCurrentUserLocation(locationData);
+  console.log(locationData, 'locationData');
 }
 
 const speak = () => {

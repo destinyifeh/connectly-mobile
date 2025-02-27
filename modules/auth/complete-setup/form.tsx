@@ -1,7 +1,9 @@
 import {AppButton} from '@/components/Button';
 import {THEME_ISDARK} from '@/constants/Colors';
+import {USER_LOCATION_DATA} from '@/constants/config';
 import {getUserCurrentAge} from '@/helpers/formatters';
 import {apiHookRequester} from '@/services/api/hooks';
+import {getDeviceData} from '@/stores/device-store';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {AntDesign} from '@expo/vector-icons';
@@ -76,8 +78,10 @@ export const CompleteSetupForm = () => {
 
   const {mutate} = apiHookRequester.usePostData('/api/v1/user/google-auth');
 
-  const onSubmitData = (data: formData) => {
+  const onSubmitData = async (data: formData) => {
     console.log(data, 'dataa');
+    const locationData = await getDeviceData(USER_LOCATION_DATA);
+
     setIsLoading(true);
     if (isFromGoogleSignIn) {
       const payload = {
@@ -85,9 +89,11 @@ export const CompleteSetupForm = () => {
         ...data,
         dob: isFormattedDate,
         age: getUserCurrentAge(isFormattedDate),
-        ...currentUserLocation,
+        ...(currentUserLocation.city
+          ? {...currentUserLocation}
+          : {...locationData}),
       };
-
+      console.log(payload, 'my authPay');
       mutate(payload, {
         onSuccess(data, variables, context) {
           console.log(data, 'data google auth');

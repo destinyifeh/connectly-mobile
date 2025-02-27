@@ -15,9 +15,9 @@ export const SocketContext = createContext<SocketContextType>(null);
 export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
   const {currentUser} = useUserStore(state => state);
   const [socket, setSocket] = useState<SocketContextType>(null);
-  console.log(currentUser._id, 'my context id');
+  console.log(currentUser?._id, 'my context id');
   useEffect(() => {
-    if (currentUser._id) {
+    if (currentUser?._id) {
       const newSocket = io(API_BASE_URL, {
         auth: {userId: currentUser._id},
       });
@@ -36,7 +36,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
         newSocket.disconnect();
       };
     }
-  }, [currentUser._id]);
+  }, [currentUser?._id]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

@@ -25,10 +25,10 @@ export const AccountSettingsScreen = () => {
 
   const onLogoutProceed = async () => {
     setIsLogoutModalVisible(false);
+    logoutUser();
     if (currentUser?.isGoogleAuthUser) {
       await GoogleSignin.signOut();
     }
-    logoutUser();
   };
 
   const onLogoutCancel = () => {
@@ -43,9 +43,9 @@ export const AccountSettingsScreen = () => {
     mutate(payload, {
       onSuccess(data, variables, context) {
         console.log(data, 'deleted');
-        Toast.success('Account deleted', 'bottom');
         setIsDeleteModalVisible(false);
         onLogoutProceed();
+        Toast.success('Account deleted', 'bottom');
       },
       onError(error, variables, context) {
         console.log(error, 'deleted-err');

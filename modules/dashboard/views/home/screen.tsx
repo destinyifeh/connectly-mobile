@@ -2,10 +2,12 @@ import {AppContainer} from '@/components/AppContainer';
 import {AppLoader} from '@/components/AppLoader';
 import {AppBottomSheet} from '@/components/BottomSheet';
 import AppList from '@/constants/AppPackages';
+import {USER_LOCATION_DATA} from '@/constants/config';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {AppListType, CurrentUserProps} from '@/constants/types';
 import {getUserCurrentAge} from '@/helpers/formatters';
 import {apiHookRequester} from '@/services/api/hooks';
+import {getDeviceData} from '@/stores/device-store';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {
@@ -178,9 +180,8 @@ export const DashboardHomeScreen = () => {
   const [notificationCounter, setNotificationCounter] = useState(0);
   const [isFil, setIsFil] = useState(false);
   const [filPayload, setFilPayload] = useState<FilType>({});
-  const {currentUser, isConnected, currentUserLocation} = useUserStore(
-    state => state,
-  );
+  const {currentUser, isConnected, currentUserLocation, setCurrentUser} =
+    useUserStore(state => state);
   console.log(isFocused, 'idffoooo');
   console.log(currentUser, 'current boss');
   //const onlineUser = useUserOnline();
@@ -266,18 +267,18 @@ export const DashboardHomeScreen = () => {
     });
   };
 
-  const updateUserAdress = () => {
-    if (currentUserLocation.city === undefined) {
-      console.log('No currentUserLocation');
-      return false;
-    }
+  const updateUserAdress = async () => {
+    const locationData = await getDeviceData(USER_LOCATION_DATA);
+    console.log(locationData, 'lolor');
     const payload = {
-      ...currentUserLocation,
+      ...locationData,
     };
     console.log('address-update', payload);
     updateAdressRequest.mutate(payload, {
       onSuccess(data, variables, context) {
         console.log(data, 'updated-address');
+        const {user} = data.data;
+        setCurrentUser(user);
       },
       onSettled(data, error, variables, context) {
         console.log('address-update', error);

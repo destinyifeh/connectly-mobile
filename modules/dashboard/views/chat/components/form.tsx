@@ -1,6 +1,6 @@
 import {AppLoader} from '@/components/AppLoader';
-import {API_BASE_URL} from '@/constants/config';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
+import {SocketContext} from '@/contexts/socketContext';
 import {dismissAllNotifications} from '@/helpers/services/app-notification/configure-notifications';
 import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
@@ -8,7 +8,7 @@ import {useUserStore} from '@/stores/user-store';
 import {EvilIcons, MaterialIcons} from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import {useRouter} from 'expo-router';
-import {FC, useCallback, useEffect, useState} from 'react';
+import {FC, useCallback, useContext, useEffect, useState} from 'react';
 import {Image, View} from 'react-native';
 import {
   Actions,
@@ -17,7 +17,6 @@ import {
   IMessage,
   Send,
 } from 'react-native-gifted-chat';
-import {io, Socket} from 'socket.io-client';
 import {Toast} from 'toastify-react-native';
 
 interface IMessages {
@@ -57,10 +56,12 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
   const router = useRouter();
   // const socketRef = useRef<Socket | null>(null);
   //const socket = io('http://192.168.0.198:4000');
-  const [socket, setSocket] = useState<Socket | null>(null);
+  //const [socket, setSocket] = useState<Socket | null>(null);
+
+  const socket = useContext(SocketContext);
   console.log(JSON.parse(chatUser), 'cheet user');
   const theUser = JSON.parse(chatUser);
-
+  console.log(socket, 'sockerrr');
   const {
     isSuccess,
     isLoading: isLoadingChats,
@@ -76,21 +77,22 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
     'chatUsers',
   );
 
-  console.log(chatsData, 'chatsdata');
+  console.log(chatsData, 'chatdata');
   useEffect(() => {
     dismissAllNotifications();
     setIsChatting(true);
-    const newSocket = io(API_BASE_URL);
-    setSocket(newSocket);
+    // const newSocket = io(API_BASE_URL);
+    // setSocket(newSocket);
 
     return () => {
-      newSocket.disconnect();
+      // newSocket.disconnect();
       setIsChatting(false);
     };
   }, []);
+
   useEffect(() => {
     if (!socket) return;
-    socket.emit('userConnected', currentUser._id);
+    // socket.emit('userConnected', currentUser._id);
     // Listen for new messages from the server
     socket.on('newMessage', message => {
       console.log(message, 'messageeeeedee');

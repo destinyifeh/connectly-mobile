@@ -5,7 +5,6 @@ import AppList from '@/constants/AppPackages';
 import {APP_DEFAULT_COLOUR} from '@/constants/Styles';
 import {AppListType, CurrentUserProps} from '@/constants/types';
 import {getUserCurrentAge} from '@/helpers/formatters';
-import {useUserOnline} from '@/hooks/useUserOnline';
 import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
@@ -184,8 +183,8 @@ export const DashboardHomeScreen = () => {
   );
   console.log(isFocused, 'idffoooo');
   console.log(currentUser, 'current boss');
-  const onlineUser = useUserOnline();
-  console.log(onlineUser, 'user isOnline');
+  //const onlineUser = useUserOnline();
+  //console.log(onlineUser, 'user isOnline');
   const params = new URLSearchParams();
   const {
     isSuccess,

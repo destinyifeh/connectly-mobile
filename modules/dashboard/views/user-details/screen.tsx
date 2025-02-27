@@ -12,7 +12,6 @@ import {useCallback, useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
-  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -243,7 +242,7 @@ export const UserDetailsScreen = () => {
           </View>
         </View>
       </ScrollView>
-      <View className="absolute bottom-8 flex-row gap-5 self-center items-center">
+      {/* <View className="absolute bottom-8 flex-row gap-5 self-center items-center">
         <TouchableOpacity
           onPress={() => Linking.openURL(`https://wa.me/${'09033662731'}`)}>
           <Image
@@ -277,16 +276,22 @@ export const UserDetailsScreen = () => {
             resizeMode="contain"
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <TouchableOpacity
+        className="bg-app-default min-w-[150] h-[40] justify-center rounded-[25] items-center self-center mb-3"
         onPress={() =>
           router.push({
             pathname: '/dashboard/chat',
             params: {user: userInfo},
           })
         }>
-        <Text className="screen-title">chat</Text>
+        <Text
+          className="screen-title text-center px-3 capitalize max-w-[250]"
+          ellipsizeMode="tail"
+          numberOfLines={1}>
+          chat {theUser.username}
+        </Text>
       </TouchableOpacity>
       {isModalVisible === true && (
         <Animated.View

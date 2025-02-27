@@ -4,7 +4,7 @@
     "slug": "connectly",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/media/app_icon_marketing.png",
+    "icon": "./assets/media/ic_launcher.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/media/app_logo.png",
+        "foregroundImage": "./assets/media/ic_launcher.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -38,7 +38,8 @@
           "image": "./assets/media/app_logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          // "backgroundColor": "#ffffff"
+          "backgroundColor": "#d4b300"
         }
       ],
       [

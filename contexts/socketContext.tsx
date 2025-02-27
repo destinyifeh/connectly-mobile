@@ -1,10 +1,8 @@
-// socketContext.js
 import {API_BASE_URL} from '@/constants/config';
 import {useUserStore} from '@/stores/user-store';
 import React, {createContext, useEffect, useState} from 'react';
 import {io, Socket} from 'socket.io-client';
 
-// Define the shape of your context's value
 type SocketContextType = Socket | null;
 
 type SocketProviderProps = {
@@ -15,7 +13,6 @@ type SocketProviderProps = {
 export const SocketContext = createContext<SocketContextType>(null);
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
-  //const socket = io(API_BASE_URL);
   const {currentUser} = useUserStore(state => state);
   const [socket, setSocket] = useState<SocketContextType>(null);
   console.log(currentUser._id, 'my context id');
@@ -26,9 +23,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
       });
 
       setSocket(newSocket);
-
-      // Emit 'userConnected' event with userId
-      //  newSocket.emit('userConnected', currentUser._id);
 
       // Set up the 'userStatus' listener
       newSocket.on('userStatus', ({userId, isOnline}) => {

@@ -54,9 +54,6 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
   const [messages, setMessages] = useState<CustomMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const router = useRouter();
-  // const socketRef = useRef<Socket | null>(null);
-  //const socket = io('http://192.168.0.198:4000');
-  //const [socket, setSocket] = useState<Socket | null>(null);
 
   const socket = useContext(SocketContext);
   console.log(JSON.parse(chatUser), 'cheet user');
@@ -81,18 +78,14 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
   useEffect(() => {
     dismissAllNotifications();
     setIsChatting(true);
-    // const newSocket = io(API_BASE_URL);
-    // setSocket(newSocket);
 
     return () => {
-      // newSocket.disconnect();
       setIsChatting(false);
     };
   }, []);
 
   useEffect(() => {
     if (!socket) return;
-    // socket.emit('userConnected', currentUser._id);
     // Listen for new messages from the server
     socket.on('newMessage', message => {
       console.log(message, 'messageeeeedee');
@@ -146,7 +139,6 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
     if (!socket) return;
 
     socket.on('typing', ({senderId, isTyping}) => {
-      // Use senderId and isTyping here
       console.log(`User ${senderId} is ${isTyping ? 'typing' : 'not typing'}`);
       if (isTyping) {
         console.log('okayyyy');
@@ -202,8 +194,6 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
       };
       console.log(formattedMessage, 'fmmess');
 
-      // Send the message to your backend or Firebase
-      //sendMessageToBackend(formattedMessage);
       socket?.emit('sendMessage', formattedMessage);
     },
     [theUser],
@@ -340,34 +330,6 @@ export const ChatForm: FC<ChatFormProps> = ({chatUser}) => {
         </View>
       );
     }
-  };
-
-  const renderFooter = () => {
-    console.log(error, 'err users');
-    chatsData?.data.chats.forEach((chat: any) => {
-      if (!chat._id || !chat.createdAt) {
-        console.warn('Missing `_id` or `createdAt` in message:', chat);
-      }
-    });
-
-    const {message, code} = (error as any)?.data || {};
-    const {userMessage, userCode} = chatsData?.data || {};
-
-    if (isLoadingChats || isFetching)
-      return (
-        <View style={{paddingVertical: 20, marginTop: 80, alignSelf: 'center'}}>
-          <AppLoader />
-        </View>
-      );
-    // return (
-    //   <View style={{paddingVertical: 20, marginTop: 80}}>
-    //     <Text
-    //       className="text-base font-sans text-center"
-    //       style={{color: themeColor.text}}>
-    //       {message || userMessage}
-    //     </Text>
-    //   </View>
-    // );
   };
 
   // Call this function on text input change

@@ -20,6 +20,9 @@
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.destech.connectly",
@@ -85,7 +88,9 @@
           "icon": "./assets/media/notification_icon.png",
           "color": "#d4b300",
           "defaultChannel": "default",
-          "sounds": ["./assets/media/notification_sound.wav"],
+          "sounds": [
+            "./assets/media/notification_sound.wav"
+          ],
           "enableBackgroundRemoteNotifications": false
         }
       ],
@@ -101,6 +106,10 @@
       "eas": {
         "projectId": "c7fad474-12be-4224-be5d-3d863af7db3a"
       }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/c7fad474-12be-4224-be5d-3d863af7db3a"
     }
   }
 }

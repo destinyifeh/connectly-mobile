@@ -117,7 +117,7 @@ export const VerifyEmailForm = () => {
         },
         onError(error: any, variables, context) {
           console.log(error, 'erorr ocurred');
-          const {message} = error.data;
+          const {message} = error?.data || {};
           setError('otp', {
             type: 'server',
             message: message,

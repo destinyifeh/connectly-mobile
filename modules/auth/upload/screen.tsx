@@ -60,7 +60,7 @@ export const UploadProfilePhotoScreen = () => {
       },
       onError(error: any, variables, context) {
         console.log(error, 'error submitting...');
-        const {message} = error.data;
+        const {message} = error?.data || {};
 
         ToastAndroid.show(
           message || 'Oops! Something went wrong, please try again',

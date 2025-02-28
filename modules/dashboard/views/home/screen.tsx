@@ -56,7 +56,7 @@ const ActiveUsers: FC<AppListType> = ({user, refetchUsers, isSelected}) => {
   const {mutate} = apiHookRequester.useUpdateData(
     `/api/v1/user/add-to-favourites/${currentUser?._id}`,
   );
-
+  console.log(user, 'userMe');
   const onFavourite = (user: string) => {
     const payload = {
       user: user,

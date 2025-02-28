@@ -52,7 +52,7 @@ export const ForgotPasswordForm = () => {
       },
       onError(error: any, variables, context) {
         console.log(error, 'forgot err...');
-        const {message} = error.data;
+        const {message} = error.data || {};
         setError('email', {
           type: 'server',
           message: message,

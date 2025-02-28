@@ -78,6 +78,7 @@ export const LoginScreen = () => {
           default:
             // some other error happened
             console.log(error, 'other issues');
+            Toast.error('Oops! Something went wrong', 'bottom');
         }
       } else {
         // an error that's not related to google sign in occurred

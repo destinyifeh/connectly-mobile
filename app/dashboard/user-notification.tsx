@@ -9,7 +9,7 @@ import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {useIsFocused} from '@react-navigation/native';
 import {useRouter} from 'expo-router';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Image,
   RefreshControl,
@@ -72,16 +72,25 @@ export default function NotificationScreen() {
   const router = useRouter();
   const {themeColor} = useGlobalStore(state => state);
   const {currentUser, isConnected} = useUserStore(state => state);
+  const [page, setPage] = useState({
+    pageSize: 10,
+    pageNo: 1,
+    totalPages: 0,
+    count: 0,
+  });
+  const [myNotifications, setMyNotifications] = useState<string[]>([]);
   const {
     isSuccess,
     isLoading: isLoadingNotifications,
     isFetching,
     isError,
     error,
-    refetch,
+    refetch: refetchNotifications,
     data: notificationsData,
   } = apiHookRequester.useFetchData(
-    currentUser._id ? `/api/v1/user/notifications/${currentUser?._id}` : '',
+    currentUser._id
+      ? `/api/v1/user/notifications/${currentUser?._id}?page=${page.pageNo}&limit=${page.pageSize}`
+      : '',
     'myNotes',
   );
 
@@ -94,9 +103,21 @@ export default function NotificationScreen() {
     updateNotification();
   }, []);
 
+  useEffect(() => {
+    if (notificationsData?.data) {
+      const {notifications, totalPages, totalElements} = notificationsData.data;
+      setMyNotifications([...myNotifications, ...notifications]);
+      setPage(prev => ({
+        ...prev,
+        totalPages: totalPages,
+        count: totalElements,
+      }));
+    }
+  }, [notificationsData]);
+
   // useEffect(() => {
-  //   dismissAllNotifications();
-  // }, [isFocused]);
+  //   refetchNotifications();
+  // }, [page]);
 
   const updateNotification = () => {
     const payload = {
@@ -110,6 +131,28 @@ export default function NotificationScreen() {
         console.log(error, 'err updating...');
       },
     });
+  };
+
+  const handleEndReached = () => {
+    if (page.pageNo < page.totalPages) {
+      setPage(prev => ({
+        ...prev,
+        pageNo: prev.pageNo + 1,
+      }));
+      refetchNotifications();
+    }
+  };
+
+  const _onRefresh = () => {
+    setMyNotifications([]);
+    setPage(prev => ({
+      ...prev,
+      pageNo: 1,
+      pageSize: 10,
+      totalPages: 0,
+      count: 0,
+    }));
+    refetchNotifications();
   };
 
   const renderFooter = () => {
@@ -138,9 +181,12 @@ export default function NotificationScreen() {
   const {notifications} = notificationsData?.data || [];
   console.log(notifications, 'list for notes');
 
-  const renderItem = ({item}: {item: AppListType}) => {
+  const renderItem = ({item}: {item: any}) => {
     return (
-      <MyNotifications notification={item} refetchNotifications={refetch} />
+      <MyNotifications
+        notification={item}
+        refetchNotifications={refetchNotifications}
+      />
     );
   };
 
@@ -148,16 +194,18 @@ export default function NotificationScreen() {
     <AppContainer showBackButton showScreenTitle title="Notifications">
       <View className="flex-1">
         <AppList
-          data={isFetching ? [] : notifications}
+          data={isFetching ? [] : myNotifications}
           renderItem={renderItem}
           estimatedItemSize={200}
           contentContainerStyle={{paddingBottom: 10}}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={renderFooter}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.5}
           refreshControl={
             <RefreshControl
               refreshing={false}
-              onRefresh={refetch}
+              onRefresh={_onRefresh}
               colors={[APP_DEFAULT_COLOUR]}
             />
           }

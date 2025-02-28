@@ -106,7 +106,7 @@ export const CompleteSetupForm = () => {
         },
         onError(error: any, variables, context) {
           console.log(error, 'error google auth');
-          const {message} = error.data;
+          const {message} = error.data || {};
           ToastAndroid.show(message, ToastAndroid.LONG);
         },
         onSettled(data, error, variables, context) {

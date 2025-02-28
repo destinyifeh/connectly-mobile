@@ -63,7 +63,7 @@ export const LoginForm = () => {
       },
       onError(error: any, variables, context) {
         console.log(error, 'error submitting...');
-        const {message} = error.data;
+        const {message} = error?.data || {};
         if (message === 'Incorrect credentials') {
           setError('password', {
             type: 'server',
@@ -75,7 +75,8 @@ export const LoginForm = () => {
         //   type: 'server',
         //   message: message,
         // });
-        Toast.error(message, 'bottom');
+
+        Toast.error(message || 'Oops! Something went wrong', 'bottom');
       },
       onSettled(data, error, variables, context) {
         setIsLoading(false);

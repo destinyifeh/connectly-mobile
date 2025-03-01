@@ -13,3 +13,10 @@
 //clean and configure both platfor
 
 //npx expo prebuild --clean
+
+///initialize eas update
+//eas update:configure
+
+//push update
+
+//eas update --channel "staging" --message "message"

@@ -1,9 +1,13 @@
 import {AppButton} from '@/components/Button';
 import {THEME_ISDARK} from '@/constants/Colors';
-import {USER_LOCATION_DATA} from '@/constants/config';
+import {
+  ACCESS_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  USER_LOCATION_DATA,
+} from '@/constants/config';
 import {getUserCurrentAge} from '@/helpers/formatters';
 import {apiHookRequester} from '@/services/api/hooks';
-import {getDeviceData} from '@/stores/device-store';
+import {getDeviceData, saveDeviceData} from '@/stores/device-store';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {AntDesign} from '@expo/vector-icons';
@@ -98,9 +102,11 @@ export const CompleteSetupForm = () => {
         onSuccess(data, variables, context) {
           console.log(data, 'data google auth');
           resetApplication();
-          const {message, user} = data.data;
+          const {message, user, accessToken, refreshToken} = data.data;
           reset();
           setCurrentUser(user);
+          saveDeviceData(ACCESS_TOKEN_KEY, accessToken);
+          saveDeviceData(REFRESH_TOKEN_KEY, refreshToken);
           ToastAndroid.show(message, ToastAndroid.LONG);
           router.replace('/dashboard');
         },

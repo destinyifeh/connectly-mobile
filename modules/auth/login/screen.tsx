@@ -1,6 +1,12 @@
 import {AppContainer} from '@/components/AppContainer';
 import {AppValidatorLoader} from '@/components/AppLoader';
-import {API_BASE_URL, AUTH_CLIENT_ID} from '@/constants/config';
+import {
+  ACCESS_TOKEN_KEY,
+  API_BASE_URL,
+  AUTH_CLIENT_ID,
+  REFRESH_TOKEN_KEY,
+} from '@/constants/config';
+import {saveDeviceData} from '@/stores/device-store';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {
@@ -45,6 +51,8 @@ export const LoginScreen = () => {
         await GoogleSignin.signOut();
         if (res.code === '200') {
           setCurrentUser(res.user);
+          saveDeviceData(ACCESS_TOKEN_KEY, res.accessToken);
+          saveDeviceData(REFRESH_TOKEN_KEY, res.refreshToken);
           router.push('/dashboard');
           return;
         }

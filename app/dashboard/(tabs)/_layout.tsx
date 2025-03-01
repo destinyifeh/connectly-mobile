@@ -69,13 +69,6 @@ export default function TabLayout() {
           tabBarIcon: ({color}) => renderHomeIcon(color),
         }}
       />
-      <Tabs.Screen
-        name="favourites"
-        options={{
-          title: '',
-          tabBarIcon: ({color}) => renderFavIcon(color),
-        }}
-      />
 
       <Tabs.Screen
         name="search"

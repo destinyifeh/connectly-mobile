@@ -12,3 +12,6 @@ export const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/jpg'];
 const env = process.env.NODE_ENV || 'development';
 
 export const API_BASE_URL = env === 'production' ? API_PROD_URL : API_DEV_URL;
+
+export const ACCESS_TOKEN_KEY = 'accessToken';
+export const REFRESH_TOKEN_KEY = 'refreshToken';

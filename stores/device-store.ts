@@ -1,3 +1,8 @@
+import {
+  ACCESS_TOKEN_KEY,
+  CURRENT_USER,
+  REFRESH_TOKEN_KEY,
+} from '@/constants/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const saveDeviceData = async (key: string, value: any) => {
@@ -24,5 +29,43 @@ export const deleteDeviceData = async (key: string) => {
     await AsyncStorage.removeItem(key);
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const deleteMultiDeviceData = async (keys: string[]) => {
+  console.log(keys, 'my delete-keys');
+  try {
+    await AsyncStorage.multiRemove(keys);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const setMultiDeviceData = async (keyValuePairs: [string, string][]) => {
+  console.log(keyValuePairs, 'keyvalp');
+  try {
+    await AsyncStorage.multiSet(keyValuePairs);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const clearTokens = async () => {
+  try {
+    await AsyncStorage.multiRemove([ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY]);
+  } catch (error) {
+    console.error('Error clearing tokens:', error);
+  }
+};
+
+export const clearUserDeviceData = async () => {
+  try {
+    await AsyncStorage.multiRemove([
+      ACCESS_TOKEN_KEY,
+      REFRESH_TOKEN_KEY,
+      CURRENT_USER,
+    ]);
+  } catch (error) {
+    console.error('Error clearing tokens:', error);
   }
 };

@@ -1,8 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 import {ApiResponse, PostData} from './api-types';
-import createApiInstance from './config';
+import apiClient from './config';
 
-const api = createApiInstance();
+const api = apiClient;
 
 export const fetchData = async (
   url: string,

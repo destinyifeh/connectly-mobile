@@ -8,8 +8,8 @@ import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {useIsFocused} from '@react-navigation/native';
-import {useRouter} from 'expo-router';
-import {useEffect, useState} from 'react';
+import {useFocusEffect, useRouter} from 'expo-router';
+import {useCallback, useEffect, useState} from 'react';
 import {
   Image,
   RefreshControl,
@@ -73,11 +73,14 @@ export default function NotificationScreen() {
   const {themeColor} = useGlobalStore(state => state);
   const {currentUser, isConnected} = useUserStore(state => state);
   const [page, setPage] = useState({
-    pageSize: 10,
+    pageSize: 15,
     pageNo: 1,
     totalPages: 0,
     count: 0,
   });
+  const [pageStatus, setPageStatus] = useState(false);
+
+  const [isRefreshing, setRefreshing] = useState(false);
   const [myNotifications, setMyNotifications] = useState<string[]>([]);
   const {
     isSuccess,
@@ -103,21 +106,46 @@ export default function NotificationScreen() {
     updateNotification();
   }, []);
 
-  useEffect(() => {
-    if (notificationsData?.data) {
-      const {notifications, totalPages, totalElements} = notificationsData.data;
-      setMyNotifications([...myNotifications, ...notifications]);
-      setPage(prev => ({
-        ...prev,
-        totalPages: totalPages,
-        count: totalElements,
-      }));
-    }
-  }, [notificationsData]);
+  useFocusEffect(
+    useCallback(() => {
+      if (notificationsData?.data?.notifications?.length > 0) {
+        const {
+          notifications,
+          pagination: {totalPages, totalElements, page},
+        } = notificationsData?.data || {};
+        console.log('refreshing...:', notifications);
+        console.log({notifications, totalElements, totalPages, page});
+        if (myNotifications.length < totalElements) {
+          setMyNotifications([...myNotifications, ...notifications]);
+          setPage(prev => ({
+            ...prev,
+            page: page,
+            totalPages: totalPages,
+            count: totalElements,
+          }));
+        }
+      } else {
+        console.log(notificationsData, 'what...');
+      }
+    }, [notificationsData]),
+  );
 
-  // useEffect(() => {
-  //   refetchNotifications();
-  // }, [page]);
+  useEffect(() => {
+    if (page.pageNo > 1) {
+      console.log('page-updated:', page.pageNo);
+      console.log(myNotifications, 'update-botifications');
+      refetchNotifications();
+    }
+  }, [page.pageNo]);
+
+  useEffect(() => {
+    if (isRefreshing) {
+      console.log('page-refresh:', page.pageNo);
+      console.log(myNotifications, 'refresh-notifications');
+      refetchNotifications();
+      setRefreshing(false);
+    }
+  }, [isRefreshing]);
 
   const updateNotification = () => {
     const payload = {
@@ -134,16 +162,24 @@ export default function NotificationScreen() {
   };
 
   const handleEndReached = () => {
+    console.log(
+      myNotifications,
+      'update-notifications33',
+      page.pageNo,
+      'pager',
+    );
+
     if (page.pageNo < page.totalPages) {
       setPage(prev => ({
         ...prev,
         pageNo: prev.pageNo + 1,
       }));
-      refetchNotifications();
     }
   };
 
   const _onRefresh = () => {
+    console.log('calling onrefresh...');
+    setRefreshing(true);
     setMyNotifications([]);
     setPage(prev => ({
       ...prev,
@@ -152,7 +188,6 @@ export default function NotificationScreen() {
       totalPages: 0,
       count: 0,
     }));
-    refetchNotifications();
   };
 
   const renderFooter = () => {
@@ -178,8 +213,6 @@ export default function NotificationScreen() {
       </View>
     );
   };
-  const {notifications} = notificationsData?.data || [];
-  console.log(notifications, 'list for notes');
 
   const renderItem = ({item}: {item: any}) => {
     return (
@@ -194,13 +227,14 @@ export default function NotificationScreen() {
     <AppContainer showBackButton showScreenTitle title="Notifications">
       <View className="flex-1">
         <AppList
-          data={isFetching ? [] : myNotifications}
+          data={myNotifications}
           renderItem={renderItem}
-          estimatedItemSize={200}
+          estimatedItemSize={100}
           contentContainerStyle={{paddingBottom: 10}}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={renderFooter}
-          onEndReached={handleEndReached}
+          //onEndReached={handleEndReached}
+          onMomentumScrollEnd={handleEndReached}
           onEndReachedThreshold={0.5}
           refreshControl={
             <RefreshControl

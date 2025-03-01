@@ -1,6 +1,12 @@
 import {AppButton} from '@/components/Button';
 import {TextField} from '@/components/TextField';
+import {
+  ACCESS_TOKEN_KEY,
+  CURRENT_USER,
+  REFRESH_TOKEN_KEY,
+} from '@/constants/config';
 import {apiHookRequester} from '@/services/api/hooks';
+import {getDeviceData, saveDeviceData} from '@/stores/device-store';
 import {useUserStore} from '@/stores/user-store';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'expo-router';
@@ -41,9 +47,12 @@ export const LoginForm = () => {
     mode: 'onChange',
   });
 
-  const onSubmitLoginData = (data: formData) => {
+  const onSubmitLoginData = async (data: formData) => {
     console.log(data, 'dataa');
-
+    const data1 = await getDeviceData(ACCESS_TOKEN_KEY);
+    const data2 = await getDeviceData(REFRESH_TOKEN_KEY);
+    const data3 = await getDeviceData(CURRENT_USER);
+    console.log({data1, data2, data3});
     clearErrors(['email', 'password']);
 
     const payload = {
@@ -53,8 +62,10 @@ export const LoginForm = () => {
     mutate(payload, {
       onSuccess(data: any, variables, context) {
         console.log(data, 'data isSuccess');
-        const {message, user} = data.data;
+        const {message, user, accessToken, refreshToken} = data.data;
         setCurrentUser(user);
+        saveDeviceData(ACCESS_TOKEN_KEY, accessToken);
+        saveDeviceData(REFRESH_TOKEN_KEY, refreshToken);
         reset();
         router.replace({
           pathname: '/dashboard',
@@ -71,10 +82,13 @@ export const LoginForm = () => {
           });
           return;
         }
-        // setError('email', {
-        //   type: 'server',
-        //   message: message,
-        // });
+        if (message === 'User not found') {
+          setError('email', {
+            type: 'server',
+            message: message,
+          });
+          return;
+        }
 
         Toast.error(message || 'Oops! Something went wrong', 'bottom');
       },

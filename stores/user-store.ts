@@ -2,7 +2,11 @@ import {CURRENT_USER} from '@/constants/config';
 import {CurrentUserLocationProps, CurrentUserProps} from '@/constants/types';
 import {router} from 'expo-router';
 import {create} from 'zustand';
-import {deleteDeviceData, getDeviceData, saveDeviceData} from './device-store';
+import {
+  clearUserDeviceData,
+  getDeviceData,
+  saveDeviceData,
+} from './device-store';
 
 type State = {
   users: string[];
@@ -53,7 +57,8 @@ export const useUserStore = create<State & Actions>((set, get) => ({
   },
   logoutUser: () => {
     set(initialState);
-    deleteDeviceData(CURRENT_USER);
+    clearUserDeviceData();
+    //deleteMultiDeviceData([CURRENT_USER, ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY]);
     router.replace('/login');
   },
   setApplication: (application: any) => {

@@ -55,7 +55,7 @@ const useAppState = () => {
           console.log('Active state: Session expired33.');
           console.log(currentRouteRef.current, 'currentroute');
           await clearUserDeviceData();
-          Toast.error('Session expired. Please log in again-app.', 'bottom');
+          Toast.error('Session expired. Please log in again.', 'bottom');
           router.replace('/login');
         }
       } catch (error) {

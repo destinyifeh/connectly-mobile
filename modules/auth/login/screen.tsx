@@ -44,7 +44,7 @@ export const LoginScreen = () => {
       const response = await GoogleSignin.signIn();
       if (isSuccessResponse(response)) {
         console.log(response, 'respooo');
-
+        setIsModalVisible(true);
         const {user} = response.data;
         const res = await validateAuthUser(user.email);
         console.log(res, 'restooo');
@@ -54,6 +54,7 @@ export const LoginScreen = () => {
           saveDeviceData(ACCESS_TOKEN_KEY, res.accessToken);
           saveDeviceData(REFRESH_TOKEN_KEY, res.refreshToken);
           router.push('/dashboard');
+          setIsModalVisible(false);
           return;
         }
 
@@ -63,16 +64,19 @@ export const LoginScreen = () => {
             pathname: '/complete-setup',
             params: {isFromGoogleSignIn: 'isFromGoogleSignIn'},
           });
+          setIsModalVisible(false);
           return;
         }
         if (res.code === '409') {
           Toast.error(res.message, 'bottom');
+          setIsModalVisible(false);
           return;
         }
       } else {
         // sign in was cancelled by user
       }
     } catch (error) {
+      setIsModalVisible(false);
       if (isErrorWithCode(error)) {
         switch (error.code) {
           case statusCodes.IN_PROGRESS:

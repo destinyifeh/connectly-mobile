@@ -8,8 +8,8 @@ import {apiHookRequester} from '@/services/api/hooks';
 import {useGlobalStore} from '@/stores/global-store';
 import {useUserStore} from '@/stores/user-store';
 import {useIsFocused} from '@react-navigation/native';
-import {useFocusEffect, useRouter} from 'expo-router';
-import {useCallback, useEffect, useState} from 'react';
+import {useRouter} from 'expo-router';
+import {useEffect, useState} from 'react';
 import {
   Image,
   RefreshControl,
@@ -106,30 +106,51 @@ export default function NotificationScreen() {
     updateNotification();
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (notificationsData?.data?.notifications?.length > 0) {
-        const {
-          notifications,
-          pagination: {totalPages, totalElements, page},
-        } = notificationsData?.data || {};
-        console.log('refreshing...:', notifications);
-        console.log({notifications, totalElements, totalPages, page});
-        if (myNotifications.length < totalElements) {
-          setMyNotifications([...myNotifications, ...notifications]);
-          setPage(prev => ({
-            ...prev,
-            page: page,
-            totalPages: totalPages,
-            count: totalElements,
-          }));
-        }
-      } else {
-        console.log(notificationsData, 'what...');
-      }
-    }, [notificationsData]),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (notificationsData?.data?.notifications?.length > 0) {
+  //       const {
+  //         notifications,
+  //         pagination: {totalPages, totalElements, page},
+  //       } = notificationsData?.data || {};
+  //       console.log('refreshing...:', notifications);
+  //       console.log({notifications, totalElements, totalPages, page});
+  //       if (myNotifications.length < totalElements) {
+  //         setMyNotifications([...myNotifications, ...notifications]);
+  //         setPage(prev => ({
+  //           ...prev,
+  //           page: page,
+  //           totalPages: totalPages,
+  //           count: totalElements,
+  //         }));
+  //       }
+  //     } else {
+  //       console.log(notificationsData, 'what...');
+  //     }
+  //   }, [notificationsData]),
+  // );
 
+  useEffect(() => {
+    if (notificationsData?.data?.notifications?.length > 0) {
+      const {
+        notifications,
+        pagination: {totalPages, totalElements, page},
+      } = notificationsData?.data || {};
+      console.log('refreshing...:', notifications);
+      console.log({notifications, totalElements, totalPages, page});
+      if (myNotifications.length < totalElements) {
+        setMyNotifications([...myNotifications, ...notifications]);
+        setPage(prev => ({
+          ...prev,
+          page: page,
+          totalPages: totalPages,
+          count: totalElements,
+        }));
+      }
+    } else {
+      console.log(notificationsData, 'what...');
+    }
+  }, [notificationsData]);
   useEffect(() => {
     if (page.pageNo > 1) {
       console.log('page-updated:', page.pageNo);

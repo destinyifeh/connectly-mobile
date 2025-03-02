@@ -53,7 +53,7 @@ export const LoginScreen = () => {
           setCurrentUser(res.user);
           saveDeviceData(ACCESS_TOKEN_KEY, res.accessToken);
           saveDeviceData(REFRESH_TOKEN_KEY, res.refreshToken);
-          router.push('/dashboard');
+          router.replace('/dashboard');
           setIsModalVisible(false);
           return;
         }

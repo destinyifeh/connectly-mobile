@@ -7,10 +7,14 @@ interface AppWrapperProps {
 
 import {currentDeviceWidth} from '@/constants/Styles';
 import {SocketProvider} from '@/contexts/socketContext';
+import useAppState from '@/hooks/useAppState';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 const AppWrapper: FC<AppWrapperProps> = ({children}) => {
+  const appState = useAppState();
+  console.log(appState, 'app-state-app');
+
   return (
     <QueryClientProvider client={queryClient}>
       <SocketProvider>

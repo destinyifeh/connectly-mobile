@@ -58,8 +58,7 @@ export const useUserStore = create<State & Actions>((set, get) => ({
   logoutUser: () => {
     set(initialState);
     clearUserDeviceData();
-    //deleteMultiDeviceData([CURRENT_USER, ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY]);
-    router.replace('/login');
+    router.replace('/');
   },
   setApplication: (application: any) => {
     console.log(application, 'draft application');

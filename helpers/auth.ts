@@ -81,3 +81,23 @@ export const refreshAuthAccessToken = async () => {
     return null;
   }
 };
+
+export const handleAppStateChange = async (state: string) => {
+  console.log(state, 'app-state');
+
+  if (state === 'active') {
+    try {
+      const refreshToken = await getDeviceData(REFRESH_TOKEN_KEY);
+      console.log(refreshToken, 'refreshToken');
+      if (!refreshToken || isAuthTokenExpired(refreshToken)) {
+        console.log('Active state: Session expired.');
+
+        await clearUserDeviceData();
+        Toast.error('Session expired. Please log in again.', 'bottom');
+        router.replace('/login');
+      }
+    } catch (error) {
+      console.error('Error handling app state:', error);
+    }
+  }
+};

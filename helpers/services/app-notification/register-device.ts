@@ -27,7 +27,7 @@ export async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      Alert.alert('', 'Failed to get push token for push notification!');
+      Alert.alert('', 'Please enable notifications!');
       return;
     }
     // Learn more about projectId:
